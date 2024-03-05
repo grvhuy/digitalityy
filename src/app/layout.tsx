@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Figtree, Inter } from "next/font/google";
+import { Figtree, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
-const font = Figtree({ subsets: ["latin"] });
+const font = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <main>
-          <Navbar/>
+          <Navbar />
             {children}
 
         </main>

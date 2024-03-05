@@ -1,22 +1,21 @@
-import Link from "next/link"
-import MaxWidthWrapper from "./MaxWidthWrapper"
+import Link from "next/link";
+import MaxWidthWrapper from "./MaxWidthWrapper";
 // import { Icons } from "./Icons"
 // import NavItems from "./NavItems"
-import { buttonVariants } from "./ui/button"
-import Image from "next/image"
+import { buttonVariants } from "./ui/button";
+import Image from "next/image";
+import { useRouter } from "next/router";
 // import Cart from "./Cart"
-
 const Navbar = () => {
+  const user = null;
+  const isHidden = false;
 
-  const user = null
-
-  return (
-    <div className="bg-white sticky z-50 top-0 inset-x-0 h-16">
+  return isHidden ? null : (
+    <div className="bg-white sticky z-100 top-0 inset-x-0 h-16">
       <header className="relative bg-white">
         <MaxWidthWrapper>
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center">
-              {/* TODO: mobile nav */}
               <div className="ml-4 flex lg:ml-0 ">
                 <Link href="/">
                   <Image
@@ -74,6 +73,6 @@ const Navbar = () => {
       </header>
     </div>
   );
-}
+};
 
-export default Navbar
+export default Navbar;
