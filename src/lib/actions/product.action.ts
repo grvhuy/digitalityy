@@ -16,7 +16,6 @@
 // export async function createProduct({ name, description, productSpecs, path }: Params) {
 //   try {
 //     connectToDB();
-  
 //     const product = await Product.create({name, description, productSpecs});
 
 

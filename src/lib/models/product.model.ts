@@ -1,28 +1,42 @@
-import mongoose, { model, models } from "mongoose";
+import mongoose from "mongoose";
+import Category from "./category.model";
+import connectToDB from "../mongoose";
 
-// export interface Tproduct extends mongoose.Document {
-//   name: string,
-//   description: string,
-//   tags: string[],
-//   productSpecs: {},
-//   categoryId: 
-// }
-const variantValueSchema = new mongoose.Schema({
-  attributeName: { type: String, required: true },
-  attributeValue: { type: [String] },
+const propertySchema = new mongoose.Schema({
+  attributeName: { type: String, required: true }, 
+  attributeValue: { type: String },
 });
-
+ 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  productSpecs: { type: Object, required: true },
+  productSpecs: { type: [propertySchema], required: false},
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   // brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand'},
   // variants: { type: [variantValueSchema], required: false },
-  // tags: { type: [String], required: true },
   // inventory: { type: mongoose.Schema.Types.ObjectId, ref: 'Inventory'},
   // photos: { type: [String] },
+  // tags: { type: [String], required: true },
 })
 
-const Product = mongoose.models.Product || model("Product",  productSchema)
+
+//Lưu giá trị tên thuộc tính trong productSpecs từ props của Category
+productSchema.pre("save", async function (next) {
+  try {
+    connectToDB();
+    const category = await Category.findById(this.category)
+    if (category && category.properties && category.properties.length > 0) {
+      this.productSpecs = category.properties.map((property:any) => ({
+        attributeName: property,
+        attributeValue: "",
+      }))
+    }
+    next()
+  } catch (error:any) {
+    next(error)
+  }
+
+})
+
+const Product = mongoose.models.Product || mongoose.model("Product",  productSchema)
 export default Product

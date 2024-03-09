@@ -12,10 +12,10 @@ export const GET = async () => {
 export const POST = async (req: Request) => {
   connectToDB();
   const values = await req.json();
-  const { name, description, parent } = values;
+  const { name, parent, properties } = values;
   const createdCategory = await Category.create({ 
     name, 
-    description, 
+    properties, 
     parent: parent || null, 
   });
   return NextResponse.json(createdCategory);
@@ -24,6 +24,15 @@ export const POST = async (req: Request) => {
 export const PUT = async (req: Request) => {
   connectToDB();
   const values = await req.json();
-  const { id, name, description, parent } = values;
-  const updatedCategory = await Category.findByIdAndUpdate()
+  const { id, name, properties, parent } = values;
+  const updatedCategory = await Category.findByIdAndUpdate({
+    _id: id,
+  }, {
+    name,
+    properties,
+    parent: parent || null,
+  }, {
+    new: true,
+  })
+  return NextResponse.json(updatedCategory);
 }

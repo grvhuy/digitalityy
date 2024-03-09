@@ -17,12 +17,17 @@ export const POST = async (req: Request) => {
   connectToDB()
   const values = await req.json()
   
-  const createdProduct = await Product.create({
-    name: values.name,
-    description: values.description,
-    productSpecs: values.productSpecs,
-    category: values.category || null,
-  });
+  const createdProduct = await Product
+    .create({
+      name: values.name,
+      description: values.description,
+      productSpecs: values.productSpecs,
+      category: values.category || null,
+    })
+
+  await Product.findByIdAndUpdate(createdProduct._id, {
+    //đưa các properties của category vào trường productSpecs.attributeName
+  })
 
   return NextResponse.json(createdProduct)
 }
