@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       colors: {
+        'eerie_black': '#18141c',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
