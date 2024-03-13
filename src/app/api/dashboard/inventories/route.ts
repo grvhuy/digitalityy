@@ -11,8 +11,8 @@ export const GET = async (req: Request) => {
 export const POST = async (req: Request) => {
   connectToDB()
   const values = await req.json()
-  const { quantity, modifiedAt } = values
-  const inventory = new Inventory({ quantity, modifiedAt })
+  const { quantity } = values
+  const inventory = new Inventory({ quantity, modifiedAt: Date.now() })
   await inventory.save()
   return NextResponse.json(inventory)
 }

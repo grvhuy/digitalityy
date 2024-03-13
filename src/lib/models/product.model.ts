@@ -10,13 +10,12 @@ const propertySchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
+  price: { type: Number, required: true },
   productSpecs: { type: [propertySchema], required: false},
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-  // brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand'},
-  // variants: { type: [variantValueSchema], required: false },
-  // inventory: { type: mongoose.Schema.Types.ObjectId, ref: 'Inventory'},
-  // photos: { type: [String] },
-  // tags: { type: [String], required: true },
+  categoryName: { type: String },
+  brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand'},
+
 })
 
 
@@ -25,18 +24,23 @@ productSchema.pre("save", async function (next) {
   try {
     connectToDB();
     const category = await Category.findById(this.category)
+
     if (category && category.properties && category.properties.length > 0) {
       this.productSpecs = category.properties.map((property:any) => ({
         attributeName: property,
         attributeValue: "",
       }))
+
+      this.categoryName = category.name
     }
+
     next()
   } catch (error:any) {
     next(error)
   }
 
 })
+
 
 const Product = mongoose.models.Product || mongoose.model("Product",  productSchema)
 export default Product

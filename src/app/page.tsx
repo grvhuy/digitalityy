@@ -2,7 +2,9 @@ import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import MaxWitdthWrapper from "@/components/MaxWidthWrapper";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowDownToLine, CheckCircleIcon, Leaf } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { options } from "./api/auth/[...nextauth]/options";
 
 const perks = [
   {
@@ -25,11 +27,16 @@ const perks = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+
+  const session = await getServerSession(options)
+
   return (
-    <>
-      <MaxWitdthWrapper>
-        <div className="py-20 mx-auto text-center flex flex-col items-center max-w-3xl">
+    <>  
+      {session ? (
+        <div>
+          <MaxWitdthWrapper>
+          <div className="py-20 mx-auto text-center flex flex-col items-center max-w-3xl">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
             Your marketplace with high quality{" "}
             <span className="text-blue-600">devices.</span>.
@@ -46,7 +53,6 @@ export default function Home() {
             <Button variant="ghost">Something more &rarr; </Button>
           </div>
         </div>
-
         {/* To-do: List products */}
       </MaxWitdthWrapper>
 
@@ -77,6 +83,11 @@ export default function Home() {
           </div>
         </MaxWidthWrapper>
       </section>
+        </div>  
+      ) : (
+        <div>nothing</div>
+      )}
+
     </>
   );
 }

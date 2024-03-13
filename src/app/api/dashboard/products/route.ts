@@ -20,14 +20,12 @@ export const POST = async (req: Request) => {
   const createdProduct = await Product
     .create({
       name: values.name,
+      price: values.price,
       description: values.description,
       productSpecs: values.productSpecs,
       category: values.category || null,
+      brand: values.brand || null,
     })
-
-  await Product.findByIdAndUpdate(createdProduct._id, {
-    //đưa các properties của category vào trường productSpecs.attributeName
-  })
 
   return NextResponse.json(createdProduct)
 }

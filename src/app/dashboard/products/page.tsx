@@ -27,48 +27,25 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import axios from "axios"
+import { useEffect } from "react"
+import { set } from "mongoose"
 
-export type Payment = {
+export type Product = {
   id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
+  price: number
+  name: string
+  category: string
 }
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
+
+let dataX: Product[] = [
+
 ]
 
-export const columns: ColumnDef<Payment>[] = [
+let updatedDataX: Product[] = [];
+
+export const columns: ColumnDef<Product>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -92,38 +69,38 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "name",
+    header: "Product Name",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">{row.getValue("name")}</div>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "category",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Category
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("category")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "price",
+    header: () => <div className="text-right">Price</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const price = parseFloat(row.getValue("price"))
  
-      // Format the amount as a dollar amount
+      // Format the price as a dollar price
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(amount)
+      }).format(price)
  
       return <div className="text-right font-medium">{formatted}</div>
     },
@@ -133,7 +110,7 @@ export const columns: ColumnDef<Payment>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const product = row.original
  
       return (
         <DropdownMenu>
@@ -146,13 +123,13 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(product.id)}
             >
-              Copy payment ID
+              Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View product</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>Place holder</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -161,6 +138,10 @@ export const columns: ColumnDef<Payment>[] = [
 ]
  
 const ProductsDashboardPage = () => {
+
+  const [products, setProducts] = React.useState<Product[]>([
+
+  ])
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -168,9 +149,34 @@ const ProductsDashboardPage = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
- 
+
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/api/dashboard/products/tableData');
+      const newData = Object.values(response.data).map((product: any) => {
+        return {
+          name: product.name,
+          category: product.category,
+          price: product.price,
+          id: product.id,
+        };
+      });
+      updatedDataX = dataX.concat(newData);
+      setProducts(updatedDataX);
+      console.log(updatedDataX);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  fetchData();
+}, [dataX]);
+
+
+
+
   const table = useReactTable({
-    data,
+    data: products,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -193,9 +199,9 @@ const ProductsDashboardPage = () => {
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("category")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -303,13 +309,5 @@ const ProductsDashboardPage = () => {
     </div>
   )
 }
-
-// const ProductsDashboardPage = () => {
-//   return (
-//     <div className="flex bg-[#f5f5f5]">
-
-//     </div>
-//   )
-// }
 
 export default ProductsDashboardPage;
