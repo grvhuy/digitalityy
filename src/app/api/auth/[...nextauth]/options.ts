@@ -1,63 +1,64 @@
-import type { NextAuthOptions } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { MongoDBAdapter } from "@auth/mongodb-adapter"
-import clientPromise from '@/lib/clientPromise'
-import { Adapter } from 'next-auth/adapters'
-import connectToDB from '@/lib/mongoose'
-import User from '@/lib/models/user.model'
+import type { NextAuthOptions } from "next-auth";
+import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/lib/clientPromise";
+import { Adapter } from "next-auth/adapters";
+import connectToDB from "@/lib/mongoose";
+import User from "@/lib/models/user.model";
 import bcrypt from "bcryptjs";
 
 export const options: NextAuthOptions = {
-    providers: [
-      GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        }),
-        CredentialsProvider({
-            name: "Credentials",
-            credentials: {
-                email: {
-                    label: "Email:",
-                    type: "text",
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {},
+      async authorize(credentials: any) {
+        const { email, password } = credentials;
 
-                },
-                password: {
-                    label: "Password:",
-                    type: "password",
+        try {
+          await connectToDB();
 
-                }
-            },
-            async authorize(credentials: any) {
-                const { email, password } = credentials
+          const user = await User.findOne({ email });
 
-                try {
-                    await connectToDB()
+          if (!user) {
+            return null;
+          }
 
-                    const user = await User.findOne({ email })
+          const isValid = await bcrypt.compare(password, user.password);
 
-                    if (!user) { 
-                        return null
-                    }
+          if (!isValid) {
+            return null;
+          }
 
-                    const isValid = await bcrypt.compare(password, user.password)
-
-                    if (!isValid)  {
-                        return null
-                    }
-
-                    return user;
-
-                } catch (error) {
-                    console.log("Error: ", error);
-                }
-
-            }
-        })
-    ],
-    session: {
-        strategy: "jwt",
+          return user;
+        } catch (error) {
+          console.log("Error: ", error);
+        }
+      },
+    }),
+    GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      }),
+    FacebookProvider({
+        clientId: process.env.FACEBOOK_CLIENT_ID as string,
+        clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
+    })
+  ],
+  callbacks: {
+    redirect: async ({ url, baseUrl }) => {
+      // Chỉnh sửa ở đây
+      return baseUrl;
     },
-    secret: process.env.NEXTAUTH_SECRET as string,
-    adapter: MongoDBAdapter(clientPromise) as Adapter ,
-}
+  },
+  pages: {
+    signIn : '/',
+  },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET as string,
+  adapter: MongoDBAdapter(clientPromise) as Adapter,
+};

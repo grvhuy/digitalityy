@@ -1,19 +1,15 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { Button } from "../ui/button";
+import { IoLogoFacebook, IoLogoGoogle } from "react-icons/io5";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -25,59 +21,86 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+
+  const handleSubmit = async (e:any) => {
+      e.preventDefault();
+      if ( !email || !password) {
+        setError("Please fill all the fields");
+        return;
+      }
+      // Kiem tra trung email
+      try {
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (!res?.ok) {
+          setError("Invalid credentials, please try again.");
+          return;
+        }
+
+        if (error) {
+          setError(error);
+          return;
+        }
+        router.replace("/dashboard");
+
+      } catch (error) {
+        console.log("Error during registration: ", error);
+      }
   }
 
   return (
-    <div className="flex flex-col gap-x-2">
-      <p className="text-4xl font-extrabold">Welcome</p>
-      <p className="text-sm">Please signin here</p>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <div>
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                </FormItem>
-              </div>
-            )}
+    <div className="grid place-items-center">
+      <div className="w-[400px] shadow-lg p-5 rounded-lg border-t-4 border-blue-500">
+        <h1 className="text-xl font-bold my-4">Sign In</h1>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <Input
+            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Email"
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <div>
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                </FormItem>
-              </div>
-            )}
+          <Input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
           />
-          <Button variant={"outline"} type="submit">
-            Login
-          </Button>
+          <Button className="mt-4 rounded-md bg-blue-600 text-white font-bold cursor-pointer px-6 py-2">
+            Sign In
+          </Button> 
+
+          <div className="mt-6 items-center justify-center">
+            <h3 className="text-center font-semibold">Continue with</h3>
+            <div className="flex items-center justify-center space-x-4">
+              <Button type="button" onClick={() => signIn('google')} className="mt-4 rounded-md bg-orange-600 text-white font-bold cursor-pointer px-6 py-2">
+                <IoLogoGoogle size={20} className="mx-2" />
+              </Button>
+              <Button onClick={() => signIn('facebook')} className="mt-4 rounded-md bg-[#0866ff] text-white font-bold cursor-pointer px-6 py-2">
+              <IoLogoFacebook size={20} className="mx-2" />
+              </Button>
+            </div>
+          </div>
+
+          {error && (
+            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
+              {error}
+            </div>
+          )}
+
+          <Link className="text-sm mt-3 text-right" href={"/sign-up"}>
+            Create an Account <span className="underline">Sign Up</span>
+          </Link>
         </form>
-      </Form>
+      </div>
     </div>
   );
 }

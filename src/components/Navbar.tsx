@@ -1,13 +1,19 @@
+'use client'
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-// import { Icons } from "./Icons"
-// import NavItems from "./NavItems"
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import Image from "next/image";
-import { useRouter } from "next/router";
-// import Cart from "./Cart"
+import { signOut, useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { options } from "@/app/api/auth/[...nextauth]/options";
+import { cn } from "@/lib/utils";
+
+
 const Navbar = () => {
-  const user = null;
+
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const isHidden = false;
 
   return isHidden ? null : (
@@ -33,10 +39,22 @@ const Navbar = () => {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {user ? null : (
+                  {user ? (
+                    <div className="flex items-center space-x-2">
+                      <h3>Hello <span className="text-blue-500 font-semibold">{user?.name}</span> !</h3>
+                      <Button
+                      type="button"
+                      className={cn("bg-white-500 text-gray-700", buttonVariants({ variant: "ghost" }))}
+                      onClick={() => signOut()}
+                      >
+                      Sign Out
+                    </Button>
+                    </div>
+                  
+                  ) : (
                     <Link
                       className={buttonVariants({ variant: "ghost" })}
-                      href="/"
+                      href="/sign-in"
                     >
                       Sign In
                     </Link>
@@ -52,7 +70,7 @@ const Navbar = () => {
                   ) : (
                     <Link
                       className={buttonVariants({ variant: "ghost" })}
-                      href="/"
+                      href="/sign-up"
                     >
                       Create Account
                     </Link>
@@ -63,7 +81,6 @@ const Navbar = () => {
                       className="h-6 w-px bg-gray-200"
                     ></span>
                   )}
-
                   <div className="ml-4 flow-root lg:ml-6">{/* <Cart /> */}</div>
                 </div>
               </div>

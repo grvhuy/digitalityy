@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { signOut } from "next-auth/react";
 
 const ProductForm = () => {
   const form = useForm<z.infer<typeof ProductValidation>>({
@@ -110,6 +111,7 @@ const ProductForm = () => {
           /> */}
 
           <Button type="submit">Submit</Button>
+          <Button type="button" onClick={() => signOut()}>logout</Button>
         </form>
       </Form>
     </div>
