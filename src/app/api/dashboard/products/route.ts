@@ -21,8 +21,8 @@ export const POST = async (req: Request) => {
     .create({
       name: values.name,
       price: values.price,
-      description: values.description,
-      productSpecs: values.productSpecs,
+      description: values.description || "",
+      productSpecs: values.productSpecs || {},
       category: values.category || null,
       brand: values.brand || null,
     })

@@ -3,7 +3,7 @@ import Category from "./category.model";
 import connectToDB from "../mongoose";
 
 const propertySchema = new mongoose.Schema({
-  attributeName: { type: String, required: true }, 
+  attributeName: { type: String }, 
   attributeValue: { type: String },
 });
  

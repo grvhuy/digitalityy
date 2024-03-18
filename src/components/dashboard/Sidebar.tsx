@@ -7,7 +7,11 @@ import {  useState } from "react";
 const menuItems = [
   { name: "Users", path: "/dashboard/users", icon: <MdDashboard /> },
   { name: "Products", path: "/dashboard/products", icon: <MdBusiness /> },
+  { name: "Categories", path: "/dashboard/categories", icon: <MdAssignment /> },
   { name: "Orders", path: "/dashboard/orders", icon: <MdAssignment /> },
+  { name: "Inventory", path: "/dashboard/orders", icon: <MdAssignment /> },
+  { name: "Brands", path: "/dashboard/brands", icon: <MdAssignment /> },
+  { name: "Providers", path: "/dashboard/provider", icon: <MdAssignment /> },
 ];
 
 const Sidebar = () => {
@@ -15,7 +19,7 @@ const Sidebar = () => {
   const [active, setActive] = useState(false);
 
   return (
-    <div className="flex h-full w-240 left-0 top-0 fixed mt-4 overflow-x-hidden pt-20  transition-all space-x-8">
+    <div className="flex h-full bg-blue-200 w-60 left-0 top-0 fixed mt-16 overflow-x-hidden pt-4  transition-all ">
       <ul className="list-none">
         {menuItems.map((item, index) => {
           return (

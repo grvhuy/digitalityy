@@ -160,12 +160,11 @@ const CategoryForm = () => {
                     id=""
                   >
                     <option value="0">No parent category</option>
-
                     {categories.length > 0 &&
                       categories.map((category, index) => {
                         return (
                           <option key={index} value={category._id}>
-                            {category.name}
+                            {category.name} && {category.properties[0].attributeName}
                           </option>
                         );
                       })}

@@ -29,6 +29,7 @@ const Navbar = () => {
                     alt="VR Glass"
                     width={60}
                     height={60}
+                    
                   />
                 </Link>
               </div>
