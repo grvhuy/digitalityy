@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const SidebarItems = ({name, path, icon} : {name: string, path: string, icon:any}) => {
+const SidebarItems = ({name, path} : {name: string, path: string}) => {
 
   const pathName = usePathname();
 
@@ -12,7 +12,7 @@ const SidebarItems = ({name, path, icon} : {name: string, path: string, icon:any
     <Link className={cn("flex items-center px-2", {
       "bg-blue-500": pathName === path,
     } )} href={path}>
-      {icon}
+      {/* {icon} */}
       <p className="ml-4">{name}</p>
     </Link>
   </div>

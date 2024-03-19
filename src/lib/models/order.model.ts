@@ -5,17 +5,17 @@ const itemSchema = new mongoose.Schema({
   name: {type: String},  
   description: {type: String},
   category: {type: String},
-  imageUrl:{type: String},
-  manufacturer:{type: String},
   price: {type: Number},               
   quantity: {type: Number},
   unit: {type: String},
   totalPrice: {type: Number},
-  taxAmount: {type: Number}
+  // imageUrl:{type: String},
+  // manufacturer:{type: String},
+  // taxAmount: {type: Number}
 }) 
 const orderSchema = new mongoose.Schema({
-  // userId: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
-  // address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
+  userId: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+  address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
   items: {type: [itemSchema], required: true},
   status: {type: String, required: true},
   createdAt: {type: Date, default: Date.now},

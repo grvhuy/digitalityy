@@ -29,23 +29,22 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import axios from "axios"
 import { useEffect } from "react"
-import { useRouter } from "next/router"
-import Link from "next/link"
 
-export type Product = {
+
+export type Category = {
   id: string
-  price: number
   name: string
-  category: string
+  parent: string
 }
 
-let dataX: Product[] = [
+let dataX: Category[] = [
 
 ]
 
-let updatedDataX: Product[] = [];
+let updatedDataX: Category[] = [];
 
-export const columns: ColumnDef<Product>[] = [
+
+export const columns: ColumnDef<Category>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -68,15 +67,15 @@ export const columns: ColumnDef<Product>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // {
+  //   accessorKey: "name",
+  //   header: "Category Name",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">{row.getValue("name")}</div>
+  //   ),
+  // },
   {
     accessorKey: "name",
-    header: "Product Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
-  },
-  {
-    accessorKey: "category",
     header: ({ column }) => {
       return (
         <Button
@@ -88,29 +87,44 @@ export const columns: ColumnDef<Product>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("category")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "price",
-    header: () => <div className="text-right">Price</div>,
-    cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"))
- 
-      // Format the price as a dollar price
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price)
- 
-      return <div className="text-right font-medium">{formatted}</div>
+    accessorKey: "parent",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Parent Category
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
     },
+    cell: ({ row }) => <div className="lowercase">{row.getValue("parent")}</div>,
   },
+  // {
+  //   accessorKey: "parent",
+  //   header: () => <div className="text-right">Parent</div>,
+  //   cell: ({ row }) => {
+  //     const price = parseFloat(row.getValue("price"))
+ 
+  //     // Format the price as a dollar price
+  //     const formatted = new Intl.NumberFormat("en-US", {
+  //       style: "currency",
+  //       currency: "USD",
+  //     }).format(price)
+ 
+  //     return <div className="text-right font-medium">{formatted}</div>
+  //   },
+  // },
   
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const product = row.original
+      const category = row.original
  
       return (
         <DropdownMenu>
@@ -123,16 +137,12 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={() => navigator.clipboard.writeText(category.id)}
             >
-              Copy product ID
+              Copy category ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href={`/dashboard/products/details/${product.id}`}>
-                View product
-              </Link>
-            </DropdownMenuItem>
+            <DropdownMenuItem>View category</DropdownMenuItem>
             <DropdownMenuItem>Place holder</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -140,10 +150,12 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
 ]
- 
-const ProductsDashboardPage = () => {
 
-  const [products, setProducts] = React.useState<Product[]>([
+const DashboardCategoriesPage = () => {
+
+
+
+  const [categories, setCategories] = React.useState<Category[]>([
 
   ])
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -155,32 +167,31 @@ const ProductsDashboardPage = () => {
   const [rowSelection, setRowSelection] = React.useState({})
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('/api/dashboard/products/tableData');
-      const newData = Object.values(response.data).map((product: any) => {
-        return {
-          name: product.name,
-          category: product.category,
-          price: product.price,
-          id: product.id,
-        };
-      });
-      updatedDataX = dataX.concat(newData);
-      setProducts(updatedDataX);
-      console.log(updatedDataX);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-  fetchData();
-}, [dataX]);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/dashboard/categories/tableData');
+        const newData = Object.values(response.data).map((category: any) => {
+          return {
+            name: category.name,
+            parent: category.parent,
+            id: category.id,
+          };
+        });
+        updatedDataX = dataX.concat(newData);
+        setCategories(updatedDataX);
+        console.log(updatedDataX);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
+    fetchData();
+    
+  }, [dataX])
 
-
-
+    
   const table = useReactTable({
-    data: products,
+    data: categories,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -197,7 +208,7 @@ const ProductsDashboardPage = () => {
       rowSelection,
     },
   })
- 
+
   return (
     <div className="ml-60  bg-[#f5f5f5] px-4">
       <div className="flex items-center py-4">
@@ -314,4 +325,4 @@ const ProductsDashboardPage = () => {
   )
 }
 
-export default ProductsDashboardPage;
+export default DashboardCategoriesPage;

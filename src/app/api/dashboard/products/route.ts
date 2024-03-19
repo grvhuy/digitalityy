@@ -24,7 +24,8 @@ export const POST = async (req: Request) => {
       description: values.description || "",
       productSpecs: values.productSpecs || {},
       category: values.category || null,
-      brand: values.brand || null,
+      brand: values.brand || 'No brand',
+      quantity: values.quantity || null,
     })
 
   return NextResponse.json(createdProduct)

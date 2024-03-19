@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Textarea } from "../ui/textarea";
 import { on } from "events";
+import { useRouter } from "next/navigation";
 
 const ProductForm = ({
   _id,
@@ -36,6 +37,9 @@ const ProductForm = ({
   category?: string;
   productSpecs?: [];
 }) => {
+
+  const router = useRouter();
+
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
   const [price, setPrice] = useState<number>(existingPrice || NaN);
@@ -89,6 +93,7 @@ const ProductForm = ({
     } else {
       await axios.post("/api/dashboard/products", values);
     }
+    router.push("/dashboard/products");
   };
 
   const handleClick = () => {
