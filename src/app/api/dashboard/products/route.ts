@@ -12,7 +12,6 @@ export const GET = async () => {
   return NextResponse.json(products)
 }
 
-
 export const POST = async (req: Request) => {
   connectToDB()
   const values = await req.json()
