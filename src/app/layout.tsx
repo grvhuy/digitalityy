@@ -20,10 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <main>
-          <AuthProvider>
-            <Navbar />
-            {children}
-          </AuthProvider> 
+          <AuthProvider>{children}</AuthProvider>
         </main>
       </body>
     </html>

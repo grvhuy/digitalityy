@@ -12,7 +12,7 @@ export default function CategoriesListing() {
     });
   }, []);
   return (
-    <div className="flex flex-wrap flex-row gap-x-5">
+    <div className="flex flex-wrap flex-row gap-x-5 mx-48">
       {categories.map((item) => {
         return <CategoriesCard key={item._id} name={item.name} />;
       })}
