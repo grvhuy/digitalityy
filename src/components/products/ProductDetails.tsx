@@ -1,4 +1,6 @@
+import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import ProductImagesSlider from "../product-images-slider/ProductImagesSlider";
 
 interface ProductCardProps {
   name: string;
@@ -6,22 +8,18 @@ interface ProductCardProps {
 }
 
 export default function ProductDetails(props: ProductCardProps) {
+  const images = ["/images/6.png", "/images/abcd.png", "/images/test-img.png"];
+
   return (
-    <div className="h-screen w-screen grid grid-cols-2 gap-x-2 p-48">
-      <div className="relative bg-[#F2F2F2] cursor-pointer">
-        <Image
-          className="place-self-center object-fill hover:scale-110 transition-all duration-300"
-          src="/images/6.png"
-          alt="controller-image"
-          fill={true}
-        ></Image>
-      </div>
-      <div className="flex flex-col place-self-center">
-        <h1 className="font-semibold text-wrap text-2xl">{props.name}</h1>
-        <h1>
+    <div className="h-screen w-screen grid grid-cols-2 gap-x-24 p-48">
+      <ProductImagesSlider props={images}></ProductImagesSlider>
+      <div className="flex flex-col justify-self-center w-full h-full">
+        <h1 className="text-wrap text-4xl">{props.name}</h1>
+        <h1 className="mt-4 text-2xl text-red-400">
           {"$"}
           {props.price}
         </h1>
+        <Separator className="my-2" />
       </div>
     </div>
   );
