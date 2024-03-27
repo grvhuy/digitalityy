@@ -7,7 +7,7 @@ export const ProductValidation = z.object({
   productSpecs: z.array(z.object({})),
   price: z.number(),
   category: z.string(),
+  photos: z.array(z.string()),
   // categoryName: z.string(),
   // tags: z.array(z.string()),
-  // photo: z.string()
 })

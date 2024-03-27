@@ -24,7 +24,7 @@ export const POST = async (req: Request) => {
       description: values.description || "",
       productSpecs: values.productSpecs || {},
       category: values.category || null,
-      brand: values.brand || 'No brand',
+      brand: values.brand,
       quantity: values.quantity || null,
     })
 

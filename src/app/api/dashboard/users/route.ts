@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
 
-export const GET = async () => {
-  return NextResponse.json({message: "Hello from the server!"})
+export const GET = async (req: Request) => {
+  const userName = req.url.split("/").pop()
+  
 }
 
-export const POST = async () => {
-  const 
-}

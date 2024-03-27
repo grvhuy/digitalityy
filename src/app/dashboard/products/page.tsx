@@ -1,6 +1,6 @@
-"use client"
- 
-import * as React from "react"
+"use client";
+
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,10 +12,16 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+} from "@tanstack/react-table";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  MoreHorizontal,
+  PlusCircleIcon,
+  PlusIcon,
+} from "lucide-react";
 
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -23,25 +29,31 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import axios from "axios"
-import { useEffect } from "react"
-import { useRouter } from "next/router"
-import Link from "next/link"
+} from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import axios from "axios";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export type Product = {
-  id: string
-  price: number
-  name: string
-  category: string
-}
+  id: string;
+  price: number;
+  name: string;
+  category: string;
+};
 
-let dataX: Product[] = [
-
-]
+let dataX: Product[] = [];
 
 let updatedDataX: Product[] = [];
 
@@ -71,9 +83,7 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "name",
     header: "Product Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "category",
@@ -86,32 +96,34 @@ export const columns: ColumnDef<Product>[] = [
           Category
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("category")}</div>,
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("category")}</div>
+    ),
   },
   {
     accessorKey: "price",
     header: () => <div className="text-right">Price</div>,
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"))
- 
+      const price = parseFloat(row.getValue("price"));
+
       // Format the price as a dollar price
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(price)
- 
-      return <div className="text-right font-medium">{formatted}</div>
+      }).format(price);
+
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
-  
+
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const product = row.original
- 
+      const product = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -136,48 +148,42 @@ export const columns: ColumnDef<Product>[] = [
             <DropdownMenuItem>Place holder</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
- 
+];
+
 const ProductsDashboardPage = () => {
-
-  const [products, setProducts] = React.useState<Product[]>([
-
-  ])
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [products, setProducts] = React.useState<Product[]>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('/api/dashboard/products/tableData');
-      const newData = Object.values(response.data).map((product: any) => {
-        return {
-          name: product.name,
-          category: product.category,
-          price: product.price,
-          id: product.id,
-        };
-      });
-      updatedDataX = dataX.concat(newData);
-      setProducts(updatedDataX);
-      console.log(updatedDataX);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-  fetchData();
-}, [dataX]);
-
-
-
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/dashboard/products/tableData");
+        const newData = Object.values(response.data).map((product: any) => {
+          return {
+            name: product.name,
+            category: product.category,
+            price: product.price,
+            id: product.id,
+          };
+        });
+        updatedDataX = dataX.concat(newData);
+        setProducts(updatedDataX);
+        console.log(updatedDataX);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [dataX]);
 
   const table = useReactTable({
     data: products,
@@ -196,19 +202,29 @@ const ProductsDashboardPage = () => {
       columnVisibility,
       rowSelection,
     },
-  })
- 
+  });
+
   return (
-    <div className="ml-60  bg-[#f5f5f5] px-4">
+    <div className="ml-60  bg-[#ffffff] px-4">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("category")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex space-x-2">
+          <Input
+            placeholder="Filter categories..."
+            value={
+              (table.getColumn("category")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("category")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <Button variant="outline" className="ml-auto">
+            <Link className="flex items-center" href="/dashboard/products/new">
+              <span className="mx-2">New Product</span>
+              <PlusIcon className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -231,7 +247,7 @@ const ProductsDashboardPage = () => {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -251,7 +267,7 @@ const ProductsDashboardPage = () => {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -311,7 +327,7 @@ const ProductsDashboardPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default ProductsDashboardPage;

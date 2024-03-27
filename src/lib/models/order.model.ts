@@ -10,15 +10,14 @@ const itemSchema = new mongoose.Schema({
   unit: {type: String},
   totalPrice: {type: Number},
   // imageUrl:{type: String},
-  // manufacturer:{type: String},
   // taxAmount: {type: Number}
 }) 
 const orderSchema = new mongoose.Schema({
   userId: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
   address: {type: mongoose.Schema.Types.ObjectId, ref: "Address"},
   items: {type: [itemSchema], required: true},
-  status: {type: String, required: true},
   createdAt: {type: Date, default: Date.now},
+  status: {type: String, required: true},
   subtotal: {type: Number, required: true},
   paymentMethod: {type: String, required: true},
   location: {type: String, required: true},

@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal, PlusCircleIcon } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import {
@@ -29,22 +29,23 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import axios from "axios"
 import { useEffect } from "react"
+import Link from "next/link"
 
 
-export type Category = {
+export type Brand = {
   id: string
   name: string
-  parent: string
+  description: string
 }
 
-let dataX: Category[] = [
+let dataX: Brand[] = [
 
 ]
 
-let updatedDataX: Category[] = [];
+let updatedDataX: Brand[] = [];
 
 
-export const columns: ColumnDef<Category>[] = [
+export const columns: ColumnDef<Brand>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -67,13 +68,7 @@ export const columns: ColumnDef<Category>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  // {
-  //   accessorKey: "name",
-  //   header: "Category Name",
-  //   cell: ({ row }) => (
-  //     <div className="capitalize">{row.getValue("name")}</div>
-  //   ),
-  // },
+
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -82,43 +77,14 @@ export const columns: ColumnDef<Category>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Category
+          Brand Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
   },
-  {
-    accessorKey: "parent",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Parent Category
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("parent")}</div>,
-  },
-  // {
-  //   accessorKey: "parent",
-  //   header: () => <div className="text-right">Parent</div>,
-  //   cell: ({ row }) => {
-  //     const price = parseFloat(row.getValue("price"))
- 
-  //     // Format the price as a dollar price
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(price)
- 
-  //     return <div className="text-right font-medium">{formatted}</div>
-  //   },
-  // },
+
   
   {
     id: "actions",
@@ -127,25 +93,25 @@ export const columns: ColumnDef<Category>[] = [
       const category = row.original
  
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(category.id)}
-            >
-              Copy category ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View category</DropdownMenuItem>
-            <DropdownMenuItem>Place holder</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(category.id)}
+              >
+                Copy brand ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View brand</DropdownMenuItem>
+              <DropdownMenuItem>Place holder</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
       )
     },
   },
@@ -155,7 +121,7 @@ const DashboardCategoriesPage = () => {
 
 
 
-  const [categories, setCategories] = React.useState<Category[]>([
+  const [categories, setCategories] = React.useState<Brand[]>([
 
   ])
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -169,12 +135,12 @@ const DashboardCategoriesPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/dashboard/categories/tableData');
-        const newData = Object.values(response.data).map((category: any) => {
+        const response = await axios.get('/api/dashboard/brands/tableData');
+        const newData = Object.values(response.data).map((brand: any) => {
           return {
-            name: category.name,
-            parent: category.parent,
-            id: category.id,
+            name: brand.name,
+            description: brand.description,
+            id: brand.id,
           };
         });
         updatedDataX = dataX.concat(newData);
@@ -210,8 +176,9 @@ const DashboardCategoriesPage = () => {
   })
 
   return (
-    <div className="ml-60  bg-[#f5f5f5] px-4">
+    <div className="ml-60 bg-[#ffffff] px-4">
       <div className="flex items-center py-4">
+        <div className="flex space-x-2">
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
@@ -220,6 +187,16 @@ const DashboardCategoriesPage = () => {
           }
           className="max-w-sm"
         />
+          <Button variant="outline" className="ml-auto">
+            <Link href="/dashboard/brands/create">
+              <a>
+                <PlusCircleIcon className="h-4 w-4" />
+                <span className="ml-2">Add Brand</span>
+              </a>
+            </Link>               
+          </Button>
+        </div>  
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -246,6 +223,7 @@ const DashboardCategoriesPage = () => {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+
       </div>
       <div className="rounded-md border">
         <Table>

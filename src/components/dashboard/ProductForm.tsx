@@ -1,26 +1,25 @@
 "use client";
-
-import { ProductValidation } from "@/lib/validations/product";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormLabel
 } from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
-import { Label } from "@radix-ui/react-label";
-import { Textarea } from "../ui/textarea";
-import { on } from "events";
+import { ProductValidation } from "@/lib/validations/product";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ReactSortable } from "react-sortablejs";
+import * as z from "zod";
+import Spinner from "../Spinner";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { uploadToS3 } from "@/lib/s3-upload";
+
 
 const ProductForm = ({
   _id,
@@ -29,6 +28,7 @@ const ProductForm = ({
   price: existingPrice,
   category: existingCategory,
   productSpecs: existingSpecs,
+  images: existingImages,
 }: {
   _id?: string;
   name?: string;
@@ -36,42 +36,43 @@ const ProductForm = ({
   price?: number;
   category?: string;
   productSpecs?: [];
+  images?: [];
 }) => {
-
   const router = useRouter();
 
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
+  const [ images, setImages ] = useState<any[]>(existingImages || []);
   const [price, setPrice] = useState<number>(existingPrice || NaN);
-  const [category, setCategory] = useState(existingCategory || "");
+  const [category, setCategory] = useState<any>(existingCategory || "");
   const [categories, setCategories] = useState<any[]>([]);
   const [specs, setSpecs] = useState<any[]>(existingSpecs || []);
   const [productProps, setproductProps] = useState<any[]>([]);
   const [productPropsValue, setproductPropsValue] = useState(
     Array(productProps.length).fill("")
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
-    if (!_id) {
-      axios.get("/api/dashboard/categories").then((result) => {
-        setCategories(result.data);
-        // console.log(result.data);
-      });
-    }
+    axios.get("/api/dashboard/categories").then((result) => {
+      setCategories(result.data);
+    });
   }, []);
 
   useEffect(() => {
-  // Tạo mới specs khi productProps hoặc productPropsValue thay đổi
-  const newSpecs = productProps.map((item, index) => ({
-    attributeName: item,
-    attributeValue: productPropsValue[index],
-  }));
-  setSpecs(newSpecs);
-  form.setValue("productSpecs", specs);
-  // console.log(specs);
-}, [productProps, productPropsValue]);
+    // console.log(images);
+  }, [images]);
 
-
+  useEffect(() => {
+    // Tạo mới specs khi productProps hoặc productPropsValue thay đổi
+    const newSpecs = productProps.map((item, index) => ({
+      attributeName: item,
+      attributeValue: productPropsValue[index],
+    }));
+    setSpecs(newSpecs);
+    form.setValue("productSpecs", specs);
+  }, [productProps, productPropsValue]);
 
   const form = useForm<z.infer<typeof ProductValidation>>({
     resolver: zodResolver(ProductValidation),
@@ -85,6 +86,7 @@ const ProductForm = ({
   });
 
 
+
   const onSubmit = async (values: z.infer<typeof ProductValidation>) => {
     console.log(specs);
     values.productSpecs = specs;
@@ -96,15 +98,61 @@ const ProductForm = ({
     router.push("/dashboard/products");
   };
 
-  const handleClick = () => {
-    // Hàm này sẽ được gọi khi bạn click vào button
-    // Không cần phải tái sử dụng đoạn mã tạo specs ở đây vì nó đã được xử lý trong useEffect
-    console.log(specs); // Log specs sau khi đã được cập nhật
+
+  const handleFileChange = (e: any) => {
+    setFile(e.target.files[0]);
   };
 
+async function uploadImages(e: any) {
+  e.preventDefault();
+  if (!file) return;
+
+  setIsUploading(true);
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const response = await fetch("/api/s3-upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    console.log(data.status);
+    setIsUploading(false);
+  } catch (error) {
+    console.log(error);
+    setIsUploading(false);
+  }
+}
+
+
+  const handleUpload = async (event:any) => {
+    const files = event.target.files;
+    if (files) {
+      const newImages = [...images];
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        formData.append('file', file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageDataURL = e.target?.result;
+          newImages.push(imageDataURL);
+          setImages(newImages);
+        };
+        reader.readAsDataURL(file);
+      }     
+      console.log(formData);
+
+    }
+  };
+  function updateImageOrder(images:any) {
+    setImages(images);
+  }
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 w-1/2">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -125,7 +173,7 @@ const ProductForm = ({
             name="description"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel>description</FormLabel>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="name"
@@ -135,8 +183,44 @@ const ProductForm = ({
                       setDescription(newDescription);
                       field.onChange(e);
                     }}
-                    // {...field}
                   />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel>Photos</FormLabel>
+                <FormControl>
+                  <div>
+                  <ReactSortable 
+                    className='flex flex-wrap gap-1'
+                    list={images} 
+                    setList={updateImageOrder}
+                  >
+                      
+                  {!!images?.length && images.map(link => (
+                      <div key={link} className="h-32">
+                          <img src={link} className="h-32 w-32 rounded-lg"/>
+                      </div>
+                  ))}                                   
+                  </ReactSortable>
+                    {isUploading && (
+                      <div className="h-24 flex items-center">
+                        <Spinner />
+                      </div>
+                    )}
+
+                    <label className="border w-24 h-24 bg-gray-300 rounded-md flex items-center text-center">
+                      <div>Upload photos</div>
+                      <input name="image" type="file" className="hidden" onChange={handleFileChange} />
+                    </label>
+                    <Button onClick={uploadImages}>Upload</Button>
+                  </div>
                 </FormControl>
               </FormItem>
             )}
@@ -154,30 +238,13 @@ const ProductForm = ({
                     type="number"
                     value={field.value} // Sử dụng field.value thay vì price
                     onChange={(e) => {
-                      const newValue = parseFloat(e.target.value); 
+                      const newValue = parseFloat(e.target.value);
                       field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
-                      setPrice(newValue); 
+                      setPrice(newValue);
                       console.log(newValue);
                     }}
                   />
                 </FormControl>
-              </FormItem>
-            )}
-          />
-
-          {/* Hien thi prod specs trong details */}
-          <FormField
-            control={form.control}
-            name="productSpecs"
-            render={({ field }) => (
-              <FormItem className="space-y-4">
-                {existingSpecs &&
-                  specs.map((item: any) => (
-                    <div>
-                      <h1>{item.attributeName}</h1>
-                      <h1>{item.attributeValue}</h1>
-                    </div>
-                  ))}
               </FormItem>
             )}
           />
@@ -194,7 +261,6 @@ const ProductForm = ({
                       value={category}
                       onChange={(e) => {
                         const newCategory = e.target.value;
-                        // console.log(newCategory);
                         const newCategoryName = categories.find(
                           (item) => item.properties === newCategory
                         );
@@ -204,15 +270,18 @@ const ProductForm = ({
                       name="category"
                       id=""
                     >
-                    <option value="0">No category</option>
-                      {categories.length > 0 &&
-                        categories.map((category, index) => {
-                          return (
-                            <option key={index} value={category.properties}>
-                              {category.name}
-                            </option>
-                          );
-                        })}
+                      {category ? (
+                        <option value={category}>{category.name}</option>
+                      ) : (
+                        <option value="">Select a category</option>
+                      )}
+                      {categories.map((category, index) => {
+                        return (
+                          <option key={index} value={category.properties}>
+                            {category.name}
+                          </option>
+                        );
+                      })}
                     </select>
 
                     {productProps.map((item, index) => (
@@ -221,12 +290,10 @@ const ProductForm = ({
                         <Input
                           placeholder="attributeValue"
                           value={productPropsValue[index]}
-                          onChange={
-                            (e) => {
-                              const newProductPropsValue = [...productPropsValue];
-                              newProductPropsValue[index] = e.target.value;
-                              setproductPropsValue(newProductPropsValue);
-                              // console.log(newProductPropsValue);
+                          onChange={(e) => {
+                            const newProductPropsValue = [...productPropsValue];
+                            newProductPropsValue[index] = e.target.value;
+                            setproductPropsValue(newProductPropsValue);
                           }} // Pass index để biết là giá trị nào đang thay đổi
                         />
                       </div>
@@ -237,38 +304,16 @@ const ProductForm = ({
             )}
           />
 
-                    
-
-      {/* <FormField 
-        control={form.control}
-        name="productSpecs"
-        render={({ field }) => (
-          <FormItem className="space-y-4">
-            {productProps.map((item, index) => (
-              <div key={index}>
-                <h1>{item}</h1>
-                <Input
-                  placeholder="attributeValue"
-                  value={productSpecs[index]?.attributeValue || ""}
-                  onChange={
-                      (e) => {
-                      const newProductPropsValue = [...productPropsValue];
-                      newProductPropsValue[index] = e.target.value;
-                      setproductPropsValue(newProductPropsValue);
-                      console.log(newProductPropsValue);
-                  }}
-                />
-              </div>
-            ))}
-          </FormItem>
-        )}
-      /> */}
-
-          <Button type="button" onClick={() => {
-            handleClick();
-          }}>Set Specification</Button>
-
-          <Button type="submit">Add Product</Button>
+          <div className="flex flex-row-reverse space-x-4">
+            <Button
+              className="ml-2"
+              type="button"
+              onClick={() => router.back()}
+            >
+              Cancel
+            </Button>
+            <Button type="submit">Add Product</Button>
+          </div>
         </form>
       </Form>
     </div>

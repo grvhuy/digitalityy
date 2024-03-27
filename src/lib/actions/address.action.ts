@@ -18,7 +18,7 @@ export async function createAddress(
   city: string,
   country: string,
   phone: string,
-  userCreated: any
+  userCreated: string
 ) {
   connectToDB();
   const data = await Address.create({
@@ -31,4 +31,11 @@ export async function createAddress(
   });
   console.log("Addres created: ", data);
   return data;
+}
+
+export async function getAddressById(id: string) {
+  connectToDB();
+  const address = await Address.findById(id)
+    .exec();
+  return address;
 }

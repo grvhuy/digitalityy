@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal, PlusIcon } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import {
@@ -29,6 +29,8 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import axios from "axios"
 import { useEffect } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 
 export type Category = {
@@ -67,13 +69,6 @@ export const columns: ColumnDef<Category>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  // {
-  //   accessorKey: "name",
-  //   header: "Category Name",
-  //   cell: ({ row }) => (
-  //     <div className="capitalize">{row.getValue("name")}</div>
-  //   ),
-  // },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -104,21 +99,6 @@ export const columns: ColumnDef<Category>[] = [
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue("parent")}</div>,
   },
-  // {
-  //   accessorKey: "parent",
-  //   header: () => <div className="text-right">Parent</div>,
-  //   cell: ({ row }) => {
-  //     const price = parseFloat(row.getValue("price"))
- 
-  //     // Format the price as a dollar price
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(price)
- 
-  //     return <div className="text-right font-medium">{formatted}</div>
-  //   },
-  // },
   
   {
     id: "actions",
@@ -153,7 +133,7 @@ export const columns: ColumnDef<Category>[] = [
 
 const DashboardCategoriesPage = () => {
 
-
+  const router = useRouter()
 
   const [categories, setCategories] = React.useState<Category[]>([
 
@@ -210,16 +190,22 @@ const DashboardCategoriesPage = () => {
   })
 
   return (
-    <div className="ml-60  bg-[#f5f5f5] px-4">
+    <div className="ml-60  bg-[#ffffff] px-4">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("category")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex space-x-2">
+          <Input
+            placeholder="Filter emails..."
+            value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("category")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <Button onClick={() => router.push('/dashboard/categories/new')} variant="outline" className="ml-auto">
+              <span className="mx-2">New Category</span>
+              <PlusIcon className="h-4 w-4" />
+          </Button>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

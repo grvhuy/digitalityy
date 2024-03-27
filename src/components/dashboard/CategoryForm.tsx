@@ -17,10 +17,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { CategoryValidation } from "@/lib/validations/category";
 import { usePathname, useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import { PlusCircle } from "lucide-react";
-import { Badge } from "../ui/badge";
-import { set } from "mongoose";
+import { useEffect, useState } from "react";
 
 const CategoryForm = () => {
   const pathname = usePathname();
@@ -46,7 +43,7 @@ const CategoryForm = () => {
   });
 
   useEffect(() => {
-    // Thực hiện các thay đổi giao diện hoặc xử lý tùy chỉnh ở đây
+    // Thực hiện các thay đổi giao diện 
     console.log('Properties changed:', propertiesValue);
   }, [propertiesValue]);
   
@@ -125,23 +122,7 @@ const CategoryForm = () => {
                   />
               );
             })}
-          {/* <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel>description</FormLabel>
-                <FormControl>
-                  <Input
-                    width={400}
-                    className=""
-                    placeholder="description"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          /> */}
+
 
           <FormField
             control={form.control}
@@ -164,7 +145,7 @@ const CategoryForm = () => {
                       categories.map((category, index) => {
                         return (
                           <option key={index} value={category._id}>
-                            {category.name} && {category.properties[0].attributeName}
+                            {category.name}
                           </option>
                         );
                       })}
