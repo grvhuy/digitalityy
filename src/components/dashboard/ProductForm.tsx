@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { uploadToS3 } from "@/lib/s3-upload";
+import { FindCategoryById } from "@/lib/actions/category.action";
 
 
 const ProductForm = ({
@@ -29,6 +30,7 @@ const ProductForm = ({
   category: existingCategory,
   productSpecs: existingSpecs,
   images: existingImages,
+  quantity: existingQuantity
 }: {
   _id?: string;
   name?: string;
@@ -37,6 +39,7 @@ const ProductForm = ({
   category?: string;
   productSpecs?: [];
   images?: [];
+  quantity?: number;
 }) => {
   const router = useRouter();
 
@@ -47,22 +50,18 @@ const ProductForm = ({
   const [category, setCategory] = useState<any>(existingCategory || "");
   const [categories, setCategories] = useState<any[]>([]);
   const [specs, setSpecs] = useState<any[]>(existingSpecs || []);
-  const [productProps, setproductProps] = useState<any[]>([]);
-  const [productPropsValue, setproductPropsValue] = useState(
-    Array(productProps.length).fill("")
-  );
+  const [productProps, setproductProps] = useState<any[]>(existingSpecs?.map((item:any) => item.attributeName) || []);
+  const [productPropsValue, setproductPropsValue] = useState(existingSpecs?.map((item:any) => item.attributeValue) || []);
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState(null);
+  const [ files, setFiles ] = useState<any[]>([]);
+  const [ quantity, setQuantity ] = useState(existingQuantity || 0);
 
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
     });
   }, []);
-
-  useEffect(() => {
-    // console.log(images);
-  }, [images]);
 
   useEffect(() => {
     // Tạo mới specs khi productProps hoặc productPropsValue thay đổi
@@ -80,79 +79,77 @@ const ProductForm = ({
       name: name || "",
       description: description || "",
       price: price || NaN,
-      category: category || "",
+      quantity: quantity,
+      categoryName: category || "",
       productSpecs: specs,
+      images: images,
     },
   });
 
+  
 
 
   const onSubmit = async (values: z.infer<typeof ProductValidation>) => {
-    console.log(specs);
     values.productSpecs = specs;
+    values.images = images;
     if (_id) {
       await axios.put(`/api/dashboard/products/${_id}`, values);
     } else {
-      await axios.post("/api/dashboard/products", values);
+      await axios.post("/api/dashboard/products", values)
+        .then((res) => {
+          console.log('res:' ,res.data);
+        })
     }
-    router.push("/dashboard/products");
   };
 
 
-  const handleFileChange = (e: any) => {
-    setFile(e.target.files[0]);
-  };
-
-async function uploadImages(e: any) {
-  e.preventDefault();
-  if (!file) return;
-
-  setIsUploading(true);
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    const response = await fetch("/api/s3-upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    console.log(data.status);
-    setIsUploading(false);
-  } catch (error) {
-    console.log(error);
-    setIsUploading(false);
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFiles = e.target.files;
+    if (selectedFiles) {
+      const filesArray = Array.from(selectedFiles);
+      setFiles(filesArray);
+      setImages(filesArray.map((file) => URL.createObjectURL(file)));
+    }
   }
-}
 
+  useEffect(() => {
+    console.log('images: ', images);
+  }, [images])
 
-  const handleUpload = async (event:any) => {
-    const files = event.target.files;
-    if (files) {
-      const newImages = [...images];
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        formData.append('file', file);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const imageDataURL = e.target?.result;
-          newImages.push(imageDataURL);
-          setImages(newImages);
-        };
-        reader.readAsDataURL(file);
-      }     
-      console.log(formData);
-
+  async function uploadImages(e: any) {
+    e.preventDefault();
+    if (!files || files.length === 0) return;
+  
+    setIsUploading(true);
+    const formData = new FormData();
+    files.forEach((file: File) => {
+      formData.append("files", file);
+    });
+  
+    try {
+      const response = await fetch("/api/s3-upload", {
+        method: "POST",
+        body: formData,
+      });
+  
+      await response.json()
+        .then((data) => {
+          setImages(data.uploadedFileNames)
+      });
+      setIsUploading(false);
+      return images;
+    } catch (error) {
+      console.log(error);
+      setIsUploading(false);
     }
-  };
+  }
+
   function updateImageOrder(images:any) {
     setImages(images);
   }
 
   return (
-    <div className="mt-4 w-1/2">
+    <div className="mt-4 w-full m-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -191,10 +188,10 @@ async function uploadImages(e: any) {
 
           <FormField
             control={form.control}
-            name="description"
+            name="images"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel>Photos</FormLabel>
+                <FormLabel>Images</FormLabel>
                 <FormControl>
                   <div>
                   <ReactSortable 
@@ -206,7 +203,7 @@ async function uploadImages(e: any) {
                   {!!images?.length && images.map(link => (
                       <div key={link} className="h-32">
                           <img src={link} className="h-32 w-32 rounded-lg"/>
-                      </div>
+                      </div>  
                   ))}                                   
                   </ReactSortable>
                     {isUploading && (
@@ -216,10 +213,14 @@ async function uploadImages(e: any) {
                     )}
 
                     <label className="border w-24 h-24 bg-gray-300 rounded-md flex items-center text-center">
-                      <div>Upload photos</div>
-                      <input name="image" type="file" className="hidden" onChange={handleFileChange} />
+                      <div>Upload images</div>
+                      <input multiple name="image" type="file" className="hidden" onChange={handleFileChange} />
                     </label>
-                    <Button onClick={uploadImages}>Upload</Button>
+                    <Button type="button" onClick={(e) => {
+                      uploadImages(e).then((result) => {
+                        field.onChange(result)
+                      })
+                    }}>Upload</Button>
                   </div>
                 </FormControl>
               </FormItem>
@@ -241,7 +242,28 @@ async function uploadImages(e: any) {
                       const newValue = parseFloat(e.target.value);
                       field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
                       setPrice(newValue);
-                      console.log(newValue);
+                    }}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="quantity"
+                    type="number"
+                    value={field.value} // Sử dụng field.value thay vì price
+                    onChange={(e) => {
+                      const newValue = parseFloat(e.target.value);
+                      field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
+                      setQuantity(newValue);
                     }}
                   />
                 </FormControl>
@@ -252,20 +274,24 @@ async function uploadImages(e: any) {
           <FormField
             control={form.control}
             name="category"
-            render={({ field }) => (
+            render={() => (
               <FormItem className="flex flex-col space-y-2">
                 <FormLabel>Category</FormLabel>
                 <FormControl>
                   <div>
                     <select
                       value={category}
-                      onChange={(e) => {
-                        const newCategory = e.target.value;
+                      onChange={async (e) => {
+                        const newCategory = e.target.value; //Id cua category
+                        axios.get(`/api/dashboard/categories/${newCategory}`).then((result) => {
+                          console.log(result.data);
+                          setproductProps(result.data.properties);
+                        })
                         const newCategoryName = categories.find(
                           (item) => item.properties === newCategory
                         );
-                        setCategory(newCategoryName?.name);
-                        setproductProps(newCategory.split(","));
+                        setCategory(newCategoryName);
+                        form.setValue("category", newCategory);
                       }}
                       name="category"
                       id=""
@@ -277,7 +303,7 @@ async function uploadImages(e: any) {
                       )}
                       {categories.map((category, index) => {
                         return (
-                          <option key={index} value={category.properties}>
+                          <option key={index} value={category._id}>
                             {category.name}
                           </option>
                         );
@@ -286,9 +312,10 @@ async function uploadImages(e: any) {
 
                     {productProps.map((item, index) => (
                       <div className="space-y-4">
-                        <h1>{item}</h1>
+                        <h1 className="mt-6">{item}</h1>
                         <Input
-                          placeholder="attributeValue"
+                          className=""
+                          placeholder="attribute value"
                           value={productPropsValue[index]}
                           onChange={(e) => {
                             const newProductPropsValue = [...productPropsValue];
@@ -298,6 +325,7 @@ async function uploadImages(e: any) {
                         />
                       </div>
                     ))}
+
                   </div>
                 </FormControl>
               </FormItem>

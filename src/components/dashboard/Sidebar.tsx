@@ -20,7 +20,7 @@ const Sidebar = () => {
   const [active, setActive] = useState(false);
 
   return (
-    <div className="flex h-full bg-blue-200 w-60 left-0 top-0 fixed mt-16 overflow-x-hidden pt-4  transition-all ">
+    <div className="flex h-full bg-blue-200 w-60 left-0 top-0 fixed mt-20 overflow-x-hidden pt-4  transition-all ">
       <ul className="list-none">
         {menuItems.map((item, index) => {
           return (

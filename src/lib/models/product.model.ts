@@ -16,30 +16,30 @@ const productSchema = new mongoose.Schema({
   categoryName: { type: String },
   brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand'},
   quantity: { type: Number, required: false },
+  images: { type: [String], required: true },
 })
 
 
-//Lưu giá trị tên thuộc tính trong productSpecs từ props của Category
-productSchema.pre("save", async function (next) {
-  try {
-    connectToDB();
-    const category = await Category.findById(this.category)
+// Lưu giá trị tên thuộc tính trong productSpecs từ props của Category
+// productSchema.pre("save", async function (next) {
+//   try {
+//     connectToDB();
+//     const category = await Category.findById(this.category)
 
-    if (category && category.properties && category.properties.length > 0) {
-      this.productSpecs = category.properties.map((property:any) => ({
-        attributeName: property,
-        attributeValue: "",
-      }))
+//     if (category && category.properties && category.properties.length > 0) {
+//       this.productSpecs = category.properties.map((property:any) => ({
+//         attributeName: property,
+//       }))
 
-      this.categoryName = category.name
-    }
+//       this.categoryName = category.name
+//     }
 
-    next()
-  } catch (error:any) {
-    next(error)
-  }
+//     next()
+//   } catch (error:any) {
+//     next(error)
+//   }
 
-})
+// })
 
 
 const Product = mongoose.models.Product || mongoose.model("Product",  productSchema)

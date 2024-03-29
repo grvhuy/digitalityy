@@ -123,7 +123,11 @@ export const columns: ColumnDef<Category>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View category</DropdownMenuItem>
-            <DropdownMenuItem>Place holder</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                axios.delete(`/api/dashboard/categories/${category.id}`);
+              }}
+            >Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

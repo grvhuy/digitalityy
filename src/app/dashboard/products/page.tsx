@@ -124,6 +124,12 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const product = row.original;
 
+      
+
+      const deleteProduct = async () => {
+        await axios.delete(`/api/dashboard/products/${product.id}`);
+      }
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -145,7 +151,9 @@ export const columns: ColumnDef<Product>[] = [
                 View product
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Place holder</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={deleteProduct}
+            >Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

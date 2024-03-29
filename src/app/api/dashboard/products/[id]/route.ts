@@ -1,5 +1,6 @@
 import Category from "@/lib/models/category.model";
 import Product from "@/lib/models/product.model";
+import connectToDB from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 
 export const GET = async (req: Request) => {
@@ -23,4 +24,18 @@ export const PUT = async (req: Request) => {
     category,
   })
   return NextResponse.json("update product success!");
+}
+
+export const DELETE = async (req: Request) => {
+  const id = req.url.split("/").pop();
+  try {
+    connectToDB()
+    const product = await Product.findByIdAndDelete(id);
+    console.log("product deleted", product);
+    return NextResponse.json("delete product success!");
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    // Handle error response
+    return NextResponse.error();
+  }
 }

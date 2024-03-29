@@ -3,6 +3,7 @@ import { Figtree, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "./Provider";
+import Header from "@/components/header/Header";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
       <body className={font.className}>
         <main>
           <AuthProvider>
-            <Navbar />
+            <Header />
             {children}
           </AuthProvider> 
         </main>
