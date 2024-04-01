@@ -3,6 +3,8 @@ import { Figtree, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "./Provider";
+import Header from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
 
 const font = Montserrat({ subsets: ["latin"] });
 

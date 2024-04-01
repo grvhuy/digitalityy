@@ -12,6 +12,7 @@ import {
 interface ProductCardProps {
   name: string;
   price: number;
+  description: string;
 }
 
 export default function ProductDetails(props: ProductCardProps) {
@@ -44,7 +45,8 @@ export default function ProductDetails(props: ProductCardProps) {
           {"$"}
           {props.price}
         </h1>
-        <Separator className="my-2" />
+        <Separator className="my-8" />
+        <p>{props.description}</p>
       </div>
     </div>
   );
