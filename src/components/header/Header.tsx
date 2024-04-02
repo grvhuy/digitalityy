@@ -10,8 +10,11 @@ import { LuUser2 } from "react-icons/lu";
 
 import { useRouter } from "next/navigation";
 import { ProductSheet } from "../ProductSheet";
+import axios from "axios";
 
 export default function Header() {
+  const { data: session } = useSession();
+  const user = session?.user;
   const router = useRouter();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
