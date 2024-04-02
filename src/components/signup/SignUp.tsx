@@ -21,7 +21,8 @@ const formSchema = z.object({
   }),
 });
 
-export default function SignIn() {
+export default function SignUp() {
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,15 +33,13 @@ export default function SignIn() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
     if (!name || !email || !password) {
-      setError("Please fill all the fields");
+      setError("All fields are necessary.");
       return;
     }
-    // Kiem tra trung email
+
     try {
-      const userResExists = await fetch("/api/checkRegister", {
+      const resUserExists = await fetch("api/checkRegister", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,31 +47,41 @@ export default function SignIn() {
         body: JSON.stringify({ email }),
       });
 
+<<<<<<<<< Temporary merge branch 1
       const { user } = await userResExists.json();
+=========
+      const { user } = await resUserExists.json();
+
+>>>>>>>>> Temporary merge branch 2
       if (user) {
         setError("User already exists.");
         return;
       }
 
-      const res = await fetch("/api/register", {
+      const res = await fetch("api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
       });
 
       if (res.ok) {
-        const form = e.target as HTMLFormElement;
+        const form = e.target;
         form.reset();
         router.push("/");
       } else {
-        setError("Failed to register. Please try again.");
+        console.log("User registration failed.");
       }
     } catch (error) {
       console.log("Error during registration: ", error);
     }
   };
+
 
   return (
     <div className="w-96 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">

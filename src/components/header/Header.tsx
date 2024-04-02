@@ -1,5 +1,6 @@
 "use client";
 
+import { GiHamburgerMenu } from "react-icons/gi";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { AiFillShopping } from "react-icons/ai";
@@ -10,24 +11,10 @@ import { LuUser2 } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { ProductSheet } from "../ProductSheet";
 import axios from "axios";
-import HeaderDropdown from "./HeaderDropdown";
 
 export default function Header() {
   const { data: session } = useSession();
   const user = session?.user;
-  const router = useRouter();
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [isProductHover, setIsProductHover] = useState(false);
-  const [isAnyOpen, setIsAnyOpen] = useState(false);
-
-import { GiHamburgerMenu } from "react-icons/gi";
-import { IoSearch } from "react-icons/io5";
-import { LuUser2 } from "react-icons/lu";
-import { FiShoppingCart } from "react-icons/fi";
-import { useState, useEffect } from "react";
-
-export default function Header() {
   const router = useRouter();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -39,6 +26,9 @@ export default function Header() {
       console.log(result.data);
     });
   }, []);
+  const [isProductHover, setIsProductHover] = useState(false);
+  const [isAnyOpen, setIsAnyOpen] = useState(false);
+
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
 
@@ -54,6 +44,7 @@ export default function Header() {
   const homeClick = () => {
     router.push("/");
   };
+
 
   useEffect(() => {
 
@@ -93,38 +84,6 @@ export default function Header() {
         <nav className="place-self-center ">
           <ul className="flex  list-none text-center font-bold">
             <ProductSheet />
-          <ul className="flex list-none text-center font-bold relative">
-            <button
-              className="flex flex-row mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
-              onClick={() => setDropdownVisibility(!dropdownVisibility)}
-            >
-              <GiHamburgerMenu className="place-self-center mx-1" />
-              Shop
-            </button>
-            {dropdownVisibility && <HeaderDropdown />}
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="dark_hover_change">
-                  <GiHamburgerMenu className="place-self-center mx-1" />
-                  Shop
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Categories</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {categories.map((item) => {
-                  return (
-                    <DropdownMenuItem key={item._id}>
-                      {" "}
-                      {item.name}
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu> */}
-            <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
-              News
-            </button>
             <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
               Contact Us
             </button>
