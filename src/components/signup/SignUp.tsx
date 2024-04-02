@@ -80,10 +80,9 @@ export default function SignUp() {
 
 
   return (
-    <div className="grid place-items-center">
-      <div className="w-[400px] shadow-lg p-5 rounded-lg border-t-4 border-blue-500">
+    <div className="w-96 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">
+      <div className="w-[400px] p-5">
         <h1 className="text-xl font-bold my-4">Sign Up</h1>
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Input
             value={name}
@@ -103,7 +102,10 @@ export default function SignUp() {
             type="password"
             placeholder="Password"
           />
-          <Button className="mt-4 rounded-md bg-blue-600 text-white font-bold cursor-pointer px-6 py-2">
+          <Button
+            className="mt-4 rounded-m font-bold cursor-pointer"
+            variant={"dark"}
+          >
             Register
           </Button>
 
@@ -116,18 +118,29 @@ export default function SignUp() {
           <div className="mt-6 items-center justify-center">
             <h3 className="text-center font-semibold">Continue with</h3>
             <div className="flex items-center justify-center space-x-4">
-              <Button type="button" onClick={() => signIn('google')} className="mt-4 rounded-md bg-orange-600 text-white font-bold cursor-pointer px-6 py-2">
+              <Button
+                type="button"
+                onClick={() => signIn("google")}
+                className="mt-4 rounded-md bg-eerie_black text-white font-bold cursor-pointer px-6 py-2"
+              >
                 <IoLogoGoogle size={20} className="mx-2" />
               </Button>
-              <Button type="button" onClick={() => signIn('facebook')} className="mt-4 rounded-md bg-[#0866ff] text-white font-bold cursor-pointer px-6 py-2">
-              <IoLogoFacebook size={20} className="mx-2" />
+              <Button
+                type="button"
+                onClick={() => signIn("facebook")}
+                className="mt-4 rounded-md bg-eerie_black text-white font-bold cursor-pointer px-6 py-2"
+              >
+                <IoLogoFacebook size={20} className="mx-2" />
               </Button>
             </div>
           </div>
 
-          <Link className="text-sm mt-3 text-right" href={"/sign-in"}>
-            Already have an account? <span className="underline">Sign In</span>
-          </Link>
+          <div className="text-sm flex flex-row place-self-center ">
+            <span> {"Don't have an account?"} </span>
+            <Link className="text-sm place-self-center" href={"/sign-in"}>
+              <span className="underline ml-1">Sign In</span>
+            </Link>
+          </div>
         </form>
       </div>
     </div>
