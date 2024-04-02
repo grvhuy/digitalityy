@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "./Provider";
 import Header from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -21,10 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <main>
-          <AuthProvider>
-            <Header />
-            {children}
-          </AuthProvider> 
+          <AuthProvider>{children}</AuthProvider>
         </main>
       </body>
     </html>
