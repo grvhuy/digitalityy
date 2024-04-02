@@ -47,12 +47,8 @@ export default function SignUp() {
         body: JSON.stringify({ email }),
       });
 
-<<<<<<<<< Temporary merge branch 1
-      const { user } = await userResExists.json();
-=========
       const { user } = await resUserExists.json();
 
->>>>>>>>> Temporary merge branch 2
       if (user) {
         setError("User already exists.");
         return;
@@ -81,7 +77,6 @@ export default function SignUp() {
       console.log("Error during registration: ", error);
     }
   };
-
 
   return (
     <div className="w-96 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">
@@ -149,4 +144,4 @@ export default function SignUp() {
       </div>
     </div>
   );
-}}
+}
