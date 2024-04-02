@@ -3,9 +3,11 @@ import Image from "next/image";
 interface ProductCardProps {
   name: string;
   price: number;
+  description: string;
 }
 
 export default function ProductCard(props: ProductCardProps) {
+  const length0 = props.description.length;
   return (
     <div className="flex flex-col gap-y-2 max-w-[15rem]">
       <div className="relative max-w-[15rem] min-w-[15rem] max-h-[22rem] min-h-[22rem] bg-[#F2F2F2] overflow-hidden cursor-pointer">
@@ -22,6 +24,7 @@ export default function ProductCard(props: ProductCardProps) {
           {"$"}
           {props.price}
         </h1>
+        <h1>{props.description}</h1>
       </div>
     </div>
   );

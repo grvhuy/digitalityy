@@ -76,7 +76,12 @@ export default function ProductsListing() {
       <div className="flex flex-wrap flex-row gap-x-5 mx-48">
         {products.map((item) => {
           return (
-            <ProductCard key={item._id} name={item.name} price={item.price} />
+            <ProductCard
+              key={item._id}
+              name={item.name}
+              price={item.price}
+              description={item.description}
+            />
           );
         })}
       </div>

@@ -1,19 +1,35 @@
 "use client";
 
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AiFillShopping } from "react-icons/ai";
 import { IoSearch } from "react-icons/io5";
 import { LuUser2 } from "react-icons/lu";
 import { FiShoppingCart } from "react-icons/fi";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import React from "react";
+import axios from "axios";
+import HeaderDropdown from "./HeaderDropdown";
 
 export default function Header() {
   const router = useRouter();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
-
+  const [categories, setCategories] = useState<any[]>([]);
+  const [dropdownVisibility, setDropdownVisibility] = useState(false);
+  useEffect(() => {
+    axios.get("/api/dashboard/categories").then((result) => {
+      setCategories(result.data);
+      console.log(result.data);
+    });
+  }, []);
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
 
@@ -63,11 +79,35 @@ export default function Header() {
           </h1>
         </div>
         <nav className="place-self-center ">
-          <ul className="flex  list-none text-center font-bold">
-            <button className="flex flex-row mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
-              <GiHamburgerMenu className="place-self-center mx-1"/>
-              Products
+          <ul className="flex list-none text-center font-bold relative">
+            <button
+              className="flex flex-row mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
+              onClick={() => setDropdownVisibility(!dropdownVisibility)}
+            >
+              <GiHamburgerMenu className="place-self-center mx-1" />
+              Shop
             </button>
+            {dropdownVisibility && <HeaderDropdown />}
+            {/* <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="dark_hover_change">
+                  <GiHamburgerMenu className="place-self-center mx-1" />
+                  Shop
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Categories</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {categories.map((item) => {
+                  return (
+                    <DropdownMenuItem key={item._id}>
+                      {" "}
+                      {item.name}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu> */}
             <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
               News
             </button>
