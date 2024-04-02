@@ -12,11 +12,12 @@ export const GET = async () => {
 export const POST = async (req: Request) => {
   connectToDB();
   const values = await req.json();
-  const { name, parent, properties } = values;
+  const { name, parent, properties, images } = values;
   const createdCategory = await Category.create({ 
     name, 
     properties, 
     parent: parent || null, 
+    images,
   });
   return NextResponse.json(createdCategory);
 };
@@ -35,4 +36,17 @@ export const PUT = async (req: Request) => {
     new: true,
   })
   return NextResponse.json(updatedCategory);
+}
+
+export const DELETE = async (req: Request) => {
+  const id = req.url.split("/").pop();
+  try {
+    connectToDB()
+    const product = await Category.findByIdAndDelete(id);
+    console.log("product deleted", product);
+    return NextResponse.json("delete product success!");
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return NextResponse.error();
+  }
 }

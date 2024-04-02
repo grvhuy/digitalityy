@@ -16,14 +16,21 @@ export const POST = async (req: Request) => {
   connectToDB()
   const values = await req.json()
   
+  const specifications = values.productSpecs.map((spec: any) => ({
+    attributeName: spec.attributeName,
+    attributeValue: spec.attributeValue,
+  }))
+
   const createdProduct = await Product
     .create({
       name: values.name,
       price: values.price,
-      description: values.description,
-      productSpecs: values.productSpecs,
+      description: values.description || "",
       category: values.category || null,
-      brand: values.brand || null,
+      brand: values.brand,
+      quantity: values.quantity || null,
+      images: values.images || [],
+      productSpecs: specifications,
     })
 
   return NextResponse.json(createdProduct)

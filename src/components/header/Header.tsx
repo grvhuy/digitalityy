@@ -5,18 +5,6 @@ import { IoSearch } from "react-icons/io5";
 import { LuUser2 } from "react-icons/lu";
 import { FiShoppingCart } from "react-icons/fi";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import React from "react";
-import axios from "axios";
-import HeaderDropdown from "./HeaderDropdown";
 
 export default function Header() {
   const router = useRouter();
@@ -120,9 +108,33 @@ export default function Header() {
           <button>
             <IoSearch />
           </button>
-          <button>
-            <LuUser2 />
-          </button>
+          {user ? (
+            <div className="flex items-center">
+              <h1 className="font-bold ">Hello {user?.name} !</h1>
+              <button onClick={
+                async () => {
+                  await signOut();
+                }
+              } 
+              className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
+              >
+                Logout
+              </button>
+              <button>
+                <LuUser2 />
+              </button>
+            </div>
+
+          ) : (
+            <>
+              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
+                Sign In
+              </button>
+              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
+                Sign Up
+              </button>
+            </>
+          )}
           <button>
             <FiShoppingCart />
           </button>

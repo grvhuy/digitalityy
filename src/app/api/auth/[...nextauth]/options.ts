@@ -49,7 +49,6 @@ export const options: NextAuthOptions = {
   ],
   callbacks: {
     redirect: async ({ url, baseUrl }) => {
-      // Chỉnh sửa ở đây
       return baseUrl;
     },
   },

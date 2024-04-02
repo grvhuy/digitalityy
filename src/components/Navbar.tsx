@@ -4,8 +4,6 @@ import MaxWidthWrapper from "./MaxWidthWrapper";
 import { Button, buttonVariants } from "./ui/button";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import { cn } from "@/lib/utils";
 
 
@@ -29,6 +27,7 @@ const Navbar = () => {
                     alt="VR Glass"
                     width={60}
                     height={60}
+                    
                   />
                 </Link>
               </div>

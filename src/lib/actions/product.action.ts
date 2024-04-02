@@ -1,15 +1,15 @@
 "use server";
 
 
-import connectToDB from "../mongoose";
 import Product from "../models/product.model";
 import Category from "../models/category.model";
 import { NextResponse } from "next/server";
+import connectToDB from "../mongoose";
 
-export async function getProductsByBrandname(name: string) {
+export async function getProductsByBrandname() {
   connectToDB()
   const products = await Product.find({
-    brand: name
+
   })
   NextResponse.json(products)
   
