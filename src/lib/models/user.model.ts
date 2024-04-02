@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Cart from "./cart.model";
 
 const userSchema = new mongoose.Schema(
   {
@@ -14,8 +15,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-  },
-  { timestamps: true }
+  },  
 );
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

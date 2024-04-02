@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { signIn } from "next-auth/react";
 import { IoLogoFacebook, IoLogoGoogle } from "react-icons/io5";
+import axios from "axios";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -20,65 +21,63 @@ const formSchema = z.object({
   }),
 });
 
-export default function SignIn() {
+export default function SignUp() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
 
-  const handleSubmit = async (e:any) => {
-      e.preventDefault();
-      if (!name || !email || !password) {
-        setError("Please fill all the fields");
+    if (!name || !email || !password) {
+      setError("All fields are necessary.");
+      return;
+    }
+
+    try {
+      const resUserExists = await fetch("api/checkRegister", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const { user } = await resUserExists.json();
+
+      if (user) {
+        setError("User already exists.");
         return;
       }
-      // Kiem tra trung email
-      try {
-        const userResExists = await fetch("/api/checkRegister", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        })
-      
-        const { user } = await userResExists.json();
-        if (user) {
-          setError("User already exists.");
-          return;
-        }
 
-        const res = await fetch("/api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, email, password }),
-        })
+      const res = await fetch("api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
 
-        if (res.ok) {
-          const form = e.target as HTMLFormElement;
-          form.reset();
-          router.push('/')
-
-        } else {
-          setError("Failed to register. Please try again.");
-        }
-
-      } catch (error) {
-        console.log("Error during registration: ", error);
+      if (res.ok) {
+        const form = e.target;
+        form.reset();
+        router.push("/");
+      } else {
+        console.log("User registration failed.");
       }
-  }
+    } catch (error) {
+      console.log("Error during registration: ", error);
+    }
+  };
+
 
   return (
     <div className="grid place-items-center">
@@ -87,16 +86,19 @@ export default function SignIn() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Input
+            value={name}
             onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="Full Name"
           />
           <Input
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="text"
             placeholder="Email"
           />
           <Input
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"

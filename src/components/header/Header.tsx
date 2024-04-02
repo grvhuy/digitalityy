@@ -1,26 +1,23 @@
 "use client";
 
+import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { AiFillShopping } from "react-icons/ai";
+import { FiShoppingCart } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { LuUser2 } from "react-icons/lu";
-import { FiShoppingCart } from "react-icons/fi";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import { useState, useEffect } from "react";
-import { signOut, useSession } from "next-auth/react";
 
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
+import { useRouter } from "next/navigation";
+import { ProductSheet } from "../ProductSheet";
 
 export default function Header() {
-
   const { data: session } = useSession();
-  const user = session?.user; 
-
+  const user = session?.user;
+  const router = useRouter();
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [isProductHover, setIsProductHover] = useState(false);
+  const [isAnyOpen, setIsAnyOpen] = useState(false);
 
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
@@ -34,7 +31,9 @@ export default function Header() {
     setPrevScrollPos(currentScrollPos);
   };
 
+
   useEffect(() => {
+
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
@@ -57,31 +56,24 @@ export default function Header() {
         </div>
         <nav className="place-self-center ">
           <ul className="flex  list-none text-center font-bold">
-            <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
-              Home
-            </button>
-            <button className="flex flex-row mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
-              Products
-              <MdOutlineKeyboardArrowDown className="place-self-center" />
-            </button>
+            <ProductSheet />
             <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
               Contact Us
             </button>
           </ul>
         </nav>
-        <div className="flex flex-row gap-5 place-self-center mr-5">
+        <div className="flex flex-row gap-4 place-self-center mr-5">
           <button>
             <IoSearch />
           </button>
           {user ? (
             <div className="flex items-center">
               <h1 className="font-bold ">Hello {user?.name} !</h1>
-              <button onClick={
-                async () => {
+              <button
+                onClick={async () => {
                   await signOut();
-                }
-              } 
-              className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
+                }}
+                className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
               >
                 Logout
               </button>
@@ -89,18 +81,17 @@ export default function Header() {
                 <LuUser2 />
               </button>
             </div>
-
           ) : (
-            <>
-              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
+            <div className="">
+              <button onClick={() => router.push('/sign-in')} className=" py-2 px-5 mx-2 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
                 Sign In
               </button>
-              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
+              <button onClick={() => router.push('/sign-up')} className=" py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
                 Sign Up
               </button>
-            </>
+            </div>
           )}
-          <button>
+          <button onClick={() => router.push('/cart')} className="">
             <FiShoppingCart />
           </button>
         </div>

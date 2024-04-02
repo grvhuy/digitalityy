@@ -82,7 +82,7 @@ export const columns: ColumnDef<Category>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "parent",
@@ -105,7 +105,7 @@ export const columns: ColumnDef<Category>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const category = row.original
- 
+      const router = useRouter()
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -122,7 +122,12 @@ export const columns: ColumnDef<Category>[] = [
               Copy category ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View category</DropdownMenuItem>
+            <DropdownMenuItem
+            >
+               <Link href={`/dashboard/categories/${category.id}`}>
+                View category
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 axios.delete(`/api/dashboard/categories/${category.id}`);
@@ -199,9 +204,9 @@ const DashboardCategoriesPage = () => {
         <div className="flex space-x-2">
           <Input
             placeholder="Filter emails..."
-            value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("category")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />

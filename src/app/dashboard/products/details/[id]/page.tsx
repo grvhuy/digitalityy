@@ -9,6 +9,7 @@ const DashboardProductDetails = () => {
 
   const { id } = useParams()
   const [product, setProduct] = useState<any>(null);
+  
   useEffect(() => {
     axios.get(`/api/dashboard/products/${id}`).then((res) => {
       setProduct(res.data);

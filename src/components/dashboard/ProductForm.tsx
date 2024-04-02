@@ -173,7 +173,7 @@ const ProductForm = ({
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="name"
+                    placeholder="description"
                     value={description}
                     onChange={(e) => {
                       const newDescription = e.target.value;
