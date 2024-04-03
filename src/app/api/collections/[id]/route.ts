@@ -9,6 +9,6 @@ export const GET = async (req: Request) => {
   const category = await Category.findById(id).populate("parent");
   const products = await Product.find({
     category: id,
-  }).populate("category");
+  })
   return NextResponse.json({ category, products });
 }

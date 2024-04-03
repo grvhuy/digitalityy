@@ -82,7 +82,7 @@ export const columns: ColumnDef<Brand>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
   },
 
   
@@ -189,10 +189,10 @@ const DashboardCategoriesPage = () => {
         />
           <Button variant="outline" className="ml-auto">
             <Link href="/dashboard/brands/create">
-              <a>
+
                 <PlusCircleIcon className="h-4 w-4" />
                 <span className="ml-2">Add Brand</span>
-              </a>
+
             </Link>               
           </Button>
         </div>  

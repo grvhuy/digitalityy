@@ -14,7 +14,7 @@ export default function CategoriesListing() {
   return (
     <div className="flex flex-wrap flex-row gap-x-5 gap-y-10 mx-48">
       {categories.map((item) => {
-        return <CategoriesCard key={item._id} name={item.name} />;
+        return <CategoriesCard key={item._id} name={item.name} images={item.images} />;
       })}
     </div>
   );

@@ -63,10 +63,10 @@ export default function Header() {
           : "top-0 -translate-y-full transition-all duration-300"
       }`}
     >
-      <div className="flex flex-row gap-x-5 justify-between">
+      <div className="flex flex-row gap-x-5 justify-between items-center">
         <div className="flex flex-row cursor-pointer" onClick={homeClick}>
           <svg
-            className="w-14 h-14 ml-5"
+            className="w-10 h-10 ml-5"
             id="Layer_1"
             data-name="Layer 1"
             xmlns="http://www.w3.org/2000/svg"
@@ -77,8 +77,8 @@ export default function Header() {
               transform="translate(-64.89 -152.39)"
             />
           </svg>
-          <h1 className="relative text-3xl font-mono font-bold left-2 top-2">
-            Digitality
+          <h1 className="relative text-3xl font-mono font-bold top-2">
+            igitality
           </h1>
         </div>
         <nav className="place-self-center ">

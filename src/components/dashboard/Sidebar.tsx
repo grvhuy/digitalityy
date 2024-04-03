@@ -11,7 +11,7 @@ const menuItems = [
   { name: "Categories", path: "/dashboard/categories", icon: <MdAssignment /> },
   { name: "Orders", path: "/dashboard/orders", icon: <MdAssignment /> },
   { name: "Brands", path: "/dashboard/brands", icon: <MdAssignment /> },
-  { name: "Providers", path: "/dashboard/provider", icon: <MdAssignment /> },
+  // { name: "Providers", path: "/dashboard/provider", icon: <MdAssignment /> },
   // { name: "Inventory", path: "/dashboard/orders", icon: <MdAssignment /> },
 ];
 

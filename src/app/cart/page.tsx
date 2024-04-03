@@ -22,6 +22,7 @@ const CartPage = () => {
   // const [quantity, setQuantity] = useState<number>(0); // Số lượng sản phẩm trong giỏ hàng
   //mang chua so luong cua tung san pham
   const [quantity, setQuantity] = useState<number[]>([]); 
+  const [ totalProduct, setTotalProduct ] = useState<number[]>([])
 
   //lay thong tin user cua gio hang
   useEffect(() => {
@@ -46,7 +47,8 @@ const CartPage = () => {
       axios.get("/api/cart/" + userId).then((res) => {
         if (res.data) {
           setProducts(res.data.products);
-          setQuantity(res.data.products.map((product: any) => product.quantity))    
+          setQuantity(res.data.products.map((product: any) => product.quantity)) 
+          setTotalProduct(res.data.products.map((product: any) => product.product.price * product.quantity))   
         }
       });
     }
@@ -67,6 +69,7 @@ const CartPage = () => {
     const newQuantity = [...quantity]
     newQuantity[index] += 1
     setQuantity(newQuantity)
+    setTotalProduct(products.map((product: any, i: number) => product.product.price * newQuantity[i]))
     await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
@@ -78,6 +81,7 @@ const CartPage = () => {
     const newQuantity = [...quantity]
     newQuantity[index] -= 1
     setQuantity(newQuantity)
+    setTotalProduct(products.map((product: any, i: number) => product.product.price * newQuantity[i]))
     await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
@@ -92,6 +96,7 @@ const CartPage = () => {
     const newQuantity = [...quantity]
     newQuantity[index] = e.target.value
     setQuantity(newQuantity)
+    setQuantity(products.map((product: any, i: number) => product.product.price * newQuantity[i]))
     await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
@@ -156,7 +161,7 @@ const CartPage = () => {
                       </div>
                     </div>
                     <h1 className="font-semibold">
-                      ${product.product.price * product.quantity}
+                      ${totalProduct[index]}                      
                     </h1>
                     <Button className="ml-4" variant="ghost">
                       <FiTrash2 size={24} />
@@ -202,7 +207,7 @@ const CartPage = () => {
       </div>
 
       {/* // Cart Summary */}
-      <div className="sticky mr-10 w-1/2  mt-16 ">
+      <div className="sticky mr-10 w-1/2  mt-14 ">
         <div className="flex flex-col justify-center">
           <div className="flex flex-col bg-white shadow-sm border p-4 space-y-4">
             <h1 className="font-bold text-2xl">Cart Summary</h1>

@@ -23,12 +23,11 @@ const formSchema = z.object({
 
 export default function SignUp() {
 
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const router = useRouter();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
