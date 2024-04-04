@@ -22,7 +22,6 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
-
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -134,7 +133,7 @@ export default function SignUp() {
           </div>
 
           <div className="text-sm flex flex-row place-self-center ">
-            <span> {"Don't have an account?"} </span>
+            <span> {"Already have an account?"} </span>
             <Link className="text-sm place-self-center" href={"/sign-in"}>
               <span className="underline ml-1">Sign In</span>
             </Link>

@@ -60,7 +60,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="w-96 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">
+    <div className="w-1/4 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">
       <div>
         <div className="flex flex-row">
           <h1 className="text-4xl font-extrabold">Welcome</h1>
