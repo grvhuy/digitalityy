@@ -1,13 +1,15 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface CategoriesCardProps {
   name: string;
   images: string[];
+  // _id: string;
+  onClick?: React.MouseEventHandler;
 }
 
 export default function CategoriesCard(props: CategoriesCardProps) {
-
-  
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-y-2 max-w-[15rem]">
@@ -18,6 +20,7 @@ export default function CategoriesCard(props: CategoriesCardProps) {
           src={props.images[0]}
           alt="controller-image"
           fill={true}
+          onClick={props.onClick}
         ></Image>
       </div>
       <div className="flex flex-col gap-y-1 ">

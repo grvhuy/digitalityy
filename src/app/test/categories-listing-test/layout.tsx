@@ -8,7 +8,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         All listed categories
       </h1>
       {children}
-      <Footer />
     </div>
   );
 }
