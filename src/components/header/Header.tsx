@@ -9,7 +9,7 @@ import { IoSearch } from "react-icons/io5";
 import { LuUser2 } from "react-icons/lu";
 
 import { useRouter } from "next/navigation";
-import { ProductSheet } from "../ProductSheet";
+import { ProductSheet } from "../products/ProductSheet";
 import axios from "axios";
 
 export default function Header() {
@@ -19,15 +19,12 @@ export default function Header() {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
-  const [dropdownVisibility, setDropdownVisibility] = useState(false);
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
       console.log(result.data);
     });
   }, []);
-  const [isProductHover, setIsProductHover] = useState(false);
-  const [isAnyOpen, setIsAnyOpen] = useState(false);
 
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
