@@ -24,8 +24,11 @@ import { ArrowRightCircle, XCircleIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
-export const ProductSheet = () => {
-  const [categories, setCategories] = useState<any[]>([]);
+export const ProductSheet = ({
+  categories,
+}: {
+  categories: any[];
+}) => {
 
   const [toolTipIndex, setToolTipIndex] = useState<number>();
 
@@ -33,11 +36,11 @@ export const ProductSheet = () => {
     setToolTipIndex(index);
   };
 
-  useEffect(() => {
-    axios.get("/api/dashboard/categories").then((res) => {
-      setCategories(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get("/api/dashboard/categories").then((res) => {
+  //     setCategories(res.data);
+  //   });
+  // }, []);
 
   return (
     <div>

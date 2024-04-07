@@ -1,4 +1,5 @@
 "use client"
+import { UserInformationForm } from "@/components/UserInformationForm";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -37,6 +38,7 @@ const TestPage = () => {
   return (
     <div>
       <Button type="button" onClick={addToCart}>Add to cart</Button>
+      <UserInformationForm />
     </div>
   );
 }

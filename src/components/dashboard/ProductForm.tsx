@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { ProductValidation } from "@/lib/validations/product";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,8 +18,6 @@ import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { uploadToS3 } from "@/lib/s3-upload";
-import { FindCategoryById } from "@/lib/actions/category.action";
 
 
 const ProductForm = ({
