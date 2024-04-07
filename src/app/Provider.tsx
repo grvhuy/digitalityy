@@ -1,10 +1,11 @@
-'use client'
-import { SessionProvider } from 'next-auth/react'
+"use client";
+import { SessionProvider } from "next-auth/react";
+import { NextUIProvider } from "@nextui-org/system";
 
-export const AuthProvider = ({ children } : { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <SessionProvider>
-      {children}
+      <NextUIProvider>{children}</NextUIProvider>
     </SessionProvider>
-  )
-}
+  );
+};

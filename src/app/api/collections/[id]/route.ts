@@ -10,5 +10,5 @@ export const GET = async (req: Request) => {
   const products = await Product.find({
     category: id,
   })
-  return NextResponse.json({ category, products });
+  return NextResponse.json({category, products });
 }

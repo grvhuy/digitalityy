@@ -34,7 +34,7 @@ export const ProductSheet = () => {
   };
 
   useEffect(() => {
-    axios.get("api/dashboard/categories").then((res) => {
+    axios.get("/api/dashboard/categories").then((res) => {
       setCategories(res.data);
     });
   }, []);

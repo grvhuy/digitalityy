@@ -22,7 +22,7 @@ export default function CategoriesListing() {
             key={item._id}
             name={item.name}
             images={item.images}
-            onClick={() => router.push("/api/collections/" + item._id)}
+            onClick={() => router.push("/categories/" + item._id)}
           />
         );
       })}

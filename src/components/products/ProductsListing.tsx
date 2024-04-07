@@ -13,18 +13,20 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-interface ProductsListingProps {
-  item: React.ComponentType;
-}
-export default function ProductsListing() {
-  const [products, setProducts] = useState<any[]>([]);
+export default function ProductsListing({
+  params,
+}: {
+  params: { categoryId: string };
+}) {
+  const router = useRouter();
+  const [categoryProducts, setProducts] = useState<any[]>([]);
   useEffect(() => {
-    axios.get("/api/dashboard/products").then((result) => {
-      setProducts(result.data);
+    axios.get("/api/collections/" + params.categoryId).then((result) => {
+      setProducts(result.data.products);
     });
-  }, []);
+  }, [params.categoryId]);
   return (
     <div className="flex flex-wrap flex-col gap-y-5 my-5">
       <div className="flex flex-row place-self-center gap-x-5">
@@ -74,13 +76,14 @@ export default function ProductsListing() {
         </Select>
       </div>
       <div className="flex flex-wrap flex-row gap-x-5 mx-48">
-        {products.map((item) => {
+        {categoryProducts.map((item) => {
           return (
             <ProductCard
               key={item._id}
               name={item.name}
               price={item.price}
               description={item.description}
+              onClick={() => router.push("/products/" + item._id )}
             />
           );
         })}
