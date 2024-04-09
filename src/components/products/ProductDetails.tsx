@@ -12,25 +12,64 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Input } from "@nextui-org/input";
 import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ProductDetails({
   params,
 }: {
   params: { productId: string };
 }) {
+  const { data: session } = useSession();
+
+  const { toast } = useToast();
+  const [userId, setUserId] = useState<string>("");
   const [images1, setImages] = useState<any[]>([]);
   const images = ["/images/6.png", "/images/abcd.png", "/images/test-img.png"];
   const [product, setProduct] = useState<any[]>([]);
   const [productSpecs, setProductspecs] = useState<any[]>([]);
+
+  // Lay thong tin user
+  useEffect(() => {
+    const userEmail = session?.user?.email;
+    axios.get(`/api/dashboard/users/${userEmail}`).then((response) => {
+      const data = response.data;
+      if (data) setUserId(data._id);
+    });
+  }, [session]);
+
   useEffect(() => {
     axios.get("/api/dashboard/products/" + params.productId).then((result) => {
       setProduct(result.data);
       setImages(result.data.images);
       setProductspecs(result.data.productSpecs);
-      console.log(result.data);
-      console.log(result.data.productSpecs);
+      // console.log(result.data);
+      // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
+
+  const handleAddtoCart = async () => {
+    //Neu chua dang nhap thi ve page login
+    if (!session) {
+      window.location.href = "/login";
+    }
+    if (userId) {
+      const quantity = 1;
+      const productId = params.productId;
+      const data = {
+        userId: userId,
+        product: {
+          productId: productId,
+          quantity: quantity,
+        },
+      };
+      console.log(data);
+
+      // await axios.post("/api/cart", data);
+    }
+  };
+
   return (
     <div className="h-screen w-screen grid grid-cols-2 gap-x-24 px-48 py-10">
       <Carousel className="w-full h-full">
@@ -74,8 +113,22 @@ export default function ProductDetails({
           <label htmlFor="quantity" className="font-semibold">
             Quantity
           </label>
-          <Input id="quantity" className="w-1/6" type="number" placeholder="0" />
-          <Button variant={"dark"} className="mt-2 rounded-3xl w-fit">Add to cart</Button>
+          <Input
+            id="quantity"
+            className="w-1/6"
+            type="number"
+            placeholder="0"
+          />
+          <Button onClick={() => {
+            handleAddtoCart();
+            toast({
+              duration: 3000,
+              description: "Added to your cart",
+              // action: (
+              //   <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+              // ),
+            })
+          }} variant={"dark"} className="mt-2 rounded-3xl w-fit">Add to cart</Button>
         </div>
       </div>
     </div>

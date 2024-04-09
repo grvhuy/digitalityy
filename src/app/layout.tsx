@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "./Provider";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             {/* <Footer/> */}
           </AuthProvider> 
         </main>
+        <Toaster />
       </body>
     </html>
   );
