@@ -74,8 +74,15 @@ export default function ProductDetails({
           <label htmlFor="quantity" className="font-semibold">
             Quantity
           </label>
-          <Input id="quantity" className="w-1/6" type="number" placeholder="0" />
-          <Button variant={"dark"} className="mt-2 rounded-3xl w-fit">Add to cart</Button>
+          <Input
+            id="quantity"
+            className="w-1/6"
+            type="number"
+            placeholder="0"
+          />
+          <Button variant={"dark"} className="mt-2 rounded-3xl w-fit">
+            Add to cart
+          </Button>
         </div>
       </div>
     </div>
