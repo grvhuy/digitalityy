@@ -1,4 +1,6 @@
 import ProductsListing from "@/components/products/ProductsListing";
 export default function ProductsListingTestPage() {
-  return <ProductsListing />;
+  return <ProductsListing params={
+    { categoryId: "6606de36e1a4ed68ddd5cb50" }
+  } />;
 }
