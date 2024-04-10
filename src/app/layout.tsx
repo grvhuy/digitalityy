@@ -21,13 +21,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>
+      <body className={`${font.className} overflow-hidden`}>
         <main>
           <AuthProvider>
             <Header />
             {children}
             {/* <Footer/> */}
-          </AuthProvider> 
+          </AuthProvider>
         </main>
         <Toaster />
       </body>
