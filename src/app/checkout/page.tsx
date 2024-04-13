@@ -1,13 +1,54 @@
-// import CheckoutForm from "@/components/CheckOutForm";
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
+import { selectCartItems } from "@/lib/features/cartSlice";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const CheckoutPage = () => {
+  const cartItems = useSelector(selectCartItems);
+  const [ products, setProducts ] = useState<any[]>([]);
+  const [ total, setTotal ] = useState<number>(0);
+  const [ shipping, setShipping ] = useState<number>(0);
+  const [ subtotal, setSubtotal ] = useState<number>(0);
+  const [ defaultAddress, setDefaultAddress ] = useState<any>();
+  const [ userAddresses, setUserAddresses ] = useState<any[]>([]);
+
+  const { data: session } = useSession();
+  const [user, setUser] = useState<any>({});
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    setUser(session?.user);
+    const userEmail = session?.user?.email;
+    axios.get(`/api/dashboard/users/${userEmail}`).then((res) => {
+      if (res.data) {
+        setUserId(res.data._id);
+        setDefaultAddress(res.data.defaultAddress);
+        // console.log(res.data.defaultAddress)
+      }
+    });
+
+    // Lay dia chi tu userId
+    if (userId) {
+      axios.get(`/api/address/${userId}`).then((res) => {
+        setUserAddresses(res.data);
+        console.log(res.data);
+      });
+    }
+
+  }, [session, userId]);
+
+  useEffect(() => {
+    console.log("cart items:", cartItems);
+  }, [cartItems]);
+
   return (
     <div className="grid grid-cols-2">
       {/* Payment information */}
@@ -156,15 +197,12 @@ const CheckoutPage = () => {
         </div>
       </section>
 
-      {/* Address */}
-      <section className="mt-12 ">
+      {/* Products + summary */}
+      <section className="my-12 pb-12">
         {/* Products Summary */}
         <div className="mx-20 mt-8">
           <div className="flex justify-between">
             <h1 className="font-bold text-lg">Summary</h1>
-            <Button className="font-mono text-lg" variant="link">
-              Edit
-            </Button>
           </div>
           <div>
             <ScrollArea className="h-72 w-full rounded-md border">
@@ -265,6 +303,7 @@ const CheckoutPage = () => {
                 <h1 className="font-semibold">Total</h1>
                 <h1>$ total</h1>
               </div>
+              
             </div>
             <Button className="mt-4" variant="default">
               Place Order
@@ -273,6 +312,9 @@ const CheckoutPage = () => {
 
           <div></div>
         </div>
+        {/* <Button className="ml-12 w-full transition-all duration-500 opacity-50 hover:opacity-100 font-mono">
+          Place Order
+        </Button> */}
       </section>
     </div>
   );

@@ -1,28 +1,43 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  addToCart,
+  clearCart,
+  removeFromCart,
+  selectCartItems,
+} from "@/lib/features/cartSlice";
+import { AppDispatch } from "@/lib/store";
 import axios from "axios";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { use, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
 
 const CartPage = () => {
+  const cartItems = useSelector(selectCartItems);
+  const dispatch: AppDispatch = useDispatch();
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
-  const [productId, setProductId] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
 
-  
-  // const [ shipping, setShipping ] = useState<number>(0)
-  // const [ subTotal, setSubtotal ] = useState<number>(0)
-
-  // const [ cartId, setCartId ] = useState<string>("") // Id cua gio hang
   const [products, setProducts] = useState<any[]>([]); // Mảng chứa các sản phẩm trong giỏ hàng
-  // const [quantity, setQuantity] = useState<number>(0); // Số lượng sản phẩm trong giỏ hàng
-  //mang chua so luong cua tung san pham
-  const [quantity, setQuantity] = useState<number[]>([]); 
-  const [ totalProduct, setTotalProduct ] = useState<number[]>([])
+
+  const [quantity, setQuantity] = useState<number[]>([]);
+  const [totalProduct, setTotalProduct] = useState<number[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    dispatch(clearCart());
+  }, [])
 
   //lay thong tin user cua gio hang
   useEffect(() => {
@@ -47,67 +62,99 @@ const CartPage = () => {
       axios.get("/api/cart/" + userId).then((res) => {
         if (res.data) {
           setProducts(res.data.products);
-          setQuantity(res.data.products.map((product: any) => product.quantity)) 
-          setTotalProduct(res.data.products.map((product: any) => product.product.price * product.quantity))   
+          setQuantity(
+            res.data.products.map((product: any) => product.quantity)
+          );
+          setTotalProduct(
+            res.data.products.map(
+              (product: any) => product.product.price * product.quantity
+            )
+          );
         }
       });
     }
   }, [userId]);
 
   useEffect(() => {
-    console.log(quantity)
-  }, [quantity])
+    // console.log(selectedProducts);
+    console.log(cartItems);
+  }, [cartItems]);
 
+  const handleCartRedux = () => {};
 
-  const handleChangeCart = (e: any) => {
-    //Tru so luong item trong gio hang
-    // e.preventDefaut()
-    console.log(e.target.value)
-  }
-
-  const  handleIncrement = async (index: number) => {
-    const newQuantity = [...quantity]
-    newQuantity[index] += 1
-    setQuantity(newQuantity)
-    setTotalProduct(products.map((product: any, i: number) => product.product.price * newQuantity[i]))
+  const handleIncrement = async (index: number) => {
+    if (quantity[index] === 1) return;
+    dispatch(addToCart({
+      _id: products[index].product._id,
+      name: products[index].product.name,
+      category: products[index].product.category,
+      amount: quantity[index] + 1,
+    }))
+    const newQuantity = [...quantity];
+    newQuantity[index] += 1;
+    setQuantity(newQuantity);
+    setTotalProduct(
+      products.map(
+        (product: any, i: number) => product.product.price * newQuantity[i]
+      )
+    );
     await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
-      quantity: newQuantity[index]
-    })
-  }
+      quantity: newQuantity[index],
+    });
+  };
 
   const handleDecrement = async (index: number) => {
-    const newQuantity = [...quantity]
-    newQuantity[index] -= 1
-    setQuantity(newQuantity)
-    setTotalProduct(products.map((product: any, i: number) => product.product.price * newQuantity[i]))
+    if (quantity[index] === 1) return;
+    dispatch(addToCart({
+      _id: products[index].product._id,
+      name: products[index].product.name,
+      category: products[index].product.category,
+      amount: quantity[index] - 1,
+    }))
+    const newQuantity = [...quantity];
+    newQuantity[index] -= 1;
+    setQuantity(newQuantity);
+    setTotalProduct(
+      products.map(
+        (product: any, i: number) => product.product.price * newQuantity[i]
+      )
+    );
     await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
-      quantity: newQuantity[index]
-    })
-  }
+      quantity: newQuantity[index],
+    });
+  };
 
   const handleQuantityInput = async (e: any, index: number) => {
-    console.log(e.target.value)
-    if (e.target.value < 0) return
-    
-    const newQuantity = [...quantity]
-    newQuantity[index] = e.target.value
-    setQuantity(newQuantity)
-    setQuantity(products.map((product: any, i: number) => product.product.price * newQuantity[i]))
+    console.log(e.target.value);
+    if (e.target.value < 0) return;
+
+    const newQuantity = [...quantity];
+    newQuantity[index] = e.target.value;
+    setQuantity(newQuantity);
+    setQuantity(
+      products.map(
+        (product: any, i: number) => product.product.price * newQuantity[i]
+      )
+    );
     await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
-      quantity: newQuantity[index]
-    })
-  }
+      quantity: newQuantity[index],
+    });
+  };
+
+  const handleCheckout = async () => {
+    router.push("/checkout");
+  };
 
   return (
     <div className="flex h-screen">
       <div className="flex flex-col">
-        <section className="">
+        <section className="mt-8 ml-12">
           <h1 className="font-bold text-3xl">My Cart</h1>
         </section>
 
@@ -122,52 +169,73 @@ const CartPage = () => {
 
         {products.length === 0 ? (
           <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
-              {/* Them UI loading */}
-              
-
+            {/* Them UI loading */}
           </div>
         ) : (
           <section>
             {products.map((product: any, index: number) => (
-                <div key={index} className="mx-20">
-                  <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
+              <div key={index} className="mx-20">
+                <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
+                  <div className="flex items-center">
+                    <Checkbox
+                      onCheckedChange={() => {
+                        // Neu da check thi xoa khoi cartItems nguoc lai thi them vao
+                        if (cartItems.find((item) => item._id === product.product._id)) {
+                          dispatch(removeFromCart({ id: product.product._id }));
+                        } else {
+                          dispatch(addToCart({
+                            _id: product.product._id,
+                            name: product.product.name,
+                            category: product.product.category,
+                            amount: quantity[index],
+                          }));
+                        }
+                      }}
+                    id="terms" />
                     <img
                       src={product.product.images[0]}
                       width={120}
                       height={120}
                       alt="product"
                     />
-                    <h1 className="col-span-2 mx-4 font-semibold">{product.product.name}</h1>
-                    <h1 className="self-center text-red-400">${product.product.price}</h1>
-                    <div className="">
-                      <div className="flex w-24 justify-between items-center border border-gray-500 ">
-                        <button
-                          onClick={() => handleDecrement(index)}
-                          className="border-r border-gray-500  px-2 opacity-50 hover:opacity-100 transition-opacity duration-300">
-                          <MinusIcon size={16} />
-                        </button>
-                        {/* <span className="">{product.quantity}</span> */}
-                        <input 
-                          className="w-8 text-center"
-                          type="text"
-                          value={quantity[index]}
-                          onChange={handleChangeCart} 
-                        />
-                        <button 
-                          onClick={() => handleIncrement(index)}
-                        className="border-l border-gray-500 px-2 pr-3 opacity-50 hover:opacity-100 transition-opacity duration-300">
-                          <PlusIcon size={16} />
-                        </button>
-                      </div>
-                    </div>
-                    <h1 className="font-semibold">
-                      ${totalProduct[index]}                      
-                    </h1>
-                    <Button className="ml-4" variant="ghost">
-                      <FiTrash2 size={24} />
-                    </Button>
                   </div>
-                </div>              
+                  <h1 className="col-span-2 mx-4 font-semibold">
+                    {product.product.name}
+                  </h1>
+                  <h1 className="self-center text-red-400">
+                    ${product.product.price}
+                  </h1>
+                  <div className="">
+                    <div className="flex w-24 justify-between items-center border border-gray-500 ">
+                      <button
+                        onClick={() => handleDecrement(index)}
+                        className="border-r border-gray-500  px-2 opacity-50 hover:opacity-100 transition-opacity duration-300"
+                      >
+                        <MinusIcon size={16} />
+                      </button>
+                      {/* <span className="">{product.quantity}</span> */}
+                      <input
+                        className="w-8 text-center"
+                        type="text"
+                        value={quantity[index]}
+                        onChange={() => {}}
+                      />
+                      <button
+                        onClick={() => {
+                          handleIncrement(index);
+                        }}
+                        className="border-l border-gray-500 px-2 pr-3 opacity-50 hover:opacity-100 transition-opacity duration-300"
+                      >
+                        <PlusIcon size={16} />
+                      </button>
+                    </div>
+                  </div>
+                  <h1 className="font-semibold">${totalProduct[index]}</h1>
+                  <Button className="ml-4" variant="ghost">
+                    <FiTrash2 size={24} />
+                  </Button>
+                </div>
+              </div>
             ))}
           </section>
         )}
@@ -215,9 +283,12 @@ const CartPage = () => {
               <h1 className="font-semibold">Subtotal</h1>
               {products.length > 0 && (
                 <h1>
-                  ${products.reduce((acc, cur) => acc + cur.product.price * cur.quantity, 0)}
+                  $
+                  {products.reduce(
+                    (acc, cur) => acc + cur.product.price * cur.quantity,
+                    0
+                  )}
                 </h1>
-              
               )}
             </div>
             {/* <div className="flex space-x-4 ">
@@ -228,6 +299,7 @@ const CartPage = () => {
               <h1 className="font-semibold">Total</h1>
               <h1>$ {subTotal + shipping}</h1>
             </div> */}
+            <Button onClick={handleCheckout}>Checkout</Button>
           </div>
         </div>
       </div>

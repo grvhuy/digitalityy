@@ -12,6 +12,7 @@ const UserAddresses = () => {
   const user = session?.user;
 
   const [userId, setUserId] = useState<string>("");
+  const [defaultAddressId, setDefaultAddressId] = useState<string>("");
   const [addresses, setAddresses] = useState<any[]>([]);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const UserAddresses = () => {
       const data = response.data;
       if (data) {
         setUserId(data._id);
+        setDefaultAddressId(data.defaultAddress);
         axios.get(`/api/address/${data._id}`).then((response) => {
           const data = response.data;
           if (data) setAddresses(data);
@@ -29,6 +31,20 @@ const UserAddresses = () => {
   }, [session, addresses]);
 
   const handleEditAddress = async () => {};
+  // const handleSetDefaultAddress = async (addressId: string) => {
+  //   await axios.post(`/api/address/${userId}`, {
+  //     defaultAddressId: addressId,
+  //   }).then(
+  //     (response) => {
+  //       console.log(response.data);
+  //     }
+  //   ).catch(
+  //     (error) => {
+  //       console.log(error);
+  //     }
+  //   )
+
+  // };
 
   return (
     <div className="w-full ml-80 px-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
@@ -41,21 +57,27 @@ const UserAddresses = () => {
       {/* address card */}
       {addresses.map((address, index) => {
         return (
-          <div key={index} className="mt-4 flex flex-col justify-center w-full p-4 bg-white dark:bg-gray-900 rounded-md shadow-md">
+          <div
+            key={index}
+            className="mt-4 flex flex-col justify-center w-full p-4 bg-white dark:bg-gray-900 rounded-md shadow-md"
+          >
             <div className="flex items-center justify-between w-full">
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {address.receiverName} 
-                  <span className="ml-2 text-gray-500 font-normal text-sm">{address.phoneNumber}</span>
+                  {address.receiverName}
+                  <span className="ml-2 text-gray-500 font-normal text-sm">
+                    {address.phoneNumber}
+                  </span>
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  {address.addressLine}, {address.ward}, {address.district},  {address.city}
+                  {address.addressLine}, {address.ward}, {address.district},{" "}
+                  {address.city}
                 </p>
               </div>
 
               <div className="flex flex-col space-y-2 items-end">
                 <div className="space-x-2">
-                  <AddAddressForm 
+                  <AddAddressForm
                     name={address.receiverName}
                     phone={address.phoneNumber}
                     {...address}
@@ -66,9 +88,42 @@ const UserAddresses = () => {
                   </button>
                 </div>
                 {/* Set default */}
-                <Button className="" variant="outline">
-                  Set as default
-                </Button>
+                {defaultAddressId === address._id ? (
+                  <Button
+                    disabled
+                    type="button"
+                    onClick={() => {
+                      axios
+                        .patch(`/api/address/${userId}`, {
+                          addressId: address._id,
+                        })
+                        .then((response) => {
+                          console.log(response.data);
+                        });
+                    }}
+                    className="text-red-500 border-red-500"
+                    variant="outline"
+                  >
+                    Default Address
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      axios
+                        .patch(`/api/address/${userId}`, {
+                          addressId: address._id,
+                        })
+                        .then((response) => {
+                          console.log(response.data);
+                        });
+                    }}
+                    className=""
+                    variant="outline"
+                  >
+                    Set as default
+                  </Button>
+                )}
               </div>
             </div>
           </div>

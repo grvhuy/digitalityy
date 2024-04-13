@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
-import { Figtree, Inter, Montserrat } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { AuthProvider } from "./Provider";
 import Header from "@/components/header/Header";
-import Footer from "@/components/footer/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
+import { AuthProvider } from "./Provider";
+import { Provider } from 'react-redux';
+import "./globals.css";
+import { store } from "@/lib/store";
+import ReduxProvider from "./ReduxProvider";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -21,13 +22,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.className} overflow-hidden`}>
+      <body className={`${font.className} overflow-visible`}>
         <main>
-          <AuthProvider>
-            <Header />
-            {children}
-            {/* <Footer/> */}
-          </AuthProvider>
+          <ReduxProvider>
+            <AuthProvider>
+              <Header />
+              {children}
+              {/* <Footer/> */}
+            </AuthProvider>
+          </ReduxProvider>
         </main>
         <Toaster />
       </body>
