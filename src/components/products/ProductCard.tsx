@@ -8,7 +8,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const length0 = props.description.length;
   return (
     <div className="group flex flex-col gap-y-2 max-w-[15rem]" onClick={props.onClick}>
       <div className="relative max-w-[15rem] min-w-[15rem] max-h-[22rem] min-h-[22rem] bg-[#F2F2F2] overflow-hidden cursor-pointer">

@@ -22,7 +22,7 @@ export default function Header() {
   const [categories, setCategories] = useState<any[]>([]);
 
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
-  useEffect( () => {
+  useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
       console.log(result.data);
@@ -61,7 +61,7 @@ export default function Header() {
             : "top-0 -translate-y-full transition-all duration-300"
         }`}
       >
-        <div className="flex flex-row gap-x-5 justify-between items-center">
+        <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row cursor-pointer" onClick={homeClick}>
             <svg
               className="w-10 h-10 ml-5"
@@ -82,7 +82,7 @@ export default function Header() {
           <nav className="place-self-center ">
             <ul className="flex  list-none text-center font-bold">
               <ProductSheet categories={categories} />
-              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500">
+              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500">
                 Contact Us
               </button>
             </ul>
@@ -98,7 +98,7 @@ export default function Header() {
                   onClick={async () => {
                     await signOut();
                   }}
-                  className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
+                  className="mx-6 py-2 px-5 hover:underline hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400 rounded-2xl transition-all duration-500"
                 >
                   Logout
                 </button>
@@ -110,13 +110,13 @@ export default function Header() {
               <div className="">
                 <button
                   onClick={() => router.push("/sign-in")}
-                  className=" py-2 px-5 mx-2 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
+                  className=" py-2 px-5 mx-2 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => router.push("/sign-up")}
-                  className=" py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500"
+                  className=" py-2 px-5 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
                 >
                   Sign Up
                 </button>

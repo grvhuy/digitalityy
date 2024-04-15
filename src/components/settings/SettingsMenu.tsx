@@ -22,7 +22,7 @@ export default function SettingsMenu() {
       </div>
       <Separator />
       <div>
-        <ul className="font-medium hover:[&>li]:scale-[.99] [&>li]:p-4 hover:[&>li]:bg-gray-200 [&>li]:transition-all [&>li]:duration-300 [&>li]:rounded-lg [&>li]:cursor-pointer [&>li]:flex [&>li]:flex-row [&>li]:relative">
+        <ul className="font-medium hover:[&>li]:scale-[.99] [&>li]:p-4 hover:[&>li]:bg-gray-200 [&>li]:transition-all [&>li]:duration-200 [&>li]:rounded-lg [&>li]:cursor-pointer [&>li]:flex [&>li]:flex-row [&>li]:relative">
           <li className="flex flex-row relative group ">
             Edit Profile
             <MdOutlineKeyboardArrowRight
