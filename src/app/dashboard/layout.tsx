@@ -4,9 +4,8 @@ import { ReactNode } from "react";
 
 const Layout = ({ children }: {children: ReactNode}) => {
   return (
-    <div className="">
+    <div className="ml-4">
       <Sidebar />
-
       <div>{children}</div>
     </div>
   );

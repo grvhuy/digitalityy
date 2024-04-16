@@ -9,6 +9,7 @@ import {
   selectCartItems,
 } from "@/lib/features/cartSlice";
 import { AppDispatch } from "@/lib/store";
+import { image } from "@nextui-org/theme";
 import axios from "axios";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -89,6 +90,8 @@ const CartPage = () => {
       name: products[index].product.name,
       category: products[index].product.category,
       amount: quantity[index] + 1,
+      price: products[index].product.price,
+      image: products[index].product.images[0]
     }))
     const newQuantity = [...quantity];
     newQuantity[index] += 1;
@@ -112,6 +115,8 @@ const CartPage = () => {
       name: products[index].product.name,
       category: products[index].product.category,
       amount: quantity[index] - 1,
+      price: products[index].product.price,
+      image: products[index].product.images[0]
     }))
     const newQuantity = [...quantity];
     newQuantity[index] -= 1;
@@ -188,6 +193,8 @@ const CartPage = () => {
                             name: product.product.name,
                             category: product.product.category,
                             amount: quantity[index],
+                            price: product.product.price,
+                            image: product.product.images[0]
                           }));
                         }
                       }}

@@ -7,4 +7,5 @@ export const BrandValidation = z.object({
   description: z
     .string()
     .min(2, { message: "Description must be at least 2 characters long" }),
+  images: z.string()
 });

@@ -1,5 +1,4 @@
 "use client";
-import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,16 +7,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { selectCartItems } from "@/lib/features/cartSlice";
 import axios from "axios";
-import { ArrowLeft, ChevronLeft, MoveLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const CheckoutPage = () => {
-
-  const router = useRouter();
-
   const cartItems = useSelector(selectCartItems);
   const [products, setProducts] = useState<any[]>([]);
   const [total, setTotal] = useState<number>(0);
@@ -25,8 +19,6 @@ const CheckoutPage = () => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [defaultAddress, setDefaultAddress] = useState<any>();
   const [userAddress, setUserAddress] = useState<any>();
-
-  const [ isLoading , setIsLoading ] = useState<boolean>(false);
 
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
@@ -57,18 +49,7 @@ const CheckoutPage = () => {
   }, [session, userId]);
 
   useEffect(() => {
-    if (cartItems.length > 0) {
-      setProducts(cartItems);
-      let total = 0;
-      let shipping = 0;
-      let subtotal = 0;
-      cartItems.forEach((item) => {
-        total += item.price * item.amount;
-        subtotal += item.price * item.amount;
-      });
-      setTotal(total);
-      setSubtotal(subtotal);
-    }
+    console.log("cart items:", cartItems);
   }, [cartItems]);
 
   return (
@@ -76,53 +57,42 @@ const CheckoutPage = () => {
       <div className="grid grid-cols-2">
         {/* Payment information */}
         <section className="flex flex-col">
-          <div className="mt-8  p-2 ">
-            <div className="flex items-center">
-              <Button onClick={() => router.push("/cart")} variant="ghost">
-                <ChevronLeft size={24} />
-              </Button>
-              <h1 className="font-semibold text-xl bg-yellow-400 shadow-md w-fit p-2  rounded-md ">Checkout</h1>
-            </div>
+          <div className="bg-yellow-400 rounded-md mt-8 ml-10 p-2 shadow-md w-fit">
+            <h1 className="font-semibold text-xl">Checkout</h1>
           </div>
 
-          {userAddress ? (
-            <>
-              {/* Address Card */}
-              <section className="mt-4">
-                {/* address */}
-                <div className="mx-12 border-1 border-transparent rounded-lg bg-gradient-to-b from-blue-500 to-green-500">
-                  <div className=" flex flex-col justify-center w-full p-4 bg-white dark:bg-gray-900 rounded-md shadow-md">
-                    <h1 className="font-bold text-blue-600 text-xl mb-4">
-                      Address
-                    </h1>
-                    <div className="flex items-center justify-between w-full">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                          {userAddress.receiverName}
-                          <span className="ml-2 text-gray-500 font-normal text-sm">
-                            {userAddress.phoneNumber}
-                          </span>
-                        </h3>
-                        <p className="text-gray-500 dark:text-gray-400">
-                         {userAddress.addressLine}, {userAddress.city}, {userAddress.district}, {userAddress.ward}
-                        </p>
-                      </div>
+          {/* Address Card */}
+          <section className="mt-4">
+            {/* address */}
+            <div className="mx-12 border-1 border-transparent rounded-lg bg-gradient-to-b from-blue-500 to-green-500">
+              <div className=" flex flex-col justify-center w-full p-4 bg-white dark:bg-gray-900 rounded-md shadow-md">
+                <h1 className="font-bold text-blue-600 text-xl mb-4">
+                  Address
+                </h1>
+                <div className="flex items-center justify-between w-full">
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {/* {address.receiverName} */} Username
+                      <span className="ml-2 text-gray-500 font-normal text-sm">
+                        {/* {address.phoneNumber} */} Phone
+                      </span>
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {/* {address.addressLine}, {address.ward}, {address.district},{" "}
+                    {address.city} */}
+                      Address details
+                    </p>
+                  </div>
 
-                      <div className="flex flex-col space-y-2 items-end">
-                        <Button className="" variant="outline">
-                          Change
-                        </Button>
-                      </div>
-                    </div>
+                  <div className="flex flex-col space-y-2 items-end">
+                    <Button className="" variant="outline">
+                      Change
+                    </Button>
                   </div>
                 </div>
-              </section>
-            </>
-          ) : (
-            <div className="ml-72">
-              <Spinner />
+              </div>
             </div>
-          )}
+          </section>
 
           {/* Delivery method */}
           <div className="my-8 mx-12 text-medium font-semibold">
@@ -242,7 +212,7 @@ const CheckoutPage = () => {
             </div>
 
             <ScrollArea className="max-h-96 w-full rounded-md border">
-              {products.map((items, index) => (
+              {cartItems.map((items, index) => (
                 <>
                   <div className="flex p-2">
                     <img
@@ -259,13 +229,9 @@ const CheckoutPage = () => {
                       </div>
                       <div className="flex flex-row justify-between">
                         <h1 className="text-gray-500">
-                          ${items.price.toFixed(2)}  x {items.amount}
+                          Quantity: {items.amount}
                         </h1>
-                        <span className="font-bold mr-4">
-                          ${
-                            items.price * items.amount
-                          }
-                        </span>
+                        <span className="font-bold mr-4">${items.price} </span>
                       </div>
                     </div>
                   </div>
@@ -300,7 +266,11 @@ const CheckoutPage = () => {
                 <div className="flex space-x-4 ">
                   <h1 className="font-semibold">Subtotal</h1>
                   <h1 className="font-semibold text-blue-500">
-                    $ {subtotal.toFixed(2)}
+                    $
+                    {cartItems.reduce(
+                      (acc, item) => acc + item.price * item.amount,
+                      0
+                    )}
                   </h1>
                 </div>
                 <div className="flex space-x-4 ">

@@ -1,24 +1,21 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormLabel
 } from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { CategoryValidation } from "@/lib/validations/category";
-import { usePathname, useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const CategoryDetailsForm = (
   {
@@ -121,7 +118,7 @@ const CategoryDetailsForm = (
   };
 
   return (
-    <div className="my-4">
+    <div className="mt-4 w-full m-4">
       <h1 className="py-4">Add new Category</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -200,36 +197,38 @@ const CategoryDetailsForm = (
                 <FormLabel>Properties</FormLabel>
                 <FormControl>
                   <>
+                  <div className="grid grid-cols-2">
                     {propertiesValue.map((property, index) => {
                       return (
-                        <div key={index} className="flex space-x-2">
-                          <Input
-                            className="w-full"
-                            placeholder="property"
-                            value={property}
-                            onChange={(e) => {
-                              const newProperties = [...propertiesValue];
-                              newProperties[index] = e.target.value;
-                              setPropertiesValue(newProperties);
-                              form.setValue("properties", newProperties);
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            className="bg-red-500 font-semibold"
-                            onClick={() => {
-                              const newProperties = propertiesValue.filter(
-                                (_, i) => i !== index
-                              );
-                              setPropertiesValue(newProperties);
-                              form.setValue("properties", newProperties);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        </div>
+                          <div key={index} className="flex  space-x-1 my-2 mx-2">
+                            <Input
+                              className="w-full"
+                              placeholder="property"
+                              value={property}
+                              onChange={(e) => {
+                                const newProperties = [...propertiesValue];
+                                newProperties[index] = e.target.value;
+                                setPropertiesValue(newProperties);
+                                form.setValue("properties", newProperties);
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              className="bg-red-500 font-semibold"
+                              onClick={() => {
+                                const newProperties = propertiesValue.filter(
+                                  (_, i) => i !== index
+                                );
+                                setPropertiesValue(newProperties);
+                                form.setValue("properties", newProperties);
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
                       );
                     })}
+                    </div>
                   </>
                 </FormControl>
               </FormItem>

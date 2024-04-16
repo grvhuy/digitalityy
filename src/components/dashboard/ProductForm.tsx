@@ -6,6 +6,17 @@ import {
   FormItem,
   FormLabel
 } from "@/components/ui/form";
+ 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { ProductValidation } from "@/lib/validations/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -28,7 +39,8 @@ const ProductForm = ({
   category: existingCategory,
   productSpecs: existingSpecs,
   images: existingImages,
-  quantity: existingQuantity
+  quantity: existingQuantity,
+  brand: existingBrand,
 }: {
   _id?: string;
   name?: string;
@@ -38,6 +50,7 @@ const ProductForm = ({
   productSpecs?: [];
   images?: [];
   quantity?: number;
+  brand?: string;
 }) => {
   const router = useRouter();
 
@@ -55,10 +68,17 @@ const ProductForm = ({
   const [ files, setFiles ] = useState<any[]>([]);
   const [ quantity, setQuantity ] = useState(existingQuantity || 0);
 
+  const [ brands, setBrands ] = useState<any[]>([]);
+  const [ brand, setBrand ] = useState(existingBrand || "");
+
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
     });
+    axios.get(`/api/dashboard/brands`)
+      .then((res) => {
+        setBrands(res.data);
+      })
   }, []);
 
   useEffect(() => {
@@ -247,23 +267,39 @@ const ProductForm = ({
             )}
           />
 
+          {/* Chon dialog chua nhieu brand */}
           <FormField
             control={form.control}
-            name="quantity"
+            name="brand"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel>Quantity</FormLabel>
+                <FormLabel>Brand</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="quantity"
-                    type="number"
-                    value={field.value} // Sử dụng field.value thay vì price
-                    onChange={(e) => {
-                      const newValue = parseFloat(e.target.value);
-                      field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
-                      setQuantity(newValue);
+                  <Select
+                    value={brand}
+                    onValueChange={(value) => {
+                      setBrand(value);
+                      form.setValue("brand", value)
+                      console.log(value);
                     }}
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue>
+                        {brand ? brand : "Select a brand"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>{category.name}</SelectLabel>
+                          {brands.map((brand: any, index: number) => (
+                            <SelectItem key={index} value={brand.name}>
+                              {brand.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      
+                    </SelectContent>
+                  </Select>
                 </FormControl>
               </FormItem>
             )}

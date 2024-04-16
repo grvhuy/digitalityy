@@ -104,7 +104,7 @@ const CategoryForm = () => {
   };
 
   return (
-    <div className="">
+    <div className="mt-4 w-full m-4">
       <h1 className="py-4">Add new Category</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

@@ -25,7 +25,6 @@ export default function Header() {
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
-      console.log(result.data);
     });
   }, []);
 

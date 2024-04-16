@@ -1,6 +1,6 @@
-"use client"
- 
-import * as React from "react"
+"use client";
+
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,10 +12,15 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal, PlusIcon } from "lucide-react"
+} from "@tanstack/react-table";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  MoreHorizontal,
+  PlusIcon,
+} from "lucide-react";
 
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -23,28 +28,41 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import axios from "axios"
-import { useEffect } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-
+} from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import axios from "axios";
+import { useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export type Category = {
-  id: string
-  name: string
-  parent: string
-}
+  id: string;
+  name: string;
+  parent: string;
+};
 
-let dataX: Category[] = [
-
-]
+let dataX: Category[] = [];
 
 let updatedDataX: Category[] = [];
-
 
 export const columns: ColumnDef<Category>[] = [
   {
@@ -80,7 +98,7 @@ export const columns: ColumnDef<Category>[] = [
           Category
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
   },
@@ -95,17 +113,19 @@ export const columns: ColumnDef<Category>[] = [
           Parent Category
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("parent")}</div>,
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("parent")}</div>
+    ),
   },
-  
+
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const category = row.original
-      const router = useRouter()
+      const category = row.original;
+      const router = useRouter();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -122,43 +142,63 @@ export const columns: ColumnDef<Category>[] = [
               Copy category ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-            >
-               <Link href={`/dashboard/categories/${category.id}`}>
+            <DropdownMenuItem>
+              <Link href={`/dashboard/categories/${category.id}`}>
                 View category
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                axios.delete(`/api/dashboard/categories/${category.id}`);
-              }}
-            >Delete</DropdownMenuItem>
+
+              <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
+                <Dialog>
+                  <DialogTrigger>Delete category</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the category.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        onClick={async () => {
+                          await axios.delete(
+                            `/api/dashboard/categories/${category.id}`
+                          );
+                          
+                        }}
+                        variant="destructive"
+                        type="button"
+                      >
+                        Delete
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
 const DashboardCategoriesPage = () => {
+  const router = useRouter();
 
-  const router = useRouter()
-
-  const [categories, setCategories] = React.useState<Category[]>([
-
-  ])
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [categories, setCategories] = React.useState<Category[]>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/dashboard/categories/tableData');
+        const response = await axios.get("/api/dashboard/categories/tableData");
         const newData = Object.values(response.data).map((category: any) => {
           return {
             name: category.name,
@@ -170,15 +210,13 @@ const DashboardCategoriesPage = () => {
         setCategories(updatedDataX);
         console.log(updatedDataX);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-    
-  }, [dataX])
+  }, [dataX]);
 
-    
   const table = useReactTable({
     data: categories,
     columns,
@@ -196,7 +234,7 @@ const DashboardCategoriesPage = () => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="ml-60  bg-[#ffffff] px-4">
@@ -210,9 +248,13 @@ const DashboardCategoriesPage = () => {
             }
             className="max-w-sm"
           />
-          <Button onClick={() => router.push('/dashboard/categories/new')} variant="outline" className="ml-auto">
-              <span className="mx-2">New Category</span>
-              <PlusIcon className="h-4 w-4" />
+          <Button
+            onClick={() => router.push("/dashboard/categories/new")}
+            variant="outline"
+            className="ml-auto"
+          >
+            <span className="mx-2">New Category</span>
+            <PlusIcon className="h-4 w-4" />
           </Button>
         </div>
         <DropdownMenu>
@@ -237,7 +279,7 @@ const DashboardCategoriesPage = () => {
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -257,7 +299,7 @@ const DashboardCategoriesPage = () => {
                             header.getContext()
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -317,7 +359,7 @@ const DashboardCategoriesPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default DashboardCategoriesPage;

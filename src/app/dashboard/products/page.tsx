@@ -45,6 +45,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export type Product = {
   id: string;
@@ -152,8 +153,32 @@ export const columns: ColumnDef<Product>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={deleteProduct}
-            >Delete</DropdownMenuItem>
+            >
+              
+              <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
+                <Dialog>
+                  <DialogTrigger>Delete product</DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the product.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        onClick={deleteProduct}
+                        variant="destructive"
+                        type="button"
+                      >
+                        Delete
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

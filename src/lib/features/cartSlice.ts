@@ -11,6 +11,8 @@ interface Product {
   _id: string;
   name: string;
   category: string;
+  price: number;
+  image: string;
   amount: number; // so luong san pham duoc chon de checkout 
 }
 
