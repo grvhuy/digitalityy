@@ -36,6 +36,7 @@ const ProductForm = ({
   name: existingName,
   description: existingDescription,
   price: existingPrice,
+  salePrice: existingSalePrice,
   category: existingCategory,
   productSpecs: existingSpecs,
   images: existingImages,
@@ -46,6 +47,7 @@ const ProductForm = ({
   name?: string;
   description?: string;
   price?: number;
+  salePrice?: number;
   category?: string;
   productSpecs?: [];
   images?: [];
@@ -58,6 +60,7 @@ const ProductForm = ({
   const [description, setDescription] = useState(existingDescription || "");
   const [ images, setImages ] = useState<any[]>(existingImages || []);
   const [price, setPrice] = useState<number>(existingPrice || NaN);
+  const [salePrice, setSalePrice] = useState<number>(existingSalePrice || NaN);
   const [category, setCategory] = useState<any>(existingCategory || "");
   const [categories, setCategories] = useState<any[]>([]);
   const [specs, setSpecs] = useState<any[]>(existingSpecs || []);
@@ -101,6 +104,8 @@ const ProductForm = ({
       categoryName: category || "",
       productSpecs: specs,
       images: images,
+      brand: brand || "",
+      salePrice: salePrice || NaN,
     },
   });
 
@@ -244,22 +249,67 @@ const ProductForm = ({
               </FormItem>
             )}
           />
+          <div className="flex space-x-4">
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="price"
+                      type="number"
+                      value={field.value} // Sử dụng field.value thay vì price
+                      onChange={(e) => {
+                        const newValue = parseFloat(e.target.value);
+                        field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
+                        setPrice(newValue);
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="salePrice"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>Sale Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="sale"
+                      type="number"
+                      value={field.value} // Sử dụng field.value thay vì price
+                      onChange={(e) => {
+                        const newValue = parseFloat(e.target.value);
+                        field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
+                        setSalePrice(newValue);
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
-            name="price"
+            name="quantity"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel>Price</FormLabel>
+                <FormLabel>Quantity in inventory</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="price"
+                    placeholder="sale"
                     type="number"
                     value={field.value} // Sử dụng field.value thay vì price
                     onChange={(e) => {
                       const newValue = parseFloat(e.target.value);
                       field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
-                      setPrice(newValue);
+                      setQuantity(newValue);
                     }}
                   />
                 </FormControl>
@@ -288,9 +338,9 @@ const ProductForm = ({
                         {brand ? brand : "Select a brand"}
                       </SelectValue>
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>{category.name}</SelectLabel>
+                    <SelectContent className="w-1/2">
+                        <SelectGroup className="w-1/2">
+                          {/* <SelectLabel>{category.name}</SelectLabel> */}
                           {brands.map((brand: any, index: number) => (
                             <SelectItem key={index} value={brand.name}>
                               {brand.name}

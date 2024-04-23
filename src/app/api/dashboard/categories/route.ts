@@ -5,7 +5,21 @@ import { NextResponse } from "next/server";
 export const GET = async () => {
   connectToDB();
   const categories = await Category.find({}).populate("parent");
-  return NextResponse.json(categories);
+  let mainCategories = categories.filter((category) => !category.parent)
+  
+  const categorizedCategories = mainCategories.map((mainCategory) => {
+    const children = categories.filter(child => {
+      return child.parent && child.parent._id.toString() === mainCategory._id.toString();
+    });
+    return {
+      ...mainCategory.toObject(),
+      children,
+    }
+    
+  })
+  
+
+  return NextResponse.json(categorizedCategories);
 
 }
 
@@ -13,9 +27,13 @@ export const POST = async (req: Request) => {
   connectToDB();
   const values = await req.json();
   const { name, parent, properties, images } = values;
+  let parentProperties = []
+  if (parent) {
+    parentProperties = await Category.findById(parent).select("properties");
+  }
   const createdCategory = await Category.create({ 
     name, 
-    properties, 
+    properties: parent ? parentProperties.properties.concat(properties) : properties, 
     parent: parent || null, 
     images,
   });

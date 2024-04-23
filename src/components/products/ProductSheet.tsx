@@ -88,18 +88,7 @@ export const ProductSheet = ({
                     </button>
 
                     <div className="flex flex-col space-y-4 text-lg mt-8">
-                      <a href="#" className="text-primary">
-                        Children Category
-                      </a>
-                      <a href="#" className="text-primary">
-                        Children Category
-                      </a>
-                      <a href="#" className="text-primary">
-                        Children Category
-                      </a>
-                      <a href="#" className="text-primary">
-                        Children Category
-                      </a>
+                      {/* {item.} */}
                     </div>
                   </div>
                 </div>

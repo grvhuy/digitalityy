@@ -4,26 +4,20 @@ import { NextResponse } from "next/server";
 
 export const GET = async (req: Request) => {
   connectToDB();
-  const category = await Category.findById(req.url.split("/").pop()).populate(
-    "parent"
-  );
+  const category = await Category.findById(req.url.split("/").pop()).populate("parent").exec();
   return NextResponse.json(category);
 };
 
 export const PUT = async (req: Request) => {
-  try {
     connectToDB();
     const values = await req.json();
     const id = req.url.split("/").pop();
-    const { name, description, parent } = values;
+    const { name, parent, images, properties } = values;
     await Category.findByIdAndUpdate(id, {
       name,
-      description,
-      parent: parent || null,
+      parent: parent ? parent._id : null,
+      images,
+      properties,
     });
-  } catch (error) {
-    return NextResponse.error();
-  }
-
-  return NextResponse.json("update category success!");
+  return NextResponse.json(values);
 };

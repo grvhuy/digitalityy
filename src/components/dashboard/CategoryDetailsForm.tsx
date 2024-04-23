@@ -25,11 +25,11 @@ const CategoryDetailsForm = (
     properties: existingProperties,
     images: existingImages,
   } : {
-    _id: string;
-    name: string;
-    parent: string;
-    properties: string[];
-    images: string[];
+    _id?: string;
+    name?: string;
+    parent?: string;
+    properties?: string[];
+    images?: string[];
   }
 ) => {
   const router = useRouter();
@@ -43,7 +43,7 @@ const CategoryDetailsForm = (
   const [file, setFile] = useState(null);
   const [ files, setFiles ] = useState<any[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(existingImages[0] || '');
+  const [imageUrl, setImageUrl] = useState(existingImages ? existingImages[0] : "");
 
 
 
@@ -51,8 +51,6 @@ const CategoryDetailsForm = (
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
     });
-    console.log()
-
   }, []);
 
   const form = useForm<z.infer<typeof CategoryValidation>>({
@@ -65,10 +63,10 @@ const CategoryDetailsForm = (
     },
   });
 
-  useEffect(() => {
-    // Thực hiện các thay đổi giao diện
-    console.log("Properties changed:", propertiesValue);
-  }, [propertiesValue]);
+  // useEffect(() => {
+  //   // Thực hiện các thay đổi giao diện
+  //   console.log("Properties changed:", propertiesValue);
+  // }, [propertiesValue]);
 
 
 
@@ -113,8 +111,10 @@ const CategoryDetailsForm = (
   const onSubmit = async (values: z.infer<typeof CategoryValidation>) => {
     values.parent = parentCategory;
     values.images = imageUrl;
-    await axios.put(`/api/dashboard/categories/${_id}`, values);
-    router.push("/dashboard");
+    console.log("values", values);
+    const response = await axios.put(`/api/dashboard/categories/${_id}`, values);
+    console.log("response", response);
+    // router.push("/dashboard")
   };
 
   return (

@@ -53,6 +53,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { revalidatePath } from "next/cache";
 
 export type Category = {
   id: string;
@@ -126,6 +127,16 @@ export const columns: ColumnDef<Category>[] = [
     cell: ({ row }) => {
       const category = row.original;
       const router = useRouter();
+      const handleDelete = async () => {
+        try {
+          await axios.delete(`/api/dashboard/categories/${category.id}`);
+          revalidatePath("/dashboard/categories");
+          router.push("/dashboard/categories");
+          window.location.reload();
+        } catch (error) {
+          console.error("Error deleting category:", error);
+        }
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -148,34 +159,32 @@ export const columns: ColumnDef<Category>[] = [
               </Link>
             </DropdownMenuItem>
 
-              <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
-                <Dialog>
-                  <DialogTrigger>Delete category</DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the category.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button
-                        onClick={async () => {
-                          await axios.delete(
-                            `/api/dashboard/categories/${category.id}`
-                          );
-                          
-                        }}
-                        variant="destructive"
-                        type="button"
-                      >
-                        Delete
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
+            <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
+              <Dialog>
+                <DialogTrigger>Delete category</DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the category.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      onClick={async () => {
+                        await handleDelete();
+                        window.location.reload();
+                      }}
+                      variant="destructive"
+                      type="button"
+                    >
+                      Delete
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       );
