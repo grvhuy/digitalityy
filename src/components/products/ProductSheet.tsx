@@ -23,13 +23,9 @@ import axios from "axios";
 import { ArrowRightCircle, XCircleIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import Link from "next/link";
 
-export const ProductSheet = ({
-  categories,
-}: {
-  categories: any[];
-}) => {
-
+export const ProductSheet = ({ categories }: { categories: any[] }) => {
   const [toolTipIndex, setToolTipIndex] = useState<number>();
 
   const toggleSheet = (index: number) => {
@@ -87,8 +83,14 @@ export const ProductSheet = ({
                       />
                     </button>
 
-                    <div className="flex flex-col space-y-4 text-lg mt-8">
-                      {/* {item.} */}
+                    <div className="flex flex-col space-y-4 text-lg mt-10">
+                      {/* {item.} Category con link */}
+                      
+                      {item.children.map((child: any, index: number) => (
+                        <Link onClick={() => setToolTipIndex(-1)} href="/" key={index}>
+                          <h1>{child.name}</h1>
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 </div>

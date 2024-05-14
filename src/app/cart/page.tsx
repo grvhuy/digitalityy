@@ -4,15 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   addToCart,
+  addToCheckout,
   clearCart,
   removeFromCart,
+  removeFromCheckout,
   selectCartItems,
+  selectCheckoutItems,
+  increment,
+  decrement,
 } from "@/lib/features/cartSlice";
 import { AppDispatch } from "@/lib/store";
 import { image } from "@nextui-org/theme";
 import axios from "axios";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
@@ -20,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const CartPage = () => {
   const cartItems = useSelector(selectCartItems);
+  // const checkoutItems = useSelector(selectCheckoutItems);
   const dispatch: AppDispatch = useDispatch();
 
   const pathname = usePathname();
@@ -35,10 +42,11 @@ const CartPage = () => {
   const [quantity, setQuantity] = useState<number[]>([]);
   const [totalProduct, setTotalProduct] = useState<number[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
+  const [subtotal, setSubtotal] = useState<number>(0); // Tong tien cac san pham duoc checkbox
 
   useEffect(() => {
     dispatch(clearCart());
-  }, [])
+  }, []);
 
   //lay thong tin user cua gio hang
   useEffect(() => {
@@ -81,18 +89,13 @@ const CartPage = () => {
     console.log(cartItems);
   }, [cartItems]);
 
-  const handleCartRedux = () => {};
-
   const handleIncrement = async (index: number) => {
-    if (quantity[index] === 1) return;
-    dispatch(addToCart({
-      _id: products[index].product._id,
-      name: products[index].product.name,
-      category: products[index].product.category,
-      amount: quantity[index] + 1,
-      price: products[index].product.price,
-      image: products[index].product.images[0]
-    }))
+    dispatch(increment({ id: products[index].product._id }));
+
+    if (cartItems.find((items) => items._id === products[index].product._id)) {
+      setSubtotal(subtotal + products[index].product.price);
+    }
+
     const newQuantity = [...quantity];
     newQuantity[index] += 1;
     setQuantity(newQuantity);
@@ -101,23 +104,23 @@ const CartPage = () => {
         (product: any, i: number) => product.product.price * newQuantity[i]
       )
     );
-    await axios.put("/api/cart", {
+    await axios.patch("/api/cart", {
       userId,
       productId: products[index].product._id,
       quantity: newQuantity[index],
+      price: products[index].product.price,
+      image: products[index].product.images[0],
     });
   };
 
   const handleDecrement = async (index: number) => {
     if (quantity[index] === 1) return;
-    dispatch(addToCart({
-      _id: products[index].product._id,
-      name: products[index].product.name,
-      category: products[index].product.category,
-      amount: quantity[index] - 1,
-      price: products[index].product.price,
-      image: products[index].product.images[0]
-    }))
+    dispatch(decrement({ id: products[index].product._id }));
+
+    if (cartItems.find((item) => item._id === products[index].product._id)) {
+      setSubtotal(subtotal - products[index].product.price);
+    }
+
     const newQuantity = [...quantity];
     newQuantity[index] -= 1;
     setQuantity(newQuantity);
@@ -126,10 +129,12 @@ const CartPage = () => {
         (product: any, i: number) => product.product.price * newQuantity[i]
       )
     );
-    await axios.put("/api/cart", {
+    await axios.patch("/api/cart", {
       userId,
       productId: products[index].product._id,
       quantity: newQuantity[index],
+      price: products[index].product.price,
+      image: products[index].product.images[0],
     });
   };
 
@@ -145,10 +150,12 @@ const CartPage = () => {
         (product: any, i: number) => product.product.price * newQuantity[i]
       )
     );
-    await axios.put("/api/cart", {
+    await axios.patch("/api/cart", {
       userId,
       productId: products[index].product._id,
       quantity: newQuantity[index],
+      price: products[index].product.price,
+      image: products[index].product.images[0],
     });
   };
 
@@ -178,29 +185,53 @@ const CartPage = () => {
           </div>
         ) : (
           <section>
-            {products.map((product: any, index: number) => (
+            {products.length > 0  && products.map((product: any, index: number) => (
               <div key={index} className="mx-20">
                 <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
                   <div className="flex items-center">
                     <Checkbox
                       onCheckedChange={() => {
                         // Neu da check thi xoa khoi cartItems nguoc lai thi them vao
-                        if (cartItems.find((item) => item._id === product.product._id)) {
+
+                        // if (checkoutItems.find((item) => item._id === product.product._id)) {
+                        //   dispatch(removeFromCheckout({ id: product.product._id }));
+                        // } else {
+
+                        //   dispatch(addToCheckout({
+                        //     _id: product.product._id,
+                        //     name: product.product.name,
+                        //     category: product.product.category,
+                        //     amount: quantity[index],
+                        //     price: product.product.price,
+                        //     image: product.product.images[0]
+                        //   }))
+                        // }
+                        if (
+                          cartItems.find(
+                            (item) => item._id === product.product._id
+                          )
+                        ) {
                           dispatch(removeFromCart({ id: product.product._id }));
+                          setSubtotal(subtotal - totalProduct[index]);
                         } else {
-                          dispatch(addToCart({
-                            _id: product.product._id,
-                            name: product.product.name,
-                            category: product.product.category,
-                            amount: quantity[index],
-                            price: product.product.price,
-                            image: product.product.images[0]
-                          }));
+                          dispatch(
+                            addToCart({
+                              _id: product.product._id,
+                              name: product.product.name,
+                              category: product.product.category,
+                              amount: quantity[index],
+                              price: product.product.price,
+                              image: product.product.images[0],
+                            })
+                          );
+                          setSubtotal(subtotal + totalProduct[index]);
                         }
                       }}
-                    id="terms" />
-                    <img
+                      id="terms"
+                    />
+                    <Image
                       src={product.product.images[0]}
+                      loader={({ src }) => src}
                       width={120}
                       height={120}
                       alt="product"
@@ -216,12 +247,13 @@ const CartPage = () => {
                     <div className="flex w-24 justify-between items-center border border-gray-500 ">
                       <button
                         onClick={() => handleDecrement(index)}
-                        className="border-r border-gray-500  px-2 opacity-50 hover:opacity-100 transition-opacity duration-300"
+                        className="border-r border-gray-500 px-2 opacity-50 hover:opacity-100 transition-opacity duration-300"
                       >
                         <MinusIcon size={16} />
                       </button>
                       {/* <span className="">{product.quantity}</span> */}
                       <input
+                        disabled
                         className="w-8 text-center"
                         type="text"
                         value={quantity[index]}
@@ -238,12 +270,39 @@ const CartPage = () => {
                     </div>
                   </div>
                   <h1 className="font-semibold">${totalProduct[index]}</h1>
-                  <Button className="ml-4" variant="ghost">
+                  <Button
+                    onClick={() => {
+                      dispatch(removeFromCart({ id: product.product._id }));
+                      if (
+                        cartItems.find(
+                          (item) => item._id === product.product._id
+                        )
+                      ) {
+                        setSubtotal(subtotal - totalProduct[index]);
+                      }
+                      axios.delete(`/api/cart/${userId}`, {
+                        data: {
+                          userId,
+                          productId: product.product._id,
+                        },
+                      });
+                      window.location.reload();
+                    }}
+                    className="ml-4"
+                    variant="ghost"
+                  >
                     <FiTrash2 size={24} />
                   </Button>
                 </div>
               </div>
             ))}
+            {products.length === 0 && (
+              <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
+                {/* Them UI loading */}
+
+              </div>
+            
+            )}
           </section>
         )}
         {/* <section className="mx-20">
@@ -288,15 +347,7 @@ const CartPage = () => {
             <h1 className="font-bold text-2xl">Cart Summary</h1>
             <div className="flex space-x-4 ">
               <h1 className="font-semibold">Subtotal</h1>
-              {products.length > 0 && (
-                <h1>
-                  $
-                  {products.reduce(
-                    (acc, cur) => acc + cur.product.price * cur.quantity,
-                    0
-                  )}
-                </h1>
-              )}
+              {products.length > 0 && <h1>${subtotal}</h1>}
             </div>
             {/* <div className="flex space-x-4 ">
               <h1 className="font-semibold">Shipping</h1>

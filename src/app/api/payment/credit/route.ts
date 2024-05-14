@@ -6,7 +6,7 @@ const partnerCode = "MOMO";
 const accessKey = "F8BBA842ECF85";
 const secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
 const orderInfo = "test info";
-const requestType = "captureWallet";
+const requestType = "payWithCC";
 
 export const POST = async (req: Request) => {
   try {

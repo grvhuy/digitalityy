@@ -52,6 +52,34 @@ const CheckoutPage = () => {
     console.log("cart items:", cartItems);
   }, [cartItems]);
 
+  const handlePlaceOrder = () => {
+    axios.post("/api/payment/e-wallet", {
+      amount: cartItems.reduce((acc, item) => { return acc + (item.price * item.amount) }, 0),
+      // orderInfo: "MOMO",
+      redirectUrl: "https/localhost:3000/checkout/success",
+      ipnUrl: "https/localhost:3000/checkout/success",
+      requestType: "MOMO",
+      lang: "en",
+      userInfo: {
+        userId: userId,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      
+      },
+      deliveryInfo: {
+        deliveryAddress: userAddress,
+        deliveryFee: 30000,
+      },
+      items: cartItems.map((item) => {
+        return {
+          name: item.name,
+          price: item.price,
+          quantity: item.amount,
+        };
+      }),
+    });
+  }
+
   return (
     <>
       <div className="grid grid-cols-2">

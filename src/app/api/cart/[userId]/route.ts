@@ -9,23 +9,38 @@ export const GET = async (req: Request) => {
   const cart = await Cart.findOne({ user: userId })
     .populate({
       path: "products.product", // Đường dẫn đến trường 'product' trong mảng 'products'
-      model: Product, // Tên của model Product
-      select: "name price images price quantity" // Chọn các trường cần lấy
+      model: Product, 
+      select: "name price images price quantity" 
     })
   return NextResponse.json(cart);
 };
 
-export const PUT = () => async (req: Request) => {
-  // Update the quantity of a product in the cart
+export const PUT = async (req: Request) => {
+  // cap nhat so luong
   connectToDB();
   const values = await req.json();
-  const { userId, productId, quantity } = values;
+  const { userId, product, price, image, quantity  } = values;
   const cart = await Cart.findOne({ user: userId });
-  const product = cart.products.find((p: any) => p.product == productId);
-  product.quantity = quantity;
-  await cart.save();
 
-  return NextResponse.json({ message: "Update quantity success!" });
+  const index = cart.products.findIndex((p: any) => p.product == product.productId);
+  if (index === -1) {
+    cart.products.push({
+      product: product.productId,
+      price: product.price,
+      image: product.image,
+      quantity: product.quantity,
+    });
+  } else {
+    cart.products[index].quantity += product.quantity;
+  }
+
+  
+  await cart.save(
+    
+  );
+
+  // return NextResponse.json("Update quantity success!");
+  return NextResponse.json(cart)
 }
 
 export const DELETE = async (req: Request) => {
@@ -37,5 +52,4 @@ export const DELETE = async (req: Request) => {
   await cart.save();
 
   return NextResponse.json({ message: "Delete product success!" });
-
 }

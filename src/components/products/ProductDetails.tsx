@@ -53,10 +53,12 @@ export default function ProductDetails({
   const { data: session } = useSession();
   const { toast } = useToast();
   const [userId, setUserId] = useState<string>("");
-  const [images1, setImages] = useState<any[]>([]);
-  const images = ["/images/6.png", "/images/abcd.png", "/images/test-img.png"];
+  const [images, setImages] = useState<any[]>([]);
+  // const images = ["/images/6.png", "/images/abcd.png", "/images/test-img.png"];
   const [product, setProduct] = useState<any[]>([]);
   const [productSpecs, setProductspecs] = useState<any[]>([]);
+  const [quantity, setQuantity] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
 
   // Lay thong tin user
   useEffect(() => {
@@ -72,6 +74,8 @@ export default function ProductDetails({
       setProduct(result.data);
       setImages(result.data.images);
       setProductspecs(result.data.productSpecs);
+      setPrice(result.data.price);
+
       // console.log(result.data);
       // console.log(result.data.productSpecs);
     });
@@ -83,18 +87,23 @@ export default function ProductDetails({
       window.location.href = "/login";
     }
     if (userId) {
-      const quantity = 1;
-      const productId = params.productId;
-      const data = {
-        userId: userId,
-        product: {
-          productId: productId,
-          quantity: quantity,
-        },
-      };
-      console.log(data);
-
-      // await axios.post("/api/cart", data);
+      try {
+        axios.put(`/api/cart/${userId}`, {
+          userId: userId,
+          product: {
+            productId: params.productId,
+            quantity: 1,
+            price,
+            image: images[0],
+          },
+        }).then((response) => {
+          console.log(response);
+        }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+      
     }
   };
 
@@ -111,6 +120,7 @@ export default function ProductDetails({
                     height={500}
                     width={500}
                     src={image}
+                    loader={({ src }) => src}
                     alt={"pic from index" + { index }}
                   />
                 </CarouselItem>
@@ -122,7 +132,11 @@ export default function ProductDetails({
         </Carousel>
         <div className="flex flex-col justify-self-center w-full h-full">
           <h1 className="text-3xl font-semibold">{product.name}</h1>
-          <span className="mt-3 text-5xl text-red-400">${product.price}</span>
+          <span className="mt-3 text-5xl text-red-400">{Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }).format(product.price)
+          }</span>
           <Separator className="my-4" />
           <ul className="list-disc">
             <h1 className="font-bold">{"Product's Specifications:"}</h1>
@@ -139,15 +153,15 @@ export default function ProductDetails({
           </ul>
           <Separator className="my-4" />
           <div className="flex flex-col gap-y-2">
-            <label htmlFor="quantity" className="font-semibold">
+            {/* <label htmlFor="quantity" className="font-semibold">
               Quantity
-            </label>
-            <Input
+            </label> */}
+            {/* <Input
               id="quantity"
               className="w-1/6"
               type="number"
               placeholder="0"
-            />
+            /> */}
             <Button
               onClick={() => {
                 handleAddtoCart();

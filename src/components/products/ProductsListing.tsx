@@ -25,6 +25,7 @@ export default function ProductsListing({
   useEffect(() => {
     axios.get("/api/collections/" + params.categoryId).then((result) => {
       setProducts(result.data.products);
+      console.log(result.data.products);
     });
   }, [params.categoryId]);
   return (
@@ -79,6 +80,7 @@ export default function ProductsListing({
         {categoryProducts.map((item) => {
           return (
             <ProductCard
+              image={item.images[0]}
               key={item._id}
               name={item.name}
               price={item.price}

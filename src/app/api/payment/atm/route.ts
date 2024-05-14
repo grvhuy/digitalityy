@@ -6,7 +6,7 @@ const partnerCode = "MOMO";
 const accessKey = "F8BBA842ECF85";
 const secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
 const orderInfo = "test info";
-const requestType = "captureWallet";
+const requestType = "payWithATM";
 
 export const POST = async (req: Request) => {
   try {
@@ -14,7 +14,7 @@ export const POST = async (req: Request) => {
     const orderId = requestId;
     const extraData = "asds";
 
-    const { amount, redirectUrl, ipnUrl, requestType, userInfo, deliveryInfo, items } = await req.json();
+    const { amount, redirectUrl, ipnUrl, userInfo, deliveryInfo, items } = await req.json();
 
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
