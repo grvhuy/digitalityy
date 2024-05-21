@@ -1,3 +1,4 @@
+import Transaction from "@/lib/models/transaction.model";
 import * as crypto from "crypto";
 import * as https from "https";
 import { NextResponse } from "next/server";
@@ -5,16 +6,17 @@ import { NextResponse } from "next/server";
 const partnerCode = "MOMO";
 const accessKey = "F8BBA842ECF85";
 const secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-const orderInfo = "test info";
-const requestType = "captureWallet";
+// const requestType = "captureWallet";
 
 export const POST = async (req: Request) => {
+  // const { requestType } = await req.json();
+  // return NextResponse.json(requestType);
   try {
     const requestId = partnerCode + new Date().getTime().toString();
     const orderId = requestId;
     const extraData = "asds";
 
-    const { amount, redirectUrl, ipnUrl, requestType, userInfo, deliveryInfo, items } = await req.json();
+    const { amount, redirectUrl, ipnUrl, requestType, userInfo, deliveryInfo, items, orderInfo } = await req.json();
 
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
@@ -72,6 +74,10 @@ export const POST = async (req: Request) => {
       request.write(requestBody);
       request.end();
     });
+
+    const transaction = new Transaction({
+      
+    })
 
     return NextResponse.json(resBodyObject);
   } catch (error) {

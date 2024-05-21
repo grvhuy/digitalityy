@@ -104,7 +104,7 @@ const CartPage = () => {
         (product: any, i: number) => product.product.price * newQuantity[i]
       )
     );
-    await axios.patch("/api/cart", {
+    await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
       quantity: newQuantity[index],
@@ -129,7 +129,7 @@ const CartPage = () => {
         (product: any, i: number) => product.product.price * newQuantity[i]
       )
     );
-    await axios.patch("/api/cart", {
+    await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
       quantity: newQuantity[index],
@@ -150,7 +150,7 @@ const CartPage = () => {
         (product: any, i: number) => product.product.price * newQuantity[i]
       )
     );
-    await axios.patch("/api/cart", {
+    await axios.put("/api/cart", {
       userId,
       productId: products[index].product._id,
       quantity: newQuantity[index],
@@ -185,159 +185,135 @@ const CartPage = () => {
           </div>
         ) : (
           <section>
-            {products.length > 0  && products.map((product: any, index: number) => (
-              <div key={index} className="mx-20">
-                <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
-                  <div className="flex items-center">
-                    <Checkbox
-                      onCheckedChange={() => {
-                        // Neu da check thi xoa khoi cartItems nguoc lai thi them vao
+            {products.length > 0 &&
+              products.map((product: any, index: number) => (
+                <div key={index} className="mx-20">
+                  <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
+                    <div className="flex items-center">
+                      <Checkbox
+                        onCheckedChange={() => {
+                          // Neu da check thi xoa khoi cartItems nguoc lai thi them vao
 
-                        // if (checkoutItems.find((item) => item._id === product.product._id)) {
-                        //   dispatch(removeFromCheckout({ id: product.product._id }));
-                        // } else {
+                          // if (checkoutItems.find((item) => item._id === product.product._id)) {
+                          //   dispatch(removeFromCheckout({ id: product.product._id }));
+                          // } else {
 
-                        //   dispatch(addToCheckout({
-                        //     _id: product.product._id,
-                        //     name: product.product.name,
-                        //     category: product.product.category,
-                        //     amount: quantity[index],
-                        //     price: product.product.price,
-                        //     image: product.product.images[0]
-                        //   }))
-                        // }
+                          //   dispatch(addToCheckout({
+                          //     _id: product.product._id,
+                          //     name: product.product.name,
+                          //     category: product.product.category,
+                          //     amount: quantity[index],
+                          //     price: product.product.price,
+                          //     image: product.product.images[0]
+                          //   }))
+                          // }
+                          if (
+                            cartItems.find(
+                              (item) => item._id === product.product._id
+                            )
+                          ) {
+                            dispatch(
+                              removeFromCart({ id: product.product._id })
+                            );
+                            setSubtotal(subtotal - totalProduct[index]);
+                          } else {
+                            dispatch(
+                              addToCart({
+                                _id: product.product._id,
+                                name: product.product.name,
+                                category: product.product.category,
+                                amount: quantity[index],
+                                price: product.product.price,
+                                image: product.product.images[0],
+                              })
+                            );
+                            setSubtotal(subtotal + totalProduct[index]);
+                          }
+                        }}
+                        id="terms"
+                      />
+                      <Image
+                        src={product.product.images[0]}
+                        loader={({ src }) => src}
+                        width={120}
+                        height={120}
+                        alt="product"
+                      />
+                    </div>
+                    <h1 className="col-span-2 mx-4 font-semibold">
+                      {product.product.name}
+                    </h1>
+                    <h1 className="self-center text-red-400">
+                      {Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(product.product.price)}
+                    </h1>
+                    <div className="">
+                      <div className="flex w-24 justify-between items-center border border-gray-500 ">
+                        <button
+                          onClick={() => handleDecrement(index)}
+                          className="border-r border-gray-500 px-2 opacity-50 hover:opacity-100 transition-opacity duration-300"
+                        >
+                          <MinusIcon size={16} />
+                        </button>
+                        {/* <span className="">{product.quantity}</span> */}
+                        <input
+                          disabled
+                          className="w-8 text-center"
+                          type="text"
+                          value={quantity[index]}
+                          onChange={() => {}}
+                        />
+                        <button
+                          onClick={() => {
+                            handleIncrement(index);
+                          }}
+                          className="border-l border-gray-500 px-2 pr-3 opacity-50 hover:opacity-100 transition-opacity duration-300"
+                        >
+                          <PlusIcon size={16} />
+                        </button>
+                      </div>
+                    </div>
+                    <h1 className="font-semibold">
+                      {Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(totalProduct[index] || 0)}
+                    </h1>
+                    <Button
+                      onClick={() => {
+                        dispatch(removeFromCart({ id: product.product._id }));
                         if (
                           cartItems.find(
                             (item) => item._id === product.product._id
                           )
                         ) {
-                          dispatch(removeFromCart({ id: product.product._id }));
                           setSubtotal(subtotal - totalProduct[index]);
-                        } else {
-                          dispatch(
-                            addToCart({
-                              _id: product.product._id,
-                              name: product.product.name,
-                              category: product.product.category,
-                              amount: quantity[index],
-                              price: product.product.price,
-                              image: product.product.images[0],
-                            })
-                          );
-                          setSubtotal(subtotal + totalProduct[index]);
                         }
+                        axios.delete(`/api/cart/${userId}`, {
+                          data: {
+                            userId,
+                            productId: product.product._id,
+                          },
+                        });
+                        window.location.reload();
                       }}
-                      id="terms"
-                    />
-                    <Image
-                      src={product.product.images[0]}
-                      loader={({ src }) => src}
-                      width={120}
-                      height={120}
-                      alt="product"
-                    />
+                      className="ml-4"
+                      variant="ghost"
+                    >
+                      <FiTrash2 size={24} />
+                    </Button>
                   </div>
-                  <h1 className="col-span-2 mx-4 font-semibold">
-                    {product.product.name}
-                  </h1>
-                  <h1 className="self-center text-red-400">
-                    ${product.product.price}
-                  </h1>
-                  <div className="">
-                    <div className="flex w-24 justify-between items-center border border-gray-500 ">
-                      <button
-                        onClick={() => handleDecrement(index)}
-                        className="border-r border-gray-500 px-2 opacity-50 hover:opacity-100 transition-opacity duration-300"
-                      >
-                        <MinusIcon size={16} />
-                      </button>
-                      {/* <span className="">{product.quantity}</span> */}
-                      <input
-                        disabled
-                        className="w-8 text-center"
-                        type="text"
-                        value={quantity[index]}
-                        onChange={() => {}}
-                      />
-                      <button
-                        onClick={() => {
-                          handleIncrement(index);
-                        }}
-                        className="border-l border-gray-500 px-2 pr-3 opacity-50 hover:opacity-100 transition-opacity duration-300"
-                      >
-                        <PlusIcon size={16} />
-                      </button>
-                    </div>
-                  </div>
-                  <h1 className="font-semibold">${totalProduct[index]}</h1>
-                  <Button
-                    onClick={() => {
-                      dispatch(removeFromCart({ id: product.product._id }));
-                      if (
-                        cartItems.find(
-                          (item) => item._id === product.product._id
-                        )
-                      ) {
-                        setSubtotal(subtotal - totalProduct[index]);
-                      }
-                      axios.delete(`/api/cart/${userId}`, {
-                        data: {
-                          userId,
-                          productId: product.product._id,
-                        },
-                      });
-                      window.location.reload();
-                    }}
-                    className="ml-4"
-                    variant="ghost"
-                  >
-                    <FiTrash2 size={24} />
-                  </Button>
                 </div>
-              </div>
-            ))}
+              ))}
             {products.length === 0 && (
               <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
                 {/* Them UI loading */}
-
               </div>
-            
             )}
           </section>
         )}
-        {/* <section className="mx-20">
-          <div className="flex w-full">
-            <div>
-              <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
-                <img
-                  src="https://grvhuy-digitality.s3.ap-southeast-2.amazonaws.com/1711726047842-Ban-phim-Corsair-K68-Full-size-Cherry-MX-RedRGB-nguyenvu.store-3-1536x1112.png"
-                  width={120}
-                  height={120}
-                  alt="product"
-                />
-                <h1 className="col-span-2 mx-4">
-                  Laptop Asus Vivobook Go 15 E1504FA R5 7520U (NJ776W)
-                </h1>
-                <h1 className="self-center">$100.00</h1>
-                <div className="">
-                  <div className="flex w-24 justify-between items-center border border-gray-500 border-spacing-1">
-                    <button className="border-r border-gray-500  pr-2 mx-2 opacity-50 hover:opacity-100 transition-opacity duration-300">
-                      <MinusIcon size={16} />
-                    </button>
-                    <span className="">1</span>
-                    <button className="border-l border-gray-500  pl-2 mx-2 opacity-50 hover:opacity-100 transition-opacity duration-300">
-                      <PlusIcon size={16} />
-                    </button>
-                  </div>
-                </div>
-                <h1 className="font-semibold">Unit Price x Qty</h1>
-                <Button className="ml-4" variant="ghost">
-                  <FiTrash2 size={24} />
-                </Button>
-              </div>              
-            </div>
-          </div>
-        </section> */}
       </div>
 
       {/* // Cart Summary */}
@@ -347,7 +323,14 @@ const CartPage = () => {
             <h1 className="font-bold text-2xl">Cart Summary</h1>
             <div className="flex space-x-4 ">
               <h1 className="font-semibold">Subtotal</h1>
-              {products.length > 0 && <h1>${subtotal}</h1>}
+              {products.length > 0 && (
+                <h1>
+                  {Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(subtotal || 0)}
+                </h1>
+              )}
             </div>
             {/* <div className="flex space-x-4 ">
               <h1 className="font-semibold">Shipping</h1>

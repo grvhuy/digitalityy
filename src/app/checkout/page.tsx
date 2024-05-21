@@ -74,6 +74,7 @@ const CheckoutPage = () => {
         ipnUrl: "http://localhost:3000/checkout/success",
         requestType: paymentMethod,
         lang: "en",
+        orderInfo: "Sản phẩm:" + cartItems.map((item) => item.name).join(", "),
         userInfo: {
           userId: userId,
           email: user.email,
@@ -171,7 +172,6 @@ const CheckoutPage = () => {
                 <RadioGroupItem
                   onClick={() => {
                     setPaymentMethod("e-wallet");
-                    console.log("e-wallet");
                   }}
                   value="e-wallet"
                   id="r4"
@@ -232,8 +232,7 @@ const CheckoutPage = () => {
               <div className="px-4 py-2 flex items-center space-x-2">
                 <RadioGroupItem
                   onClick={() => {
-                    setPaymentMethod("atm");
-                    console.log("payWithATM");
+                    setPaymentMethod("payWithAtm");
                   }}
                   value="atm"
                   id="r5"
@@ -248,7 +247,6 @@ const CheckoutPage = () => {
                 <RadioGroupItem
                   onClick={() => {
                     setPaymentMethod("payWithCC");
-                    console.log("credit");
                   }}
                   value="credit"
                   id="r6"
@@ -297,7 +295,12 @@ const CheckoutPage = () => {
                         <h1 className="text-gray-500">
                           Quantity: {items.amount}
                         </h1>
-                        <span className="font-bold mr-4">${items.price} </span>
+                        <span className="font-bold mr-4">
+                          {Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(items.price * items.amount)}
+                        </span>
                       </div>
                     </div>
                   </div>
