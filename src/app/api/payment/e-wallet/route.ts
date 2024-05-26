@@ -76,8 +76,17 @@ export const POST = async (req: Request) => {
     });
 
     const transaction = new Transaction({
-      
-    })
+        orderId: orderId,
+        userInfo: userInfo,
+        deliveryInfo: deliveryInfo,
+        items: items,
+        amount: amount,
+        status: "pending",
+        transactionInfo: resBodyObject,
+    });
+
+    await transaction.save();
+    
 
     return NextResponse.json(resBodyObject);
   } catch (error) {

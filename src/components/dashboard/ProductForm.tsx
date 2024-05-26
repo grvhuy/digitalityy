@@ -101,7 +101,7 @@ const ProductForm = ({
       description: description || "",
       price: price || NaN,
       quantity: quantity,
-      categoryName: category || "",
+      categoryName: category,
       productSpecs: specs,
       images: images,
       brand: brand || "",
@@ -116,6 +116,7 @@ const ProductForm = ({
     values.productSpecs = specs;
     values.images = images;
     if (_id) {
+      console.log("put values: ", values)
       await axios.put(`/api/dashboard/products/${_id}`, values);
     } else {
       await axios.post("/api/dashboard/products", values)
@@ -424,7 +425,16 @@ const ProductForm = ({
             >
               Cancel
             </Button>
-            <Button type="submit">Add Product</Button>
+            {_id ? (
+              <Button onClick={() => {
+                axios.put(`/api/dashboard/products/${_id}`, form.getValues())
+                .then((res) => {
+                  console.log('res:', res.data);
+                })
+              }} type="submit">Save Changes</Button>
+            ) : (
+              <Button type="submit">Add Product</Button>
+            )}
           </div>
         </form>
       </Form>

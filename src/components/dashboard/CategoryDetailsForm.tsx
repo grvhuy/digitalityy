@@ -58,18 +58,12 @@ const CategoryDetailsForm = (
     defaultValues: {
       name: categoryName || "",
       parent: parentCategory || "",
-      properties: [],
+      properties: propertiesValue || [],
       images: "",
     },
   });
 
-  // useEffect(() => {
-  //   // Thực hiện các thay đổi giao diện
-  //   console.log("Properties changed:", propertiesValue);
-  // }, [propertiesValue]);
-
-
-
+  //upload anh local
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selectedFiles = e.target.files;
     if (selectedFiles) {
@@ -112,9 +106,9 @@ const CategoryDetailsForm = (
     values.parent = parentCategory;
     values.images = imageUrl;
     console.log("values", values);
-    const response = await axios.put(`/api/dashboard/categories/${_id}`, values);
+    const response = await axios.patch(`/api/dashboard/categories/${_id}`, values);
     console.log("response", response);
-    // router.push("/dashboard")
+    router.push("/dashboard/categories")
   };
 
   return (
@@ -326,7 +320,7 @@ const CategoryDetailsForm = (
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button className="w-[180px]" type="submit">Publish</Button>
         </form>
       </Form>
     </div>

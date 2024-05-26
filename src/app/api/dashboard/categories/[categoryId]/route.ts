@@ -21,3 +21,17 @@ export const PUT = async (req: Request) => {
     });
   return NextResponse.json(values);
 };
+
+export const PATCH = async (req: Request) => {
+  connectToDB();
+  const values = await req.json();
+  const id = req.url.split("/").pop();
+  const { name, parent, images, properties } = values;
+  await Category.findByIdAndUpdate(id, {
+    name,
+    parent: parent ? parent._id : null,
+    images,
+    properties,
+  });
+return NextResponse.json(values);
+};

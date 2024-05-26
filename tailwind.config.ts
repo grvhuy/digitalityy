@@ -88,7 +88,7 @@ const config = {
       },
     },
   },
-  plugins: [nextui(), require("tailwindcss-animate")],
+  plugins: [nextui(), require("tailwindcss-animate")  ],
 } satisfies Config
 
 export default config

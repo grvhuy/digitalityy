@@ -10,5 +10,6 @@ export const GET = async (req: Request) => {
   const products = await Product.find({
     category: id,
   })
+  console.log("category: ", category);
   return NextResponse.json({category, products });
 }

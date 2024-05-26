@@ -14,6 +14,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { DynamicFilters } from "../DynamicFilters";
+import { TFilter, filtersConfig } from "@/lib/features/filter";
+import { Button } from "../ui/button";
+
+type TSpecs = {
+  attributeName: string;
+  attributeValue: string;
+}
 
 export default function ProductsListing({
   params,
@@ -22,14 +30,107 @@ export default function ProductsListing({
 }) {
   const router = useRouter();
   const [categoryProducts, setProducts] = useState<any[]>([]);
+  const [productsFiltered, setProductsFiltered] = useState<any[]>([]);
+  const [categoryName, setCategoryName] = useState<string>("");
+  const [filters, setFilters] = useState<TFilter[]>([]);
+  const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]); // categoryName, categoryId, specName, specValue
+  useEffect(() => {
+    console.log(filters)
+  }, [
+    filters
+  ]);
+
   useEffect(() => {
     axios.get("/api/collections/" + params.categoryId).then((result) => {
       setProducts(result.data.products);
-      console.log(result.data.products);
+      setProductsFiltered(result.data.products);
+      setCategoryName(result.data.category.name);
+      // console.log("cate name: ", result.data.category.name);
     });
   }, [params.categoryId]);
+
+  useEffect(() => {
+    filtersConfig.category.forEach((item) => {
+      // console.log("item name: ", item.name);
+      if ((item.name === categoryName)) {
+        setFilters(item.filters);
+      }
+    });
+  }, [categoryName]);
+
+  const handlePriceFilter = (value: any) => {
+    let sortedProducts = [...categoryProducts];
+    if (value === "low-high") {
+      sortedProducts.sort((a, b) => a.price - b.price);
+    } else if (value === "high-low") {
+      sortedProducts.sort((a, b) => b.price - a.price);
+    }
+    setProductsFiltered(sortedProducts);
+  };
+
+  const handleFilterSpec = (name: any, value: any) => {
+    if (value === "all") {
+      setFilterSpecs((prev) =>
+        prev.filter((spec) => spec.attributeName !== name)
+      );
+      return;
+    }
+    setFilterSpecs((prev) => 
+      prev.filter((spec) => spec.attributeName !== name).concat({
+        attributeName: name,
+        attributeValue: value,
+      })
+    );
+    console.log(filterSpecs)
+  };
+
+  const handleFilter = async () => {
+    await axios.post("/api/filter", {
+      categoryId: params.categoryId,
+      filterSpecs: filterSpecs,
+    }).then((result) => {
+      setProductsFiltered(result.data);
+      console.log(result.data);
+    });
+  }
+
   return (
     <div className="flex flex-wrap flex-col gap-y-5 my-5">
+      <div className="flex flex-col">
+        <div className="flex items-center justify-center">
+          {/* Filter api */}
+          <div className="flex space-x-2">
+            {filters.map((item) => {
+              const handleValueChange = (value: any) => handleFilterSpec(item.name, value);
+              return (
+                <Select
+                  onValueChange={handleValueChange}
+                >
+                  <SelectTrigger className="w-[108px]">
+                    <SelectValue id={item.name} placeholder={item.label} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {/* <SelectLabel>{item.label}</SelectLabel> */}
+                      <SelectItem value="all">All</SelectItem>
+                      {item.options.map((option) => {
+                        return (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              );
+            })}
+            <Button onClick={handleFilter} type="button" variant="gold_black">
+              Filter
+            </Button>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-row place-self-center gap-x-5">
         <div className="flex items-center space-x-2">
           <Switch id="instock-switch" />
@@ -37,47 +138,72 @@ export default function ProductsListing({
             In Stock
           </Label>
         </div>
-        <Select>
+        {/* <Select
+          onValueChange={() => {
+            if (
+              document.getElementById("brand-select")?.textContent ===
+              "All Brands"
+            ) {
+              setProductsFiltered(categoryProducts);
+              return;
+            }
+            setProductsFiltered(
+              categoryProducts.filter(
+                (item) =>
+                  item.brand ===
+                  document.getElementById("brand-select")?.textContent
+              )
+            );
+            // console.log(document.getElementById("brand-select")?.textContent)
+          }}
+        >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a brand" />
+            <SelectValue id="brand-select" placeholder="Select a brand" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Brand</SelectLabel>
-              <SelectItem value="amd">AMD</SelectItem>
-              <SelectItem value="intel">Intel</SelectItem>
+              <SelectItem value="all">All Brands</SelectItem>
+              {categoryProducts.map((item) => {
+                if (item.brand === "" || item.brand === undefined) {
+                  return;
+                }
+                return (
+                  <SelectItem key={item._id} value={item.brand}>
+                    {item.brand}
+                  </SelectItem>
+                );
+              })}
             </SelectGroup>
           </SelectContent>
-        </Select>
+        </Select> */}
         <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a size" />
+          <SelectTrigger id="name-select" className="w-[180px]">
+            <SelectValue placeholder="Sort by Name" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Size</SelectLabel>
-              <SelectItem value="full">{"Full"}</SelectItem>
-              <SelectItem value="tkl">TKL</SelectItem>
-              <SelectItem value="75%">{"75%"}</SelectItem>
-              <SelectItem value="65%">{"65%"}</SelectItem>
+              {/* <SelectLabel>Sort by Name</SelectLabel> */}
+              <SelectItem value="a-z">A to Z</SelectItem>
+              <SelectItem value="z-a">Z to A</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Select>
+        <Select onValueChange={handlePriceFilter}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by price" />
+            <SelectValue id="price-select" placeholder="Sort by price" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Price</SelectLabel>
+              {/* <SelectLabel>Price</SelectLabel> */}
               <SelectItem value="low-high">Low to High</SelectItem>
               <SelectItem value="high-low">High to Low</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-wrap flex-row gap-x-5 mx-48">
-        {categoryProducts.map((item) => {
+      <div className="flex flex-wrap gap-x-5 mx-36">
+        {productsFiltered.map((item) => {
           return (
             <ProductCard
               image={item.images[0]}
@@ -85,7 +211,7 @@ export default function ProductsListing({
               name={item.name}
               price={item.price}
               description={item.description}
-              onClick={() => router.push("/products/" + item._id )}
+              onClick={() => router.push("/products/" + item._id)}
             />
           );
         })}
