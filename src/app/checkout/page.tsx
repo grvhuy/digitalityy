@@ -8,6 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { selectCartItems } from "@/lib/features/cartSlice";
+import Order from "@/lib/models/order.model";
+import connectToDB from "@/lib/mongoose";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -65,6 +67,8 @@ const CheckoutPage = () => {
   }, [cartItems]);
 
   const handlePlaceOrder = async () => {
+    // Tạo đơn hàng cho khách
+
     // console.log("total");
     axios
       .post("/api/payment/e-wallet", {
@@ -88,7 +92,11 @@ const CheckoutPage = () => {
       })
       .then((res) => {
         console.log(res.data);
-        router.push(res.data.payUrl);
+        if (res.data === "COD") {
+          router.push("/checkout/success");
+        } else {
+          router.push(res.data.payUrl);
+        }
       });
   };
 
@@ -112,15 +120,18 @@ const CheckoutPage = () => {
                 <div className="flex items-center justify-between w-full">
                   <div className="space-y-2">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {/* {address.receiverName} */} Username
+                      {/* {address.receiverName} */} 
+                      {userAddress?.receiverName}
                       <span className="ml-2 text-gray-500 font-normal text-sm">
-                        {/* {address.phoneNumber} */} Phone
+                        {/* {address.phoneNumber} */} 
+                        {userAddress?.phoneNumber}
                       </span>
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400">
                       {/* {address.addressLine}, {address.ward}, {address.district},{" "}
                     {address.city} */}
-                      Address details
+                      {userAddress?.addressLine}, {userAddress?.ward}, {userAddress?.district},{" "}
+                      {userAddress?.city}
                     </p>
                   </div>
 
@@ -258,7 +269,13 @@ const CheckoutPage = () => {
               <Separator />
 
               <div className="px-4 pt-2 pb-4 flex items-center space-x-2">
-                <RadioGroupItem value="cod" id="r7" />
+                <RadioGroupItem
+                  onClick={() => {
+                    setPaymentMethod("COD");
+                  }}
+                  value="cod"
+                  id="r7"
+                />
                 <Label className="text-gray-500" htmlFor="r7">
                   Cash on Delivery
                 </Label>
@@ -334,11 +351,15 @@ const CheckoutPage = () => {
               <div className="flex flex-col bg-white shadow-sm border rounded-md p-4 space-y-4">
                 <div className="flex space-x-4 ">
                   <h1 className="font-semibold">Subtotal</h1>
-                  <h1 className="font-semibold text-blue-500">
-                    $
-                    {cartItems.reduce(
-                      (acc, item) => acc + item.price * item.amount,
-                      0
+                  <h1 className="font-semibold text-red-500">
+                    {Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(
+                      cartItems.reduce(
+                        (acc, item) => acc + item.price * item.amount,
+                        0
+                      )
                     )}
                   </h1>
                 </div>
