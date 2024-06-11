@@ -12,5 +12,6 @@ export const ProductValidation = z.object({
   categoryName: z.string(),
   quantity: z.number(),
   brand: z.string(),
+  discount: z.number().optional(),
   // tags: z.array(z.string()),
 })
