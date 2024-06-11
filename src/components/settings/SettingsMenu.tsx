@@ -3,8 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "../ui/separator";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SettingsMenu() {
+
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const handleAccesibility = () => {
     router.push("/profile/settings/accessibility");

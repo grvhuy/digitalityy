@@ -74,12 +74,12 @@ export default function Header() {
                 transform="translate(-64.89 -152.39)"
               />
             </svg>
-            <h1 className="relative text-3xl font-mono font-bold top-2">
+            <h1 className="relative text-3xl font-mono font-semibold top-2">
               igitality
             </h1>
           </div>
-          <nav className="place-self-center ">
-            <ul className="flex  list-none text-center font-bold">
+          <nav className="place-self-center">
+            <ul className="flex  list-none text-center font-semibold">
               <ProductSheet categories={categories} />
               <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500">
                 Contact Us
@@ -109,16 +109,16 @@ export default function Header() {
               <div className="">
                 <button
                   onClick={() => router.push("/sign-in")}
-                  className=" py-2 px-5 mx-2 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
+                  className=" py-2 px-5 mx-2 hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
                 >
                   Sign In
                 </button>
-                <button
+                {/* <button
                   onClick={() => router.push("/sign-up")}
-                  className=" py-2 px-5 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
+                  className=" py-2 px-5 hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
                 >
                   Sign Up
-                </button>
+                </button> */}
               </div>
             )}
             <button onClick={() => router.push("/cart")} className="">
