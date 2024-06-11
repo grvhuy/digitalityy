@@ -17,7 +17,6 @@ import {
   ArrowUpDown,
   ChevronDown,
   MoreHorizontal,
-  PlusCircleIcon,
   PlusIcon,
 } from "lucide-react";
 
@@ -45,20 +44,28 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-export type Product = {
+export type Order = {
   id: string;
   price: number;
-  name: string;
-  category: string;
+  status: string;
+  date: Date;
 };
 
-let dataX: Product[] = [];
+let dataX: Order[] = [];
 
-let updatedDataX: Product[] = [];
+let updatedDataX: Order[] = [];
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<Order>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -82,30 +89,59 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: "Product Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    accessorKey: "id",
+    header: "Order ID",
+    cell: ({ row }) => <div className="">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "category",
+    accessorKey: "date",
     header: ({ column }) => {
       return (
+        <Button
+          className=""
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date created
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="ml-4">{
+      new Date(row.getValue("date")).toLocaleDateString("en-US")
+    }</div>,
+  },
+
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="capitalize"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="ml-4 uppercase">{row.getValue("status")}</div>,
+  },
+
+  {
+    accessorKey: "price",
+    header: ({ column }) => (
+      <div className="text-right">
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Category
+          Total
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("category")}</div>
+      </div>
     ),
-  },
-  {
-    accessorKey: "price",
-    header: () => <div className="text-right">Price</div>,
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
 
@@ -122,13 +158,11 @@ export const columns: ColumnDef<Product>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const product = row.original;
-
-      
+      const order = row.original;
 
       const deleteProduct = async () => {
-        await axios.delete(`/api/dashboard/products/${product.id}`);
-      }
+        await axios.delete(`/api/dashboard/products/${order.id}`);
+      };
 
       return (
         <DropdownMenu>
@@ -141,28 +175,26 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={() => navigator.clipboard.writeText(order.id)}
             >
-              Copy product ID
+              Copy order ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/dashboard/products/details/${product.id}`}>
-                View product
+              <Link href={`/dashboard/orders/details/${order.id}`}>
+                View order
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-            >
-              
+            <DropdownMenuItem>
               <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
                 <Dialog>
-                  <DialogTrigger>Delete product</DialogTrigger>
+                  <DialogTrigger>Delete order</DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Are you absolutely sure?</DialogTitle>
                       <DialogDescription>
                         This action cannot be undone. This will permanently
-                        delete the product.
+                        delete the order.
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -185,8 +217,8 @@ export const columns: ColumnDef<Product>[] = [
   },
 ];
 
-const ProductsDashboardPage = () => {
-  const [products, setProducts] = React.useState<Product[]>([]);
+const OrdersDashboardPage = () => {
+  const [products, setProducts] = React.useState<Order[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -198,13 +230,14 @@ const ProductsDashboardPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/dashboard/products/tableData");
-        const newData = Object.values(response.data).map((product: any) => {
+        const response = await axios.get("/api/dashboard/orders");
+
+        const newData = Object.values(response.data).map((order: any) => {
           return {
-            name: product.name,
-            category: product.category,
-            price: product.price,
-            id: product.id,
+            id: order._id,
+            date: order.createdAt,
+            price: order.subtotal,
+            status: order.status,
           };
         });
         updatedDataX = dataX.concat(newData);
@@ -252,7 +285,7 @@ const ProductsDashboardPage = () => {
           />
           <Button variant="outline" className="ml-auto">
             <Link className="flex items-center" href="/dashboard/products/new">
-              <span className="mx-2">New Product</span>
+              <span className="mx-2">New Order</span>
               <PlusIcon className="h-4 w-4" />
             </Link>
           </Button>
@@ -362,4 +395,4 @@ const ProductsDashboardPage = () => {
   );
 };
 
-export default ProductsDashboardPage;
+export default OrdersDashboardPage;

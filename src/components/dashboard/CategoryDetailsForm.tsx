@@ -59,7 +59,7 @@ const CategoryDetailsForm = (
       name: categoryName || "",
       parent: parentCategory || "",
       properties: propertiesValue || [],
-      images: "",
+      images: imageUrl || "",
     },
   });
 
@@ -320,7 +320,9 @@ const CategoryDetailsForm = (
             )}
           />
 
-          <Button className="w-[180px]" type="submit">Publish</Button>
+          <Button className="w-[180px] mx-2" type="submit">Publish</Button>
+          <Button className="w-[180px] mx-2" type="button" variant="outline" onClick={() => router.push("/dashboard/categories")}>Cancel</Button>
+
         </form>
       </Form>
     </div>

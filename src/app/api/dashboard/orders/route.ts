@@ -7,13 +7,3 @@ export const GET = async () => {
   const orders = await Order.find({})
   return NextResponse.json(orders)
 }
-
-export const POST = async (req: Request) => {
-  connectToDB()
-  const body = await req.json()
-  const order = new Order({
-    ...body
-  })
-  await order.save()
-  return NextResponse.json(body)
-}

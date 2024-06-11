@@ -26,7 +26,7 @@ const CheckoutPage = () => {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [defaultAddress, setDefaultAddress] = useState<any>();
   const [userAddress, setUserAddress] = useState<any>();
-  const [paymentMethod, setPaymentMethod] = useState<string>("e-wallet");
+  const [paymentMethod, setPaymentMethod] = useState<string>("captureWallet");
 
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
@@ -49,7 +49,7 @@ const CheckoutPage = () => {
         res.data.forEach((address: any) => {
           if (address._id === defaultAddress) {
             setUserAddress(address);
-            console.log("user address:", address);
+            // console.log("user address:", address);
           }
         });
       });
@@ -73,7 +73,6 @@ const CheckoutPage = () => {
     axios
       .post("/api/payment/e-wallet", {
         amount: total,
-        // orderInfo: "MOMO",
         redirectUrl: "http://localhost:3000/checkout/success",
         ipnUrl: "http://localhost:3000/checkout/success",
         requestType: paymentMethod,
@@ -88,7 +87,16 @@ const CheckoutPage = () => {
           deliveryAddress: userAddress,
           deliveryFee: 30000,
         },
-        items: cartItems,
+        items: cartItems.map((item) => {
+          return {
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            quantity: item.amount,
+            totalPrice: item.price * item.amount,
+            currency: "VND",
+          };
+        }),
       })
       .then((res) => {
         console.log(res.data);
@@ -102,7 +110,7 @@ const CheckoutPage = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 bg-[#f5f5f5]">
         {/* Payment information */}
         <section className="flex flex-col">
           <div className="bg-yellow-400 rounded-md mt-8 ml-10 p-2 shadow-md w-fit">
@@ -150,7 +158,7 @@ const CheckoutPage = () => {
             <h2>Delivery Method</h2>
             <RadioGroup
               defaultValue="comfortable"
-              className="border-1 rounded-md"
+              className="border-1 rounded-md bg-white"
             >
               <div className="px-4 pb-2 pt-4 flex items-center space-x-2">
                 <RadioGroupItem value="default" id="r1" />
@@ -178,11 +186,11 @@ const CheckoutPage = () => {
           {/* Payment */}
           <div className="mx-12 mb-10 text-medium font-semibold">
             <h2>Payment method</h2>
-            <RadioGroup defaultValue="e-wallet" className="border-1 rounded-md">
+            <RadioGroup defaultValue="e-wallet" className="bg-white border-1 rounded-md">
               <div className="px-4 pb-2 pt-4 flex items-center space-x-4">
                 <RadioGroupItem
                   onClick={() => {
-                    setPaymentMethod("e-wallet");
+                    setPaymentMethod("captureWallet");
                   }}
                   value="e-wallet"
                   id="r4"
@@ -292,7 +300,7 @@ const CheckoutPage = () => {
               <h1 className="font-bold text-lg">Summary</h1>
             </div>
 
-            <ScrollArea className="max-h-96 w-full rounded-md border">
+            <ScrollArea className="bg-white  max-h-96 w-full rounded-md border">
               {cartItems.map((items, index) => (
                 <>
                   <div className="flex p-2">

@@ -29,6 +29,7 @@ import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import e from "express";
 
 
 const ProductForm = ({
@@ -42,6 +43,7 @@ const ProductForm = ({
   images: existingImages,
   quantity: existingQuantity,
   brand: existingBrand,
+  discount: existingDiscount,
 }: {
   _id?: string;
   name?: string;
@@ -53,6 +55,7 @@ const ProductForm = ({
   images?: [];
   quantity?: number;
   brand?: string;
+  discount?: number;
 }) => {
   const router = useRouter();
 
@@ -106,6 +109,7 @@ const ProductForm = ({
       images: images,
       brand: brand || "",
       salePrice: salePrice || NaN,
+      discount: existingDiscount || NaN,
     },
   });
 
@@ -294,6 +298,27 @@ const ProductForm = ({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="discount"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>Discount</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="discount"
+                      type="number"
+                      value={field.value} // Sử dụng field.value thay vì price
+                      onChange={(e) => {
+                        const newValue = parseFloat(e.target.value);
+                        field.onChange(newValue); 
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
 
           <FormField
@@ -431,7 +456,7 @@ const ProductForm = ({
                 .then((res) => {
                   console.log('res:', res.data);
                 })
-              }} type="submit">Save Changes</Button>
+              }} type="submit">Publish</Button>
             ) : (
               <Button type="submit">Add Product</Button>
             )}

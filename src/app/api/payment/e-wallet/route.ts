@@ -1,3 +1,4 @@
+import Cart from "@/lib/models/cart.model";
 import Order from "@/lib/models/order.model";
 import Transaction from "@/lib/models/transaction.model";
 import connectToDB from "@/lib/mongoose";
@@ -8,15 +9,12 @@ import { NextResponse } from "next/server";
 const partnerCode = "MOMO";
 const accessKey = "F8BBA842ECF85";
 const secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-// const requestType = "captureWallet";
 
 export const POST = async (req: Request) => {
-  // const { requestType } = await req.json();
-  // return NextResponse.json(requestType);
   connectToDB();
-  const requestId = partnerCode + new Date().getTime().toString();
+  const requestId = "DGTL" + new Date().getTime().toString();
   const orderId = requestId;
-  const extraData = "asds";
+  const extraData = "extraData";
 
   const {
     amount,
@@ -29,15 +27,16 @@ export const POST = async (req: Request) => {
     orderInfo,
   } = await req.json();
 
+
   if (requestType === "COD") {
     const order = new Order({
       userId: userInfo.userId,
-      address: deliveryInfo.address,
+      address: deliveryInfo,
       items: items,
       status: "pending",
       subtotal: amount,
       paymentMethod: "COD",
-      location: deliveryInfo.location,
+      // location: deliveryInfo.location,
     });
     await order.save();
     return NextResponse.json(requestType);
@@ -75,7 +74,6 @@ export const POST = async (req: Request) => {
     signature: signature,
     lang: "vi",
     userInfo: userInfo,
-    items: items,
   });
 
   const options = {
@@ -92,7 +90,6 @@ export const POST = async (req: Request) => {
     const request = https.request(options, (momoResponse) => {
       let resBody = "";
       momoResponse.setEncoding("utf-8");
-
       momoResponse.on("data", (data) => {
         resBody += data;
       });
@@ -122,6 +119,22 @@ export const POST = async (req: Request) => {
   });
 
   await transaction.save();
+
+  // Delete san pham khi mua
+  items.map(async (item: any) => {
+    const cart = await Cart.findOne({ user: userInfo.userId });
+    const cartItems = cart.products;
+    const newCartItems = cartItems.filter(
+      (cartItem: any) => cartItem.product != item.id
+    );
+    await Cart.updateOne(
+      { user: userInfo.userId },
+      { products: newCartItems }
+    );
+  })
+
+
+  // bad request do items bi sai
 
   return NextResponse.json(resBodyObject);
 };

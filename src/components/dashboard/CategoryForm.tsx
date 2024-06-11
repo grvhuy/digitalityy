@@ -243,7 +243,7 @@ const CategoryForm = () => {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Publish</Button>
         </form>
       </Form>
     </div>

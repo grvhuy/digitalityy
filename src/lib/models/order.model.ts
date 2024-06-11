@@ -18,6 +18,7 @@ const orderSchema = new mongoose.Schema({
   subtotal: {type: Number, required: true},
   paymentMethod: {type: String, required: true},
   location: {type: String, required: false},
+  // shippingStatus: {enum: ["prepare", "shipped", "delivered"], required: false},
   transactionId: {type: mongoose.Schema.Types.ObjectId, ref: "Transaction"},
 })
 
