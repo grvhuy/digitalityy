@@ -79,7 +79,7 @@ export default function ForgotPassword() {
               </div>
             )}
           />
-          <Button variant={"dark"} type="button">
+          <Button variant={"gold_black"} type="button">
             Send code
           </Button>
         </form>

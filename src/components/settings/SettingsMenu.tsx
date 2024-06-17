@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SettingsMenu() {
-
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const handleAccesibility = () => {
     router.push("/profile/settings/accessibility");
+  };
+  const handleChangePassword = () => {
+    router.push("/profile/settings/change-password");
   };
   return (
     <div className="bg-gray-200 rounded-3xl mx-60 my-12 p-12 ">
@@ -62,7 +64,7 @@ export default function SettingsMenu() {
             />
           </li>
           <Separator />
-          <li>
+          <li onClick={handleChangePassword}>
             Change your password{" "}
             <MdOutlineKeyboardArrowRight
               size={25}

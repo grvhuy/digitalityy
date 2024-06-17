@@ -20,7 +20,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         dark: "hover:bg-eerie_black hover:text-white transition-all duration-300 border-2 border-eerie_black",
         gold_black:
-          "hover:bg-eerie_black hover:text-yellow-400 transition-all duration-300 border-2 border-eerie_black bg-yellow-400",
+          "hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500",
         dark_hover_change:
           "mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500 font-bold text-base",
         log_in:

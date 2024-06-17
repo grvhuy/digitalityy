@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { ProductSheet } from "../products/ProductSheet";
 import axios from "axios";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -54,7 +55,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`p-6 text-eerie_black font-quicksand drop-shadow bg-white sticky top-0 z-50 ${
+        className={`p-6 text-eerie_black font-quicksand bg-white sticky top-0 z-50 ${
           visible
             ? "transition-all duration-300 top-0 "
             : "top-0 -translate-y-full transition-all duration-300"
@@ -81,13 +82,16 @@ export default function Header() {
           <nav className="place-self-center">
             <ul className="flex  list-none text-center font-semibold">
               <ProductSheet categories={categories} />
-              <button className="mx-6 py-2 px-5 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500">
+              <Button
+                variant={"gold_black"}
+                className="mx-6 py-2 px-5 font-semibold text-base"
+              >
                 Contact Us
-              </button>
+              </Button>
             </ul>
           </nav>
-          <div className="flex flex-row gap-4 place-self-center mr-5">
-            <button>
+          <div className="flex flex-row gap-4 place-self-center ">
+            <button className="rounded-full hover:bg-gray-100 px-2">
               <IoSearch />
             </button>
             {user ? (
@@ -121,7 +125,10 @@ export default function Header() {
                 </button> */}
               </div>
             )}
-            <button onClick={() => router.push("/cart")} className="">
+            <button
+              onClick={() => router.push("/cart")}
+              className="rounded-full hover:bg-gray-100 px-2"
+            >
               <FiShoppingCart />
             </button>
           </div>

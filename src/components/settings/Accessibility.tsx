@@ -1,20 +1,19 @@
 "use client";
-import { IoIosArrowDropleft } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 
-export default function Accessibility() {
+export default function  Accessibility() {
   const router = useRouter();
   const handleReturn = () => {
     router.push("/profile/settings/");
   };
   return (
-    <div className="rounded-3xl mx-60 my-12 p-12 ">
+    <div className="mx-60 my-12 p-12 ">
       <button onClick={handleReturn} className="hover:scale-105 hover:[&>div]:">
-        <IoIosArrowBack className="place-self-center text-4xl rounded-full bg-gray-400 p-1" />
+        <IoIosArrowBack className="place-self-center text-4xl rounded-full bg-gray-200 hover:bg-gray-300 p-1" />
       </button>
-      <h1 className="text-3xl font-semibold mb-6 mt-4">Accessibility</h1>
+      <h1 className="text-5xl font-semibold mb-6 mt-4">Accessibility</h1>
       <div className="space-y-6">
         <div className="relative rounded-xl p-3 bg-gray-200 ">
           <p className="font-semibold">
