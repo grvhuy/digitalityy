@@ -88,22 +88,22 @@ export default function ProductDetails({
     }
     if (userId) {
       try {
-        axios.put(`/api/cart/${userId}`, {
-          userId: userId,
-          product: {
-            productId: params.productId,
-            quantity: 1,
-            price,
-            image: images[0],
-          },
-        }).then((response) => {
-          console.log(response);
-        }
-        );
+        axios
+          .put(`/api/cart/${userId}`, {
+            userId: userId,
+            product: {
+              productId: params.productId,
+              quantity: 1,
+              price,
+              image: images[0],
+            },
+          })
+          .then((response) => {
+            console.log(response);
+          });
       } catch (error) {
         console.log(error);
       }
-      
     }
   };
 
@@ -132,27 +132,31 @@ export default function ProductDetails({
         </Carousel>
         <div className="flex flex-col justify-self-center w-full h-full">
           <h1 className="text-3xl font-semibold">{product.name}</h1>
-          <span className="mt-3 text-5xl text-red-400">{Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(product.price)
-          }</span>
+          <span className="mt-3 text-5xl text-red-400">
+            {Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            }).format(product.price)}
+          </span>
           <Separator className="my-4" />
-          <ul className="list-disc">
-            <h1 className="font-bold">{"Product's Specifications:"}</h1>
-            {productSpecs.map((item) => {
-              return (
-                <li className="mt-1" key={item._id}>
-                  <span className="text-sm font-semibold">
-                    {item.attributeName}:
-                  </span>
-                  <span className="text-base"> {item.attributeValue}</span>
-                </li>
-              );
-            })}
-          </ul>
-          <Separator className="my-4" />
-          <div className="flex flex-col gap-y-2">
+          <h1 className="font-bold">{"Product's Specifications:"}</h1>
+          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+            <table className="">
+              {productSpecs.map((item) => {
+                return (
+                  <>
+                    <tr className="border-b-2 border-b-gray-200" key={item._id}>
+                      <td className="font-semibold p-4">
+                        {item.attributeName}
+                      </td>
+                      <td className="">{item.attributeValue}</td>
+                    </tr>
+                  </>
+                );
+              })}
+            </table>
+          </div>
+          <div className="flex flex-col gap-y-2 mt-6">
             {/* <label htmlFor="quantity" className="font-semibold">
               Quantity
             </label> */}
