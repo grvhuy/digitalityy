@@ -19,7 +19,7 @@ export default function CategoriesListing() {
   }, []);
 
   return (
-    <div className="flex flex-wrap flex-row gap-x-5 gap-y-10 mx-48">
+    <div className="grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
       {isLoading && <SkeletonCard length={10} />}
       {categories.map((item) => {
         return (

@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { DynamicFilters } from "../DynamicFilters";
 import { TFilter, filtersConfig } from "@/lib/features/filter";
 import { Button } from "../ui/button";
+import { SkeletonCard } from "../categories/SkeletonCard";
 
 type TSpecs = {
   attributeName: string;
@@ -29,6 +30,7 @@ export default function ProductsListing({
   params: { categoryId: string };
 }) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [categoryProducts, setProducts] = useState<any[]>([]);
   const [productsFiltered, setProductsFiltered] = useState<any[]>([]);
   const [categoryName, setCategoryName] = useState<string>("");
@@ -45,6 +47,7 @@ export default function ProductsListing({
       setProducts(result.data.products);
       setProductsFiltered(result.data.products);
       setCategoryName(result.data.category.name);
+      setIsLoading(false);
       // console.log("cate name: ", result.data.category.name);
     });
   }, [params.categoryId]);
@@ -100,12 +103,11 @@ export default function ProductsListing({
         <div className="flex items-center justify-center">
           {/* Filter api */}
           <div className="flex space-x-2">
-            {filters.map((item) => {
-              const handleValueChange = (value: any) => handleFilterSpec(item.name, value);
+            {filters.map((item, index) => {
+              const handleValueChange = (value: any) =>
+                handleFilterSpec(item.name, value);
               return (
-                <Select
-                  onValueChange={handleValueChange}
-                >
+                <Select key={index} onValueChange={handleValueChange} >
                   <SelectTrigger className="w-[108px]">
                     <SelectValue id={item.name} placeholder={item.label} />
                   </SelectTrigger>
@@ -125,9 +127,9 @@ export default function ProductsListing({
                 </Select>
               );
             })}
-            <Button onClick={handleFilter} type="button" variant="gold_black">
+            {!isLoading && <Button onClick={handleFilter} type="button" variant="gold_black">
               Filter
-            </Button>
+            </Button>}
           </div>
         </div>
       </div>
@@ -202,7 +204,8 @@ export default function ProductsListing({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-wrap gap-x-5 mx-36">
+      <div className="grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
+        {isLoading && <SkeletonCard length={10} />}
         {productsFiltered.map((item) => {
           return (
             <ProductCard

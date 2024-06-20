@@ -94,6 +94,12 @@ export default function Header() {
             <button className="rounded-full hover:bg-gray-100 px-2">
               <IoSearch />
             </button>
+            <button
+              onClick={() => router.push("/cart")}
+              className="rounded-full hover:bg-gray-100 px-2"
+            >
+              <FiShoppingCart />
+            </button>
             {user ? (
               <div className="flex items-center">
                 <h1 className="font-bold ">Hello {user?.name} !</h1>
@@ -125,12 +131,6 @@ export default function Header() {
                 </button> */}
               </div>
             )}
-            <button
-              onClick={() => router.push("/cart")}
-              className="rounded-full hover:bg-gray-100 px-2"
-            >
-              <FiShoppingCart />
-            </button>
           </div>
         </div>
       </header>

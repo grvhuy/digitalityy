@@ -12,20 +12,20 @@ interface ProductCardProps {
 export default function ProductCard(props: ProductCardProps) {
   return (
     <div
-      className="p-2 mb-2 group flex flex-col gap-y-1 min-w-[16rem]"
+      className="p-2 mb-2 group flex flex-col gap-y-1 w-auto"
       onClick={props.onClick}
     >
-      <div className="w-full max-w-[20rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div className="max-w-[20rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
         <a href="#">
           <img
-            className="p-8 rounded-t-lg"
+            className="p-8 rounded-t-lg group-hover:scale-105 transition-all duration-300"
             src={props.image}
             alt="product image"
           />
         </a>
-        <div className="px-5 pb-5">
+        <div className="px-5 pb-5 ">
           <a href="#">
-            <h5 className="line-clamp-2 text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
+            <h5 className="group-hover:underline line-clamp-2 text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
               {props.name}
             </h5>
           </a>
@@ -82,7 +82,7 @@ export default function ProductCard(props: ProductCardProps) {
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
               {Intl.NumberFormat("vi-VN", {
                 style: "currency",
                 currency: "VND",

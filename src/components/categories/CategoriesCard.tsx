@@ -13,10 +13,10 @@ export default function CategoriesCard(props: CategoriesCardProps) {
 
   return (
     <div
-      className="group flex flex-col gap-y-2 max-w-[15rem] "
+      className="group flex flex-col gap-y-2 max-w-[20rem] "
       onClick={props.onClick}
     >
-      <div className="flex flex-col relative items-center justify-center max-w-[15rem] min-w-[15rem] max-h-[22rem] min-h-[22rem] bg-[#F2F2F2] overflow-hidden cursor-pointer">
+      <div className="flex flex-col relative items-center justify-center max-h-[22rem] min-h-[22rem] bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 cursor-pointer">
         <Image
           width={40}
           height={40}
@@ -27,7 +27,7 @@ export default function CategoriesCard(props: CategoriesCardProps) {
           // fill={true}
         ></Image>
         <div className="flex flex-col absolute bottom-2 gap-y-1 group-hover:underline ">
-          <h1 className="font-semibold text-wrap">{props.name}</h1>
+          <h1 className="font-semibold text-wrap text-xl">{props.name}</h1>
         </div>
       </div>
     </div>
