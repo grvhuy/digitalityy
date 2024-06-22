@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.className} overflow-visible`}>
+      <body className={`${font.className} overflow-visible relative`}>
         <main>
           <ReduxProvider>
             <AuthProvider>
