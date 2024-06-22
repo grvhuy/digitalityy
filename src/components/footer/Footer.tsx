@@ -15,7 +15,7 @@ export default function Footer() {
         </div>
         <div>
           <ul className="flex flex-col gap-2">
-            <li className="font-bold my-1">Information</li>
+            <li className="font-bold my-1">Contact Information</li>
             <li>My Account</li>
             <li>Login</li>
             <li>My Cart</li>
