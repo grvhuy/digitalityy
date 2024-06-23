@@ -33,10 +33,10 @@ export default function RootLayout({
               {children}
             </AuthProvider>
           </ReduxProvider>
+
         </main>
         <Toaster />
       </body>
-      <Footer />
     </html>
   );
 }
