@@ -101,7 +101,7 @@ export default function SignIn() {
         </div>
         <Button
           className="mt-4 rounded-m font-bold cursor-pointer"
-          variant={"dark"}
+          variant={"gold_black"}
         >
           Sign In
         </Button>
@@ -113,14 +113,14 @@ export default function SignIn() {
               variant={"log_in"}
               type="button"
               onClick={() => signIn("google")}
-              className="mt-4 rounded-md bg-eerie_black text-white hover:text-eerie_black font-bold cursor-pointer px-6 py-2"
+              className="mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
             >
               <IoLogoGoogle size={20} className="mx-2" />
             </Button>
             <Button
               variant={"log_in"}
               onClick={() => signIn("facebook")}
-              className="mt-4 rounded-md bg-eerie_black text-white hover:text-eerie_black font-bold cursor-pointer px-6 py-2"
+              className="mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
             >
               <IoLogoFacebook size={20} className="mx-2" />
             </Button>

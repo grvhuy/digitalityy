@@ -3,10 +3,11 @@ import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { AuthProvider } from "./Provider";
-import { Provider } from 'react-redux';
+import { Provider } from "react-redux";
 import "./globals.css";
 import { store } from "@/lib/store";
 import ReduxProvider from "./ReduxProvider";
+import Footer from "@/components/footer/Footer";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -22,13 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.className} overflow-visible`}>
+      <body className={`${font.className} overflow-visible relative`}>
         <main>
           <ReduxProvider>
             <AuthProvider>
               <Header />
               {children}
-              {/* <Footer/> */}
+              {/* <Footer /> */}
             </AuthProvider>
           </ReduxProvider>
         </main>

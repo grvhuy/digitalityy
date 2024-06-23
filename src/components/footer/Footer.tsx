@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 
 export default function Footer() {
   return (
-    <footer className="text-white font-quicksand bg-eerie_black p-12 text-sm">
+    <footer className="absolute inset-x-0 bottom-0 text-white font-quicksand bg-eerie_black p-12 text-sm">
       <div className="grid grid-cols-4 gap-4">
         <div>
           <ul className="flex flex-col gap-2">
@@ -15,7 +15,7 @@ export default function Footer() {
         </div>
         <div>
           <ul className="flex flex-col gap-2">
-            <li className="font-bold my-1">Information</li>
+            <li className="font-bold my-1">Contact Information</li>
             <li>My Account</li>
             <li>Login</li>
             <li>My Cart</li>

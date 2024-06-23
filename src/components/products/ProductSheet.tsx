@@ -43,7 +43,7 @@ export const ProductSheet = ({ categories }: { categories: any[] }) => {
       <Sheet>
         <SheetTrigger className="flex flex-row mx-6 py-2 px-5 hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500">
           Products
-          <MdOutlineKeyboardArrowDown className="place-self-center" />
+          {/* <MdOutlineKeyboardArrowDown className="place-self-center" /> */}
         </SheetTrigger>
         <SheetContent side="left">
           <SheetHeader className="mb-8"></SheetHeader>

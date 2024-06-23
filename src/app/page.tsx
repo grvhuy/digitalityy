@@ -17,6 +17,7 @@ import Link from "next/link";
 import { options } from "./api/auth/[...nextauth]/options";
 import { CategoryCarousel } from "@/components/CategoryCarousel";
 import Footer from "@/components/footer/Footer";
+import LandingPage from "@/components/landing-page/LandingPage";
 
 const perks = [
   {
@@ -75,7 +76,7 @@ export default async function Home() {
           </section>
         </div>
       ) : (
-        <div>nothing</div>
+        <LandingPage/>
       )}
     </>
   );
