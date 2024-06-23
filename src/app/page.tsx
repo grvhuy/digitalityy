@@ -45,7 +45,7 @@ export default async function Home() {
   return (
     <>
       {session ? (
-        <div>
+        <div className="w-screen h-screen">
           <MaxWitdthWrapper>
             <div className="py-20 mx-auto text-center flex flex-col items-center max-w-3xl">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
@@ -76,7 +76,7 @@ export default async function Home() {
           </section>
         </div>
       ) : (
-        <LandingPage/>
+          <LandingPage />
       )}
     </>
   );

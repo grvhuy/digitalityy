@@ -19,8 +19,8 @@ export default function CategoriesListing() {
   }, []);
 
   return (
-    <div className="grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
-      {isLoading && <SkeletonCard length={10} />}
+    <div className="min-w-max grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
+      {isLoading && <SkeletonCard length={8} />}
       {categories.map((item) => {
         return (
           <CategoriesCard

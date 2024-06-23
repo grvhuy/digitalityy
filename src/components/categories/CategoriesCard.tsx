@@ -23,7 +23,7 @@ export default function CategoriesCard(props: CategoriesCardProps) {
           className="place-self-center max-w-[12rem] min-w-[12rem] bg-cover hover:scale-110 transition-all duration-300"
           loader={({ src }) => src}
           src={props.images[0]}
-          alt="controller-image"
+          alt={`${props.name} image`}
           // fill={true}
         ></Image>
         <div className="flex flex-col absolute bottom-2 gap-y-1 group-hover:underline ">
