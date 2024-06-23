@@ -317,7 +317,7 @@ const CartPage = () => {
       </div>
 
       {/* // Cart Summary */}
-      <div className="sticky mr-10 w-1/2  mt-14 ">
+      <div className="sticky mr-10 w-1/3  mt-14 ">
         <div className="flex flex-col justify-center">
           <div className="flex flex-col bg-white shadow-sm border p-4 space-y-4">
             <h1 className="font-bold text-2xl">Cart Summary</h1>

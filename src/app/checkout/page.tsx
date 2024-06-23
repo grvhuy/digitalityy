@@ -95,8 +95,16 @@ const CheckoutPage = () => {
             quantity: item.amount,
             totalPrice: item.price * item.amount,
             currency: "VND",
+            photo: item.image,
           };
         }),
+        shippingInfo: [
+          {
+            status: "prepare",
+            location: "Shop's location",
+            updatedAt: new Date(),
+          },
+        ]
       })
       .then((res) => {
         console.log(res.data);
