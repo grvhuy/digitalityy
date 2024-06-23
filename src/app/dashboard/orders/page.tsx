@@ -276,10 +276,10 @@ const OrdersDashboardPage = () => {
           <Input
             placeholder="Filter categories..."
             value={
-              (table.getColumn("category")?.getFilterValue() as string) ?? ""
+              (table.getColumn("id")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("category")?.setFilterValue(event.target.value)
+              table.getColumn("id")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />

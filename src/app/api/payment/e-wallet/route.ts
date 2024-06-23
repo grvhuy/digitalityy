@@ -25,33 +25,9 @@ export const POST = async (req: Request) => {
     deliveryInfo,
     items,
     orderInfo,
+    shippingInfo
   } = await req.json();
 
-
-  if (requestType === "COD") {
-    const order = new Order({
-      userId: userInfo.userId,
-      address: deliveryInfo,
-      items: items,
-      status: "pending",
-      subtotal: amount,
-      paymentMethod: "COD",
-      // location: deliveryInfo.location,
-    });
-    await order.save();
-    return NextResponse.json(requestType);
-  }
-
-  // const order = new Order({
-  //   userId: userInfo.userId,
-  //   address: deliveryInfo.address,
-  //   items: items,
-  //   status: "pending",
-  //   subtotal: amount,
-  //   paymentMethod: "momo",
-  //   location: deliveryInfo.location,
-  // });
-  // await order.save();
 
   const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
 
@@ -119,6 +95,37 @@ export const POST = async (req: Request) => {
   });
 
   await transaction.save();
+
+
+  if (requestType === "COD") {
+    const order = new Order({
+      userId: userInfo.userId,
+      address: deliveryInfo.deliveryAddress._id,
+      items: items,
+      status: "pending",
+      subtotal: amount,
+      paymentMethod: "COD",
+      location: deliveryInfo.location,
+      shippingInfo: shippingInfo,
+      
+      // location: deliveryInfo.location,
+    });
+    await order.save();
+    return NextResponse.json(requestType);
+  }
+
+  const order = new Order({
+    userId: userInfo.userId,
+    address: deliveryInfo.deliveryAddress._id,
+    items: items,
+    status: "pending",
+    subtotal: amount,
+    paymentMethod: "momo",
+    location: deliveryInfo.location,
+    transactionId: transaction._id,
+    shippingInfo: shippingInfo,
+  });
+  await order.save();
 
   // Delete san pham khi mua
   items.map(async (item: any) => {

@@ -5,7 +5,17 @@ import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const OrdersHistory = () => {
   const { data: session } = useSession();
@@ -38,16 +48,41 @@ const OrdersHistory = () => {
   }, [session, userId]);
 
   return (
-    <div className="bg-[#f5f5f5] h-screen p-20">
+    <div className="bg-[#f5f5f5] h-full p-20">
       <div className="bg-white p-4 shadow-sm">
-        <h1 className="text-2xl font-semibold">Orders History</h1>
+        <div className="flex justify-between items-center">
+
+          <h1 className="text-2xl font-semibold">Orders History</h1>
+          {/* filter */}
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent className="">
+              <SelectGroup className="">
+                <SelectLabel>Status</SelectLabel>
+                <SelectItem value="receive">To receive</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="refund">Refund</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="mt-4">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white shadow-sm py-2 px-4 mb-4">
+            <div key={order._id} className="bg-white shadow-sm py-2 px-4 mb-8">
               <div className="flex justify-between items-center">
                 <h1>
-                  ORDER ID: <span className="text-gray-500">{order._id}</span>
+                  ORDER ID: #
+                  <Link
+                    className="text-gray-700 hover:text-yellow-700"
+                    href={`user/orders/${order._id}`}
+                  >
+                    {order._id}
+                  </Link>
                 </h1>
+                <Separator className="w-1/2" />
                 <h1 className="italic text-gray-500">
                   {new Date(order.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -69,7 +104,7 @@ const OrdersHistory = () => {
                 <div key={product._id} className="flex items-center">
                   <Image
                     alt="product"
-                    src={product.image}
+                    src={product.photo}
                     width={100}
                     height={100}
                     loader={({ src }) => src}
@@ -77,7 +112,10 @@ const OrdersHistory = () => {
                   <div className="flex flex-col ml-4">
                     <h1 className="text-xl font-bold">{product.name}</h1>
                     <div className="flex flex-col space-y-1 mt-2">
-                      <h1> Quantity: {product.amount}</h1>
+                      <h1 className="text-foreground text-gray-400">
+                        {" "}
+                        Quantity: {product.amount}
+                      </h1>
                       <span className="text-yellow-500 font-medium">
                         {Intl.NumberFormat("vi-VN", {
                           style: "currency",
@@ -88,17 +126,28 @@ const OrdersHistory = () => {
                   </div>
                 </div>
               ))}
-
-              <div className="flex justify-end">
-                <h1 className="text-lg font-semibold mt-4">
-                  Total:{" "}
-                  <span className="text-yellow-500 font-medium">
-                    {Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(order.subtotal)}
-                  </span>
-                </h1>
+              <Separator className="mt-2" />
+              <div className="flex w-full justify-end bg-[#fffefb]">
+                <div className="">
+                  <h1 className="text-lg font-semibold mt-4">
+                    Total:{" "}
+                    <span className="text-yellow-500 font-medium">
+                      {Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(order.subtotal)}
+                    </span>
+                  </h1>
+                  <div className="flex">
+                    <Button className="text-black hover:text-white bg-red-400 px-4 py-2 rounded-md uppercase mt-4 mx-2">
+                      Request for Refund
+                    </Button>
+                    <Button className="text-black hover:text-white bg-[#facc15] px-4 py-2 rounded-md uppercase mt-4">
+                      View order
+                    </Button>
+                    {/* refund */}
+                  </div>
+                </div>
               </div>
             </div>
           ))}

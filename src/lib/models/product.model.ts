@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   categoryName: { type: String },
   brand: { type: String},
-  quantity: { type: Number, required: false },
+  quantity: { type: Number, required: false }, //stock
   images: { type: [String], required: true },
 })
 
