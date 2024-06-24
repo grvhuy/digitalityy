@@ -1,8 +1,11 @@
+"use client"
 import Image from "next/image";
 import { Button } from "../ui/button";
 import HorizontalCategories from "./HorizontalCategories";
+import { useState, useEffect } from "react";
 
 export default function LandingPage() {
+
   return (
     <div className="h-full w-full">
       <div className="flex flex-row">
@@ -27,9 +30,7 @@ export default function LandingPage() {
         </section>
       </div>
       <div className="">
-        <h1 className="text-4xl my-12 ml-[12rem] min-w-full">
-          Shop by Categories
-        </h1>
+        <h1 className="text-4xl my-12 mx-64 min-w-full">Shop by Categories</h1>
         <div className="mx-64">
           <HorizontalCategories />
         </div>

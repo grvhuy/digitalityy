@@ -1,9 +1,7 @@
 "use client";
 
-import { GiHamburgerMenu } from "react-icons/gi";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { AiFillShopping } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import { LuUser2 } from "react-icons/lu";

@@ -38,6 +38,15 @@ export default function HorizontalCategories() {
     },
   };
   return (
+    <div>
+      {isLoading && (
+        <Carousel responsive={responsive}>
+          {isLoading &&
+            Array(8)
+              .fill(0)
+              .map((_, i) => <SkeletonCard key={i} />)}
+        </Carousel>
+      )}
       <Carousel responsive={responsive}>
         {categories.map((item) => {
           return (
@@ -50,5 +59,6 @@ export default function HorizontalCategories() {
           );
         })}
       </Carousel>
+    </div>
   );
 }
