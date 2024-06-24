@@ -119,26 +119,24 @@ export default function Header() {
               </Button>
             </ul>
           </nav>
-          <form
-            onSubmit={handleSubmit}
-            className="flex items-center justify-center"
-          >
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search"
-            ></Input>
-            <Button
-              variant="ghost"
-              className="rounded-full hover:bg-gray-100 mx-2"
-            >
-              <IoSearch />
-            </Button>
-          </form>
+
           <div className="flex flex-row gap-4 items-center">
+            <form onSubmit={handleSubmit} className="flex">
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search"
+              ></Input>
+              <Button
+                variant="ghost"
+                className="rounded-full hover:bg-gray-100 mx-2"
+              >
+                <IoSearch />
+              </Button>
+            </form>
             <button
               onClick={() => router.push("/cart")}
-              className="rounded-full hover:bg-gray-100 px-2"
+              className="rounded-full hover:bg-gray-100 p-2"
             >
               <FiShoppingCart />
             </button>
