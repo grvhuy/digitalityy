@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import Footer from "@/components/footer/Footer";
 
 const OrdersHistory = () => {
   const { data: session } = useSession();
@@ -48,7 +49,7 @@ const OrdersHistory = () => {
   }, [session, userId]);
 
   return (
-    <div className="bg-[#f5f5f5] h-full p-20">
+    <div className="bg-[#f5f5f5] h-full p-20 mb-[20rem]">
       <div className="bg-white p-4 shadow-sm">
         <div className="flex justify-between items-center">
 
@@ -71,13 +72,13 @@ const OrdersHistory = () => {
         </div>
         <div className="mt-4">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white shadow-sm py-2 px-4 mb-8">
+            <div key={order._id} className="bg-white shadow-sm py-2 px-4 my-8">
               <div className="flex justify-between items-center">
-                <h1>
+                <h1 className="font-extrabold">
                   ORDER ID: #
                   <Link
                     className="text-gray-700 hover:text-yellow-700"
-                    href={`user/orders/${order._id}`}
+                    href={`/user/orders/${order._id}`}
                   >
                     {order._id}
                   </Link>
@@ -152,6 +153,7 @@ const OrdersHistory = () => {
             </div>
           ))}
         </div>
+        
       </div>
     </div>
   );

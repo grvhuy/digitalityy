@@ -11,6 +11,7 @@ import { ProductSheet } from "../products/ProductSheet";
 import axios from "axios";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -19,6 +20,8 @@ export default function Header() {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
   useEffect(() => {
@@ -26,6 +29,35 @@ export default function Header() {
       setCategories(result.data);
     });
   }, []);
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setSearch("");
+  //   router.push(`/search/${search}`);
+  // }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      router.push(`/search/${search}`);
+      // const formattedSearch = search.replace(/\s+/g, "-");
+      // const encodedSearch = encodeURIComponent(search);
+      // console.log(encodedSearch);
+      // Gửi yêu cầu tìm kiếm đến API sử dụng Axios
+      // const response = await axios.get(`/api/search?keyword=${encodedSearch}`);
+      
+      // console.log(response.data); 
+      // search result chỉ lấy mảng id của sản phẩm
+      // setSearchResults(
+      //   response.data.map((product: any) => product._id)
+      // );
+      // console.log(searchResults);
+      // const query = new URLSearchParams({ results: JSON.stringify(response.data) }).toString();
+
+    } catch (error) {
+      console.error('Error:', error);
+      // Xử lý lỗi nếu có
+    }
+  };
 
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
@@ -77,6 +109,17 @@ export default function Header() {
               igitality
             </h1>
           </div>
+          <form onSubmit={handleSubmit} className="flex items-center justify-center">
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search"
+            >
+            </Input>
+            <Button variant="ghost" className="rounded-full hover:bg-gray-100 mx-2">
+                <IoSearch />
+              </Button>
+          </form>
           <nav className="place-self-center">
             <ul className="flex  list-none text-center font-semibold">
               <ProductSheet categories={categories} />
@@ -88,10 +131,7 @@ export default function Header() {
               </Button>
             </ul>
           </nav>
-          <div className="flex flex-row gap-4 place-self-center ">
-            <button className="rounded-full hover:bg-gray-100 px-2">
-              <IoSearch />
-            </button>
+          <div className="flex flex-row gap-4 items-center">
             <button
               onClick={() => router.push("/cart")}
               className="rounded-full hover:bg-gray-100 px-2"
@@ -100,7 +140,7 @@ export default function Header() {
             </button>
             {user ? (
               <div className="flex items-center">
-                <h1 className="font-bold ">Hello {user?.name} !</h1>
+                {/* <h1 className="font-bold ">Hello {user?.name} !</h1> */}
                 <button
                   onClick={async () => {
                     await signOut();
