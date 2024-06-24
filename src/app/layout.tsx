@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${font.className} overflow-y-visible overflow-x-hidden relative`}
+        className={`${font.className} overflow-y-visible overflow-x-hidden`}
       >
         <main>
           <ReduxProvider>
