@@ -23,6 +23,7 @@ export default function Header() {
   const [visible, setVisible] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const [dropdownVisibility, setDropdownVisibility] = useState(false);
   useEffect(() => {
@@ -39,13 +40,21 @@ export default function Header() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Thay thế dấu cách bằng dấu "-"
-      const formattedSearch = search.replace(/\s+/g, '-');
-
+      router.push(`/search/${search}`);
+      // const formattedSearch = search.replace(/\s+/g, "-");
+      // const encodedSearch = encodeURIComponent(search);
+      // console.log(encodedSearch);
       // Gửi yêu cầu tìm kiếm đến API sử dụng Axios
-      const response = await axios.get(`/api/search?keyword=${formattedSearch}`);
+      // const response = await axios.get(`/api/search?keyword=${encodedSearch}`);
       
-      console.log(response.data); // Lưu kết quả tìm kiếm vào state
+      // console.log(response.data); 
+      // search result chỉ lấy mảng id của sản phẩm
+      // setSearchResults(
+      //   response.data.map((product: any) => product._id)
+      // );
+      // console.log(searchResults);
+      // const query = new URLSearchParams({ results: JSON.stringify(response.data) }).toString();
+
     } catch (error) {
       console.error('Error:', error);
       // Xử lý lỗi nếu có
