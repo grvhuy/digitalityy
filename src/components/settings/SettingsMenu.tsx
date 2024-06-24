@@ -9,13 +9,13 @@ export default function SettingsMenu() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const handleAccesibility = () => {
-    router.push("/profile/settings/accessibility");
+    router.push("/user/settings/accessibility");
   };
   const handleChangePassword = () => {
-    router.push("/profile/settings/change-password");
+    router.push("/user/settings/change-password");
   };
   return (
-    <div className="bg-gray-200 rounded-3xl mx-60 my-12 p-12 ">
+    <div className="bg-zinc-100 rounded-3xl mx-[480px] my-12 p-12 min-w-[700px]">
       <div className="flex flex-row gap-x-3 mb-4">
         <Avatar className="place-self-center h-14 w-14">
           <AvatarImage src="https://github.com/shadcn.png" />
