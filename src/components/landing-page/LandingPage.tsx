@@ -1,13 +1,16 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import HorizontalCategories from "./HorizontalCategories";
 import { useState, useEffect } from "react";
+import { FaRegSmile } from "react-icons/fa";
+import { FiTruck } from "react-icons/fi";
+import { FaRegCreditCard } from "react-icons/fa";
+import { Separator } from "../ui/separator";
 
 export default function LandingPage() {
-
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full mb-28 ">
       <div className="flex flex-row">
         <section className="min-w-full h-4/6 min-h-[600px] bg-cover bg-center bg-[url('/images/banner.png')] ">
           {/* <img
@@ -30,9 +33,86 @@ export default function LandingPage() {
         </section>
       </div>
       <div className="">
-        <h1 className="text-4xl my-12 mx-64 min-w-full">Shop by Categories</h1>
-        <div className="mx-64">
+        <h1 className="text-4xl my-12 mx-64 min-w-full font-semibold">
+          Shop by Categories
+        </h1>
+        <div className="mx-64 min-w-[800px]">
           <HorizontalCategories />
+        </div>
+      </div>
+      <div className="">
+        <h1 className="text-4xl my-12 mx-64 min-w-full font-semibold">
+          Our collections
+        </h1>
+        <div className="mx-64 grid grid-cols-4 space-x-12 min-w-[800px] gap-y-2">
+          <button className="w-min-72 bg-zinc-50 p-5 group">
+            <img
+              className="w-auto h-auto scale-90 group-hover:scale-95 transition-all duration-300"
+              src="/images/razer.svg"
+            />
+          </button>
+          <button className="w-min-72 bg-zinc-50 py-5 px-10 group">
+            <img
+              className="w-auto h-auto group-hover:scale-105 transition-all duration-300"
+              src="/images/logitech.svg"
+            />
+          </button>
+          <button className="w-min-72 bg-zinc-50 py-5 px-10 group">
+            <img
+              className="w-auto h-auto group-hover:scale-105 transition-all duration-300"
+              src="/images/corsair.svg"
+            />
+          </button>
+          <button className="w-min-72 bg-zinc-50 py-5 px-10 group">
+            <img
+              className="w-auto h-auto group-hover:scale-105 transition-all duration-300"
+              src="/images/asus.svg"
+            />
+          </button>
+        </div>
+        <div className="flex flex-col">
+          <Separator className="mt-14 bg-black bg-opacity-50 w-1/2 place-self-center" />
+        </div>
+        <div className="flex flex-row mx-64 mt-14 justify-around gap-x-16">
+          <div className="flex flex-col gap-y-6">
+            <div className=" place-self-center">
+              <div className="rounded-full bg-eerie_black p-3">
+                <FaRegSmile className="text-yellow-400" size={40} />
+              </div>
+            </div>
+            <span>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae
+              harum ratione cupiditate reprehenderit voluptatum eaque maxime
+              nihil inventore sapiente porro expedita culpa quae maiores, non
+              veritatis, ex quisquam voluptates vero.
+            </span>
+          </div>
+          <div className="flex flex-col gap-y-6">
+            <div className=" place-self-center">
+              <div className="rounded-full bg-eerie_black p-3">
+                <FiTruck className="text-yellow-400" size={40} />
+              </div>
+            </div>
+            <span>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Reprehenderit similique quae dolorum quod eveniet, aliquam eum
+              nobis ad, ab veritatis maiores magni? Animi neque aperiam dolores
+              iste alias fuga dicta.
+            </span>
+          </div>
+          <div className="flex flex-col gap-y-6">
+            <div className=" place-self-center">
+              <div className="rounded-full bg-eerie_black p-3">
+                <FaRegCreditCard className="text-yellow-400" size={40} />
+              </div>
+            </div>
+            <span>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Id,
+              mollitia error, provident iure quidem aspernatur illo in odit
+              maxime ducimus eius! Soluta illo fugit error architecto ex laborum
+              nulla dolores?
+            </span>
+          </div>
         </div>
       </div>
     </div>

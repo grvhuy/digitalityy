@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 export default function Footer() {
   return (
-    <footer className="px-56 py-16 mt-36 text-white font-quicksand bg-eerie_black p-12 text-sm">
+    <footer className="px-56 py-16 text-white font-quicksand bg-eerie_black p-12 text-sm">
       <div className="grid grid-cols-4 gap-4">
         <div>
           <ul className="flex flex-col gap-2">

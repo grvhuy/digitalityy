@@ -44,17 +44,16 @@ export default function Header() {
       // console.log(encodedSearch);
       // Gửi yêu cầu tìm kiếm đến API sử dụng Axios
       // const response = await axios.get(`/api/search?keyword=${encodedSearch}`);
-      
-      // console.log(response.data); 
+
+      // console.log(response.data);
       // search result chỉ lấy mảng id của sản phẩm
       // setSearchResults(
       //   response.data.map((product: any) => product._id)
       // );
       // console.log(searchResults);
       // const query = new URLSearchParams({ results: JSON.stringify(response.data) }).toString();
-
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       // Xử lý lỗi nếu có
     }
   };
@@ -109,32 +108,35 @@ export default function Header() {
               igitality
             </h1>
           </div>
-          <form onSubmit={handleSubmit} className="flex items-center justify-center">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search"
-            >
-            </Input>
-            <Button variant="ghost" className="rounded-full hover:bg-gray-100 mx-2">
-                <IoSearch />
-              </Button>
-          </form>
           <nav className="place-self-center">
             <ul className="flex  list-none text-center font-semibold">
               <ProductSheet categories={categories} />
               <Button
                 variant={"gold_black"}
-                className="mx-6 py-2 px-5 font-semibold text-base"
+                className=" font-semibold text-base"
               >
                 Contact Us
               </Button>
             </ul>
           </nav>
+
           <div className="flex flex-row gap-4 items-center">
+            <form onSubmit={handleSubmit} className="flex">
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search"
+              ></Input>
+              <Button
+                variant="ghost"
+                className="rounded-full hover:bg-gray-100 mx-2"
+              >
+                <IoSearch />
+              </Button>
+            </form>
             <button
               onClick={() => router.push("/cart")}
-              className="rounded-full hover:bg-gray-100 px-2"
+              className="rounded-full hover:bg-gray-100 p-2"
             >
               <FiShoppingCart />
             </button>
@@ -155,12 +157,13 @@ export default function Header() {
               </div>
             ) : (
               <div className="">
-                <button
+                <Button
+                  variant={"gold_black"}
                   onClick={() => router.push("/sign-in")}
-                  className=" py-2 px-5 mx-2 hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
+                  className="hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500 "
                 >
                   Sign In
-                </button>
+                </Button>
                 {/* <button
                   onClick={() => router.push("/sign-up")}
                   className=" py-2 px-5 hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"

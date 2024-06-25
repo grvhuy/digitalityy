@@ -23,17 +23,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${font.className} overflow-y-visible overflow-x-hidden relative`}
-      >
-        <main>
+      <body className={`${font.className} overflow-y-visible`}>
+        <main className=" overflow-x-hidden">
           <ReduxProvider>
             <AuthProvider>
               <Header />
               {children}
             </AuthProvider>
           </ReduxProvider>
-
+          <Footer />
         </main>
         <Toaster />
       </body>
