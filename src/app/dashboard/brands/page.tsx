@@ -143,7 +143,7 @@ export const columns: ColumnDef<Brand>[] = [
               </Link>
             </DropdownMenuItem>
             {/* <DropdownMenuItem> */}
-            <div className="textsm mx-2 mt-1 text-red-600">
+            <div className=" mx-2 mt-1 text-red-600">
               <Dialog>
                 <DialogTrigger>Delete brand</DialogTrigger>
                 <DialogContent>

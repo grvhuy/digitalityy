@@ -18,6 +18,7 @@ const productSchema = new mongoose.Schema({
   brand: { type: String},
   quantity: { type: Number, required: false }, //stock
   images: { type: [String], required: true },
+  variant: { type: Array, required: false },
 })
 
 

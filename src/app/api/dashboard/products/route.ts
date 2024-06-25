@@ -31,6 +31,7 @@ export const POST = async (req: Request) => {
       quantity: values.quantity || null,
       images: values.images || [],
       productSpecs: specifications,
+      variant: values.variant || [],
     })
 
   return NextResponse.json(createdProduct)
