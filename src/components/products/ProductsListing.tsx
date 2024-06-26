@@ -112,7 +112,7 @@ export default function ProductsListing({
   };
 
   return (
-    <div className="flex flex-wrap flex-col gap-y-5 my-5 min-w-max">
+    <div className="flex flex-wrap flex-col gap-y-5 mt-5 mb-32 min-w-max">
       <div className="flex flex-col">
         <div className="flex items-center justify-center">
           {/* Filter api */}

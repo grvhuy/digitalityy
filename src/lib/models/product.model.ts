@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import Category from "./category.model";
-import connectToDB from "../mongoose";
 
 const propertySchema = new mongoose.Schema({
   attributeName: { type: String }, 
@@ -19,6 +17,7 @@ const productSchema = new mongoose.Schema({
   quantity: { type: Number, required: false }, //stock
   images: { type: [String], required: true },
   variant: { type: Array, required: false },
+  discount: { type: Number, required: false },
 })
 
 

@@ -13,7 +13,7 @@ export const GET = async (req: Request) => {
   return NextResponse.json(product);
 }
 
-export const PUT = async (req: Request) => {
+export const PATCH = async (req: Request) => {
   const id = req.url.split("/").pop();
   const values = await req.json();
   const { name, description, productSpecs, category, brand, price, quantity, images } = values;
@@ -26,6 +26,7 @@ export const PUT = async (req: Request) => {
     brand,
     quantity,
     images,
+    
   })
   return NextResponse.json("update product success!");
 }

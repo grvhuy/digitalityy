@@ -19,6 +19,9 @@ import Review from "./Review";
 import SimilarProducts from "./SimilarProducts";
 import { useRouter } from "next/navigation";
 import ProductCard from "./ProductCard";
+import { Select, SelectContent, SelectGroup } from "../ui/select";
+import { SelectItem } from "@radix-ui/react-select";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export default function ProductDetails({
   params,
@@ -65,6 +68,7 @@ export default function ProductDetails({
   const [price, setPrice] = useState<number>(0);
   const [similarProducts, setSimilarProducts] = useState<any[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
+  const [variant, setVariant] = useState<string[]>([]);
 
   // Lay thong tin user
   useEffect(() => {
@@ -81,6 +85,8 @@ export default function ProductDetails({
       setImages(result.data.images);
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
+      setVariant(result.data.variant.map((item: any) => item.variant));
+      console.log(result.data);
       setCategoryId(result.data.category._id);
       console.log(result.data);
       // console.log(result.data.productSpecs);
@@ -121,7 +127,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-2">
+    <div className="grid grid-row-3">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -152,23 +158,39 @@ export default function ProductDetails({
             }).format(product.price)}
           </span>
           <Separator className="my-4" />
-          <h1 className="font-bold">{"Product's Specifications:"}</h1>
-          <div className="bg-gray-100 rounded-xl p-4 mt-6">
-            <table className="">
-              {productSpecs.map((item) => {
-                return (
-                  <>
-                    <tr className="border-b-2 border-b-gray-200" key={item._id}>
-                      <td className="font-semibold p-4">
-                        {item.attributeName}
-                      </td>
-                      <td className="">{item.attributeValue}</td>
-                    </tr>
-                  </>
-                );
-              })}
-            </table>
+          <h1 className="text-xl font-normal text-gray-500">{product.quantity} products left.</h1>
+          <div className="w-full max-w-xs">
+            <label
+              className="block my-2 font-normal text-xl"
+              htmlFor="variant-select"
+            >
+              Select Variant
+            </label>
+            <ToggleGroup className="" type="single">
+              {variant.map((item, index) => (
+                <ToggleGroupItem 
+                className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={item}
+                key={index}>{item}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            {/* <select
+              id="variant-select"
+              // value={selectedVariant}
+              // onChange={handleChange}
+              className="block w-full mt-1 p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="" disabled>
+                Select a variant
+              </option>
+              {variant.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select> */}
           </div>
+
           <div className="flex flex-col gap-y-2 mt-6">
             {/* <label htmlFor="quantity" className="font-semibold">
               Quantity
@@ -191,10 +213,38 @@ export default function ProductDetails({
                 });
               }}
               variant={"gold_black"}
-              className="mt-2 rounded-3xl w-fit"
+              className="mt-2 rounded-md p-4 w-fit"
             >
               Add to cart
             </Button>
+          </div>
+        </div>
+      </div>
+      <div className="mx-20 grid grid-cols-2 space-x-4">
+        <div>
+          <h1 className="font-bold">{"Product's Specifications:"}</h1>
+          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+            <table className="">
+              {productSpecs.map((item) => {
+                return (
+                  <>
+                    <tr className="border-b-2 border-b-gray-200" key={item._id}>
+                      <td className="font-semibold p-4">
+                        {item.attributeName}
+                      </td>
+                      <td className="">{item.attributeValue}</td>
+                    </tr>
+                  </>
+                );
+              })}
+            </table>
+          </div>
+        </div>
+        <div>
+          {/* TODO */}
+          <h1 className="font-bold">{"Description: "}</h1>
+          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+            <p>{product.description}</p>
           </div>
         </div>
       </div>
