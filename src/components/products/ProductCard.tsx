@@ -66,7 +66,7 @@ export default function ProductCard(props: ProductCardProps) {
                 className="text-white bg-black hover:bg-gray-800"
                 onClick={props.onClick}
               >
-                Add to cart
+                View Details
               </Button>
             </div>
           </div>

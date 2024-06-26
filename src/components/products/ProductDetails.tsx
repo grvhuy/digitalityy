@@ -16,6 +16,9 @@ import { useSession } from "next-auth/react";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import Review from "./Review";
+import { Select, SelectContent, SelectGroup } from "../ui/select";
+import { SelectItem } from "@radix-ui/react-select";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export default function ProductDetails({
   params,
@@ -59,6 +62,7 @@ export default function ProductDetails({
   const [productSpecs, setProductspecs] = useState<any[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
+  const [variant, setVariant] = useState<string[]>([]);
 
   // Lay thong tin user
   useEffect(() => {
@@ -75,8 +79,8 @@ export default function ProductDetails({
       setImages(result.data.images);
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
-
-      // console.log(result.data);
+      setVariant(result.data.variant.map((item: any) => item.variant));
+      console.log(result.data);
       // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
@@ -139,7 +143,38 @@ export default function ProductDetails({
             }).format(product.price)}
           </span>
           <Separator className="my-4" />
-          <h1 className="text-xl font-normal">{product.description}</h1>
+          <h1 className="text-xl font-normal text-gray-500">{product.quantity} products left.</h1>
+          <div className="w-full max-w-xs">
+            <label
+              className="block my-2 font-normal text-xl"
+              htmlFor="variant-select"
+            >
+              Select Variant
+            </label>
+            <ToggleGroup className="" type="single">
+              {variant.map((item, index) => (
+                <ToggleGroupItem 
+                className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={item}
+                key={index}>{item}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            {/* <select
+              id="variant-select"
+              // value={selectedVariant}
+              // onChange={handleChange}
+              className="block w-full mt-1 p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="" disabled>
+                Select a variant
+              </option>
+              {variant.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select> */}
+          </div>
 
           <div className="flex flex-col gap-y-2 mt-6">
             {/* <label htmlFor="quantity" className="font-semibold">
@@ -163,7 +198,7 @@ export default function ProductDetails({
                 });
               }}
               variant={"gold_black"}
-              className="mt-2 rounded-3xl w-fit"
+              className="mt-2 rounded-md p-4 w-fit"
             >
               Add to cart
             </Button>
@@ -192,7 +227,7 @@ export default function ProductDetails({
         </div>
         <div>
           {/* TODO */}
-          <h1 className="font-bold">{"Products you may like: "}</h1>
+          <h1 className="font-bold">{"Description: "}</h1>
           <div className="bg-gray-100 rounded-xl p-4 mt-6">
             <p>{product.description}</p>
           </div>
