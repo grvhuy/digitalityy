@@ -69,6 +69,17 @@ export default function ProductsListing({
     setProductsFiltered(sortedProducts);
   };
 
+  const handleABCFilter = (value: any) => {
+    let sortedProducts = [...productsFiltered];
+    if (value === "a-z") {
+      sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (value === "z-a") {
+      sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+    }
+    // console.log(sortedProducts);
+    setProductsFiltered(sortedProducts);
+  }
+
   const handleFilterSpec = (name: any, value: any) => {
     if (value === "all") {
       setFilterSpecs((prev) =>
@@ -183,7 +194,7 @@ export default function ProductsListing({
             </SelectGroup>
           </SelectContent>
         </Select> */}
-        <Select>
+        <Select onValueChange={handleABCFilter}>
           <SelectTrigger id="name-select" className="w-[180px]">
             <SelectValue placeholder="Sort by Name" />
           </SelectTrigger>

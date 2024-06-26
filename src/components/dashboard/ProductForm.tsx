@@ -4,9 +4,9 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel
+  FormLabel,
 } from "@/components/ui/form";
- 
+
 import {
   Select,
   SelectContent,
@@ -16,6 +16,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { Label } from "@/components/ui/label";
 
 import { ProductValidation } from "@/lib/validations/product";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,14 +43,14 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import e from "express";
-
+import { set } from "mongoose";
 
 const ProductForm = ({
   _id,
   name: existingName,
   description: existingDescription,
   price: existingPrice,
-  salePrice: existingSalePrice,
+  // salePrice: existingSalePrice,
   category: existingCategory,
   productSpecs: existingSpecs,
   images: existingImages,
@@ -61,31 +74,60 @@ const ProductForm = ({
 
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
-  const [ images, setImages ] = useState<any[]>(existingImages || []);
+  const [images, setImages] = useState<any[]>(existingImages || []);
   const [price, setPrice] = useState<number>(existingPrice || NaN);
-  const [salePrice, setSalePrice] = useState<number>(existingSalePrice || NaN);
+  // const [salePrice, setSalePrice] = useState<number>(existingSalePrice || NaN);
   const [category, setCategory] = useState<any>(existingCategory || "");
   const [categories, setCategories] = useState<any[]>([]);
   const [specs, setSpecs] = useState<any[]>(existingSpecs || []);
-  const [productProps, setproductProps] = useState<any[]>(existingSpecs?.map((item:any) => item.attributeName) || []);
-  const [productPropsValue, setproductPropsValue] = useState(existingSpecs?.map((item:any) => item.attributeValue) || []);
+  const [productProps, setproductProps] = useState<any[]>(
+    existingSpecs?.map((item: any) => item.attributeName) || []
+  );
+  const [productPropsValue, setproductPropsValue] = useState(
+    existingSpecs?.map((item: any) => item.attributeValue) || []
+  );
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState(null);
-  const [ files, setFiles ] = useState<any[]>([]);
-  const [ quantity, setQuantity ] = useState(existingQuantity || 0);
+  const [files, setFiles] = useState<any[]>([]);
+  const [quantity, setQuantity] = useState(existingQuantity || 0);
 
-  const [ brands, setBrands ] = useState<any[]>([]);
-  const [ brand, setBrand ] = useState(existingBrand || "");
+  const [brands, setBrands] = useState<any[]>([]);
+  const [brand, setBrand] = useState(existingBrand || "");
+  const [variants, setVariants] = useState<any[]>([]);
+  const [variant, setVariant] = useState<string>("");
 
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
     });
-    axios.get(`/api/dashboard/brands`)
-      .then((res) => {
-        setBrands(res.data);
-      })
+    axios.get(`/api/dashboard/brands`).then((res) => {
+      setBrands(res.data);
+    });
+    // axios.get(`api/dashboard/products/variants/${_id}`).then((res) => {
+    //   setVariants(res.data);
+    //   console.log("variants:", res.data);
+    // });
+    // get variants
+    if (_id) {
+      axios.get(`/api/dashboard/products/variants/${_id}`).then((res) => {
+        setVariants(res.data);
+        console.log("variants:", res.data);
+      });
+    }
   }, []);
+
+  // Cập nhật variant
+  useEffect(
+    () => {
+      axios.get(`/api/dashboard/products/variants/${_id}`).then((res) => {
+        setVariants(res.data);
+        console.log("variants:", res.data);
+      });
+    },
+    [
+      // variants
+    ]
+  );
 
   useEffect(() => {
     // Tạo mới specs khi productProps hoặc productPropsValue thay đổi
@@ -108,28 +150,23 @@ const ProductForm = ({
       productSpecs: specs,
       images: images,
       brand: brand || "",
-      salePrice: salePrice || NaN,
+      // salePrice: salePrice || NaN,
       discount: existingDiscount || NaN,
     },
   });
-
-  
-
 
   const onSubmit = async (values: z.infer<typeof ProductValidation>) => {
     values.productSpecs = specs;
     values.images = images;
     if (_id) {
-      console.log("put values: ", values)
+      console.log("put values: ", values);
       await axios.put(`/api/dashboard/products/${_id}`, values);
     } else {
-      await axios.post("/api/dashboard/products", values)
-        .then((res) => {
-          console.log('res:' ,res.data);
-        })
+      await axios.post("/api/dashboard/products", values).then((res) => {
+        console.log("res:", res.data);
+      });
     }
   };
-
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selectedFiles = e.target.files;
@@ -141,28 +178,27 @@ const ProductForm = ({
   }
 
   useEffect(() => {
-    console.log('images: ', images);
-  }, [images])
+    console.log("images: ", images);
+  }, [images]);
 
   async function uploadImages(e: any) {
     e.preventDefault();
     if (!files || files.length === 0) return;
-  
+
     setIsUploading(true);
     const formData = new FormData();
     files.forEach((file: File) => {
       formData.append("files", file);
     });
-  
+
     try {
       const response = await fetch("/api/s3-upload", {
         method: "POST",
         body: formData,
       });
-  
-      await response.json()
-        .then((data) => {
-          setImages(data.uploadedFileNames)
+
+      await response.json().then((data) => {
+        setImages(data.uploadedFileNames);
       });
       setIsUploading(false);
       return images;
@@ -172,7 +208,7 @@ const ProductForm = ({
     }
   }
 
-  function updateImageOrder(images:any) {
+  function updateImageOrder(images: any) {
     setImages(images);
   }
 
@@ -222,18 +258,18 @@ const ProductForm = ({
                 <FormLabel>Images</FormLabel>
                 <FormControl>
                   <div>
-                  <ReactSortable 
-                    className='flex flex-wrap gap-1'
-                    list={images} 
-                    setList={updateImageOrder}
-                  >
-                      
-                  {!!images?.length && images.map(link => (
-                      <div key={link} className="h-32">
-                          <img src={link} className="h-32 w-32 rounded-lg"/>
-                      </div>  
-                  ))}                                   
-                  </ReactSortable>
+                    <ReactSortable
+                      className="flex flex-wrap gap-1"
+                      list={images}
+                      setList={updateImageOrder}
+                    >
+                      {!!images?.length &&
+                        images.map((link) => (
+                          <div key={link} className="h-32">
+                            <img src={link} className="h-32 w-32 rounded-lg" />
+                          </div>
+                        ))}
+                    </ReactSortable>
                     {isUploading && (
                       <div className="h-24 flex items-center">
                         <Spinner />
@@ -242,13 +278,24 @@ const ProductForm = ({
 
                     <label className="border w-24 h-24 bg-gray-300 rounded-md flex items-center text-center">
                       <div>Upload images</div>
-                      <input multiple name="image" type="file" className="hidden" onChange={handleFileChange} />
+                      <input
+                        multiple
+                        name="image"
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
                     </label>
-                    <Button type="button" onClick={(e) => {
-                      uploadImages(e).then((result) => {
-                        field.onChange(result)
-                      })
-                    }}>Upload</Button>
+                    {/* <Button
+                      type="button"
+                      onClick={(e) => {
+                        uploadImages(e).then((result) => {
+                          field.onChange(result);
+                        });
+                      }}
+                    >
+                      Upload
+                    </Button> */}
                   </div>
                 </FormControl>
               </FormItem>
@@ -279,32 +326,10 @@ const ProductForm = ({
 
             <FormField
               control={form.control}
-              name="salePrice"
-              render={({ field }) => (
-                <FormItem className="space-y-2">
-                  <FormLabel>Sale Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="sale"
-                      type="number"
-                      value={field.value} // Sử dụng field.value thay vì price
-                      onChange={(e) => {
-                        const newValue = parseFloat(e.target.value);
-                        field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
-                        setSalePrice(newValue);
-                      }}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="discount"
               render={({ field }) => (
                 <FormItem className="space-y-2">
-                  <FormLabel>Discount</FormLabel>
+                  <FormLabel>Discount (%)</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="discount"
@@ -312,7 +337,7 @@ const ProductForm = ({
                       value={field.value} // Sử dụng field.value thay vì price
                       onChange={(e) => {
                         const newValue = parseFloat(e.target.value);
-                        field.onChange(newValue); 
+                        field.onChange(newValue);
                       }}
                     />
                   </FormControl>
@@ -355,7 +380,7 @@ const ProductForm = ({
                     value={brand}
                     onValueChange={(value) => {
                       setBrand(value);
-                      form.setValue("brand", value)
+                      form.setValue("brand", value);
                       console.log(value);
                     }}
                   >
@@ -365,15 +390,14 @@ const ProductForm = ({
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent className="w-1/2">
-                        <SelectGroup className="w-1/2">
-                          {/* <SelectLabel>{category.name}</SelectLabel> */}
-                          {brands.map((brand: any, index: number) => (
-                            <SelectItem key={index} value={brand.name}>
-                              {brand.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      
+                      <SelectGroup className="w-1/2">
+                        {/* <SelectLabel>{category.name}</SelectLabel> */}
+                        {brands.map((brand: any, index: number) => (
+                          <SelectItem key={index} value={brand.name}>
+                            {brand.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -393,10 +417,12 @@ const ProductForm = ({
                       value={category}
                       onChange={async (e) => {
                         const newCategory = e.target.value; //Id cua category
-                        axios.get(`/api/dashboard/categories/${newCategory}`).then((result) => {
-                          console.log(result.data);
-                          setproductProps(result.data.properties);
-                        })
+                        axios
+                          .get(`/api/dashboard/categories/${newCategory}`)
+                          .then((result) => {
+                            console.log(result.data);
+                            setproductProps(result.data.properties);
+                          });
                         const newCategoryName = categories.find(
                           (item) => item.properties === newCategory
                         );
@@ -435,12 +461,95 @@ const ProductForm = ({
                         />
                       </div>
                     ))}
-
                   </div>
                 </FormControl>
               </FormItem>
             )}
           />
+
+          {/* Dialog variant */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="gold_black">All variants</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>All variants</DialogTitle>
+                <DialogDescription>
+                  Adjust the variants of the product
+                </DialogDescription>
+              </DialogHeader>
+              <div>
+                {variants.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-2 space-y-1"
+                  >
+                    <Input
+                      id="link"
+                      defaultValue={item.variant}
+                      // readOnly
+                      className=""
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        onClick={() => {
+                          axios
+                            .delete(`/api/dashboard/products/variants/${_id}`, {
+                              data: { index: index },
+                            })
+                            .then((res) => {
+                              console.log("res:", res.data);
+                              setVariants(res.data);
+                            });
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </DialogClose>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Label htmlFor="link" className="sr-only">
+                    Variant
+                  </Label>
+                  <Input
+                    id="link"
+                    placeholder="Enter new Variant"
+                    defaultValue=""
+                    value={variant}
+                    onChange={(e: any) => setVariant(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter className="sm:justify-start">
+                <Button
+                  onClick={() => {
+                    console.log("variants:", variants);
+                    console.log("variant:", variant);
+                    axios
+                      .post(`/api/dashboard/products/variants/${_id}`, {
+                        variant: variant,
+                      })
+                      .then((res) => {
+                        console.log("res:", res.data);
+                        setVariants(res.data);
+                      });
+                    setVariant("");
+                  }}
+                >
+                  Add Variant
+                </Button>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <div className="flex flex-row-reverse space-x-4">
             <Button
@@ -451,14 +560,33 @@ const ProductForm = ({
               Cancel
             </Button>
             {_id ? (
-              <Button onClick={() => {
-                axios.put(`/api/dashboard/products/${_id}`, form.getValues())
-                .then((res) => {
-                  console.log('res:', res.data);
-                })
-              }} type="submit">Publish</Button>
+              <Button
+                onClick={() => {
+                  axios
+                    .put(`/api/dashboard/products/${_id}`, form.getValues())
+                    .then((res) => {
+                      console.log("res:", res.data);
+                    });
+                }}
+                type="submit"
+              >
+                Publish
+              </Button>
             ) : (
-              <Button type="submit">Add Product</Button>
+              <Button
+                onClick={(e) => {
+                  // Upload anh
+                  uploadImages(e).then((result: any) => {
+                    form.setValue("images", result);
+                  });
+                  // Submit form
+                  form.handleSubmit(onSubmit)();
+                  router.push(`dashboard/products`);
+                }}
+                type="submit"
+              >
+                Add Product
+              </Button>
             )}
           </div>
         </form>

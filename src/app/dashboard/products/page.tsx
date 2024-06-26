@@ -45,7 +45,17 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { revalidatePath } from "next/cache";
 
 export type Product = {
   id: string;
@@ -124,11 +134,11 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const product = row.original;
 
-      
-
-      const deleteProduct = async () => {
+      const handleDelete = async () => {
         await axios.delete(`/api/dashboard/products/${product.id}`);
-      }
+        // revalidatePath("/dashboard/products");
+        window.location.reload();
+      };
 
       return (
         <DropdownMenu>
@@ -140,44 +150,40 @@ export const columns: ColumnDef<Product>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
-            >
-              Copy product ID
-            </DropdownMenuItem>
+            <DropdownMenuItem>Copy ID</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link href={`/dashboard/products/details/${product.id}`}>
                 View product
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-            >
-              
-              <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
-                <Dialog>
-                  <DialogTrigger>Delete product</DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete the product.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button
-                        onClick={deleteProduct}
-                        variant="destructive"
-                        type="button"
-                      >
-                        Delete
+            {/* <DropdownMenuItem> */}
+            <div className=" mx-2 mt-1 text-red-600 hover:!ease-soft-spring">
+              <Dialog>
+                <DialogTrigger>Delete</DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete the product.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button onClick={
+                        async () => {
+                          await handleDelete();
+                          window.location.reload()
+                        } 
+                      } variant="destructive" type="button">
+                          Delete
                       </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </DropdownMenuItem>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            {/* </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

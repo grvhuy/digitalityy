@@ -37,6 +37,7 @@ export default function SearchProducts({
   const [filters, setFilters] = useState<TFilter[]>([]);
   const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]); // categoryName, categoryId, specName, specValue
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [categoryProducts, setCategoryProducts] = useState<any[]>([]);
 
   const handleSearch = async (value: string) => {
     const response = await axios.get(`/api/search?keyword=${value}`);
@@ -80,15 +81,27 @@ export default function SearchProducts({
   //   });
   // }, [categoryName]);
 
-  // const handlePriceFilter = (value: any) => {
-  //   let sortedProducts = [...categoryProducts];
-  //   if (value === "low-high") {
-  //     sortedProducts.sort((a, b) => a.price - b.price);
-  //   } else if (value === "high-low") {
-  //     sortedProducts.sort((a, b) => b.price - a.price);
-  //   }
-  //   setProductsFiltered(sortedProducts);
-  // };
+  const handlePriceFilter = (value: any) => {
+    let sortedProducts = [...productsFiltered];
+    if (value === "low-high") {
+      sortedProducts.sort((a, b) => a.price - b.price);
+    } else if (value === "high-low") {
+      sortedProducts.sort((a, b) => b.price - a.price);
+    }
+    // console.log(sortedProducts);
+    setProductsFiltered(sortedProducts);
+  };
+
+  const handleABCFilter = (value: any) => {
+    let sortedProducts = [...productsFiltered];
+    if (value === "a-z") {
+      sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (value === "z-a") {
+      sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+    }
+    // console.log(sortedProducts);
+    setProductsFiltered(sortedProducts);
+  }
 
   const handleFilterSpec = (name: any, value: any) => {
     if (value === "all") {
@@ -166,7 +179,7 @@ export default function SearchProducts({
           </Label>
         </div>
 
-        <Select>
+        <Select onValueChange={handleABCFilter}>
           <SelectTrigger id="name-select" className="w-[180px]">
             <SelectValue placeholder="Sort by Name" />
           </SelectTrigger>
@@ -179,7 +192,7 @@ export default function SearchProducts({
           </SelectContent>
         </Select>
         <Select
-        // onValueChange={handlePriceFilter}
+        onValueChange={handlePriceFilter}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue id="price-select" placeholder="Sort by price" />
