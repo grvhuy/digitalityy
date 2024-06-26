@@ -22,16 +22,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${font.className} overflow-y-visible`}>
-        <main className=" overflow-x-hidden">
-          <ReduxProvider>
+    <html lang="en" className="overflow-x-hidden overflow-y-scroll">
+      <body className={`${font.className}`}>
+        <main>
+          <ReduxProvider> 
             <AuthProvider>
               <Header />
               {children}
+              <Footer />
             </AuthProvider>
           </ReduxProvider>
-          <Footer />
         </main>
         <Toaster />
       </body>

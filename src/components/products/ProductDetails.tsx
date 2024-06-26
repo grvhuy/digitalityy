@@ -16,12 +16,16 @@ import { useSession } from "next-auth/react";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import Review from "./Review";
+import SimilarProducts from "./SimilarProducts";
+import { useRouter } from "next/navigation";
+import ProductCard from "./ProductCard";
 
 export default function ProductDetails({
   params,
 }: {
   params: { productId: string };
 }) {
+  const router = useRouter();
   const now = new Date();
   const TestArray = [
     {
@@ -59,6 +63,8 @@ export default function ProductDetails({
   const [productSpecs, setProductspecs] = useState<any[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
+  const [similarProducts, setSimilarProducts] = useState<any[]>([]);
+  const [categoryId, setCategoryId] = useState<string>("");
 
   // Lay thong tin user
   useEffect(() => {
@@ -75,11 +81,18 @@ export default function ProductDetails({
       setImages(result.data.images);
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
-
-      // console.log(result.data);
+      setCategoryId(result.data.category._id);
+      console.log(result.data);
       // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
+
+  useEffect(() => {
+    axios.get("/api/collections/" + categoryId).then((result) => {
+      setSimilarProducts(result.data.products);
+      console.log(result.data.products);
+    });
+  }, [categoryId]);
 
   const handleAddtoCart = async () => {
     //Neu chua dang nhap thi ve page login
@@ -206,6 +219,37 @@ export default function ProductDetails({
             );
           })}
         </ul>
+        <Separator className="my-12" />
+        <div className="px-48 my-12">
+          <div className="text-left">
+            <span className="text-5xl font-semibold opacity-90 inline-block">
+              You might like:
+            </span>
+          </div>
+          <Carousel className="w-full h-full mt-12">
+            <CarouselContent>
+              {similarProducts.map((item, index) => {
+                return (
+                  <CarouselItem
+                    key={index}
+                    className="md:basis-1/2 lg:basis-1/4"
+                  >
+                    <ProductCard
+                      image={item.images[0]}
+                      key={item._id}
+                      name={item.name}
+                      price={item.price}
+                      description={item.description}
+                      onClick={() => router.push("/products/" + item._id)}
+                    />
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
       </div>
     </div>
   );
