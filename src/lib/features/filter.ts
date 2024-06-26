@@ -6,25 +6,25 @@ export const filtersConfig = {
       filters: [
         {
           label: "Brand",
-          name: "brand",
+          name: "Brand",
           type: "select",
           options: ["Dell", "HP", "Lenovo", "Asus", "Acer", "MSI"],
         },
         {
-          label: "Processor",
-          name: "processor",
+          label: "CPU",
+          name: "CPU",
           type: "select",
           options: ["i3", "i5", "i7"],
         },
         {
           label: "RAM",
-          name: "ram",
+          name: "RAM",
           type: "select",
           options: ["4GB", "8GB", "16GB", "32GB"],
         },
         {
           label: "Storage",
-          name: "storage",
+          name: "Storage",
           type: "select",
           options: ["128GB", "256GB", "512GB", "1TB"],
         },
@@ -48,7 +48,7 @@ export const filtersConfig = {
         },
         {
           label: "Material",
-          name: "material",
+          name: "Material",
           type: "select",
           options: ["ABS", "Metal"],
         },

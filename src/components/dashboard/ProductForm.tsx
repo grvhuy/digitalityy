@@ -12,7 +12,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -42,8 +41,7 @@ import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import e from "express";
-import { set } from "mongoose";
+import { toast } from "../ui/use-toast";
 
 const ProductForm = ({
   _id,
@@ -63,7 +61,7 @@ const ProductForm = ({
   description?: string;
   price?: number;
   salePrice?: number;
-  category?: string;
+  category?: any;
   productSpecs?: [];
   images?: [];
   quantity?: number;
@@ -75,9 +73,10 @@ const ProductForm = ({
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
   const [images, setImages] = useState<any[]>(existingImages || []);
-  const [price, setPrice] = useState<number>(existingPrice || NaN);
+  const [price, setPrice] = useState<number>(existingPrice || 0);
   // const [salePrice, setSalePrice] = useState<number>(existingSalePrice || NaN);
   const [category, setCategory] = useState<any>(existingCategory || "");
+  const [categoryName, setCategoryName] = useState<any>(existingCategory || "");
   const [categories, setCategories] = useState<any[]>([]);
   const [specs, setSpecs] = useState<any[]>(existingSpecs || []);
   const [productProps, setproductProps] = useState<any[]>(
@@ -96,6 +95,7 @@ const ProductForm = ({
   const [variants, setVariants] = useState<any[]>([]);
   const [variant, setVariant] = useState<string>("");
 
+
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
@@ -103,11 +103,7 @@ const ProductForm = ({
     axios.get(`/api/dashboard/brands`).then((res) => {
       setBrands(res.data);
     });
-    // axios.get(`api/dashboard/products/variants/${_id}`).then((res) => {
-    //   setVariants(res.data);
-    //   console.log("variants:", res.data);
-    // });
-    // get variants
+
     if (_id) {
       axios.get(`/api/dashboard/products/variants/${_id}`).then((res) => {
         setVariants(res.data);
@@ -116,13 +112,21 @@ const ProductForm = ({
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (category) {
+  //     console.log("category:", category);
+  //   }
+  // }, [category]);
+
   // Cập nhật variant
   useEffect(
     () => {
-      axios.get(`/api/dashboard/products/variants/${_id}`).then((res) => {
-        setVariants(res.data);
-        console.log("variants:", res.data);
-      });
+      if (_id) {
+        axios.get(`/api/dashboard/products/variants/${_id}`).then((res) => {
+          setVariants(res.data);
+          console.log("variants:", res.data);
+        });
+      }
     },
     [
       // variants
@@ -144,25 +148,28 @@ const ProductForm = ({
     defaultValues: {
       name: name || "",
       description: description || "",
-      price: price || NaN,
+      price: price || 0,
       quantity: quantity,
-      categoryName: category,
+      categoryName: category || "",
+      category: category ? category._id : "",
       productSpecs: specs,
       images: images,
       brand: brand || "",
       // salePrice: salePrice || NaN,
-      discount: existingDiscount || NaN,
+      discount: existingDiscount || 0,
+      // variant: variants,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof ProductValidation>) => {
     values.productSpecs = specs;
     values.images = images;
+    values.variant = variants;
     if (_id) {
       console.log("put values: ", values);
       await axios.put(`/api/dashboard/products/${_id}`, values);
     } else {
-      await axios.post("/api/dashboard/products", values).then((res) => {
+      axios.post("/api/dashboard/products", values).then((res) => {
         console.log("res:", res.data);
       });
     }
@@ -213,7 +220,7 @@ const ProductForm = ({
   }
 
   return (
-    <div className="mt-4 w-full m-4">
+    <div className="mt-4 w-full m-4 pb-20">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -286,7 +293,8 @@ const ProductForm = ({
                         onChange={handleFileChange}
                       />
                     </label>
-                    {/* <Button
+                    <Button
+                      className="mt-2"
                       type="button"
                       onClick={(e) => {
                         uploadImages(e).then((result) => {
@@ -294,8 +302,8 @@ const ProductForm = ({
                         });
                       }}
                     >
-                      Upload
-                    </Button> */}
+                      Attach to Form
+                    </Button>
                   </div>
                 </FormControl>
               </FormItem>
@@ -381,7 +389,7 @@ const ProductForm = ({
                     onValueChange={(value) => {
                       setBrand(value);
                       form.setValue("brand", value);
-                      console.log(value);
+                      // console.log(value);
                     }}
                   >
                     <SelectTrigger>
@@ -414,13 +422,15 @@ const ProductForm = ({
                 <FormControl>
                   <div>
                     <select
+                      className="w-1/2 block border border-gray-300 rounded-md p-2"
                       value={category}
+                      defaultValue={existingCategory}
                       onChange={async (e) => {
                         const newCategory = e.target.value; //Id cua category
                         axios
                           .get(`/api/dashboard/categories/${newCategory}`)
                           .then((result) => {
-                            console.log(result.data);
+                            // console.log(result.data);
                             setproductProps(result.data.properties);
                           });
                         const newCategoryName = categories.find(
@@ -435,8 +445,11 @@ const ProductForm = ({
                       {category ? (
                         <option value={category}>{category.name}</option>
                       ) : (
-                        <option value="">Select a category</option>
+                        <option disabled value="">
+                          Select a category
+                        </option>
                       )}
+
                       {categories.map((category, index) => {
                         return (
                           <option key={index} value={category._id}>
@@ -445,6 +458,29 @@ const ProductForm = ({
                         );
                       })}
                     </select>
+
+                    {/* <Select
+                      value={category}
+                      onValueChange={(value) => {
+                        setCategory(value);
+                        form.setValue("category", value);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue>
+                          {category ? category.name : "Select a category"}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="w-1/2">
+                        <SelectGroup className="w-1/2">
+                          {categories.map((category: any, index: number) => (
+                            <SelectItem key={index} value={category}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select> */}
 
                     {productProps.map((item, index) => (
                       <div className="space-y-4">
@@ -494,14 +530,20 @@ const ProductForm = ({
                     <DialogClose asChild>
                       <Button
                         onClick={() => {
-                          axios
-                            .delete(`/api/dashboard/products/variants/${_id}`, {
-                              data: { index: index },
-                            })
-                            .then((res) => {
-                              console.log("res:", res.data);
-                              setVariants(res.data);
-                            });
+                          if (_id) {
+                            axios
+                              .delete(
+                                `/api/dashboard/products/variants/${_id}/${item.variant}`
+                              )
+                              .then((res) => {
+                                console.log("res:", res.data);
+                                setVariants(res.data);
+                              });
+                          } else {
+                            const newVariants = [...variants];
+                            newVariants.splice(index, 1);
+                            setVariants(newVariants);
+                          }
                         }}
                       >
                         Remove
@@ -529,14 +571,16 @@ const ProductForm = ({
                   onClick={() => {
                     console.log("variants:", variants);
                     console.log("variant:", variant);
-                    axios
-                      .post(`/api/dashboard/products/variants/${_id}`, {
-                        variant: variant,
-                      })
-                      .then((res) => {
-                        console.log("res:", res.data);
-                        setVariants(res.data);
-                      });
+                    if (_id) {
+                      axios
+                        .post(`/api/dashboard/products/variants/${_id}`, {
+                          variant: variant,
+                        })
+                        .then((res) => {
+                          console.log("res:", res.data);
+                          setVariants(res.data);
+                        });
+                    } else setVariants([...variants, { variant: variant }]);
                     setVariant("");
                   }}
                 >
@@ -557,15 +601,19 @@ const ProductForm = ({
               type="button"
               onClick={() => router.back()}
             >
-              Cancel
+              Back
             </Button>
             {_id ? (
               <Button
                 onClick={() => {
                   axios
-                    .put(`/api/dashboard/products/${_id}`, form.getValues())
+                    .patch(`/api/dashboard/products/${_id}`, form.getValues())
                     .then((res) => {
                       console.log("res:", res.data);
+                      toast({
+                        duration: 3000,
+                        description: "Saved changed",
+                      });
                     });
                 }}
                 type="submit"
@@ -575,13 +623,12 @@ const ProductForm = ({
             ) : (
               <Button
                 onClick={(e) => {
-                  // Upload anh
-                  uploadImages(e).then((result: any) => {
-                    form.setValue("images", result);
+                  toast({
+                    duration: 3000,
+                    description: `Product ${name} has been added`,
                   });
-                  // Submit form
-                  form.handleSubmit(onSubmit)();
-                  router.push(`dashboard/products`);
+                  onSubmit(form.getValues());
+                  router.push("/dashboard/products");
                 }}
                 type="submit"
               >

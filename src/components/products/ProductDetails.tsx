@@ -108,7 +108,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-2">
+    <div className="grid grid-row-3">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -139,23 +139,8 @@ export default function ProductDetails({
             }).format(product.price)}
           </span>
           <Separator className="my-4" />
-          <h1 className="font-bold">{"Product's Specifications:"}</h1>
-          <div className="bg-gray-100 rounded-xl p-4 mt-6">
-            <table className="">
-              {productSpecs.map((item) => {
-                return (
-                  <>
-                    <tr className="border-b-2 border-b-gray-200" key={item._id}>
-                      <td className="font-semibold p-4">
-                        {item.attributeName}
-                      </td>
-                      <td className="">{item.attributeValue}</td>
-                    </tr>
-                  </>
-                );
-              })}
-            </table>
-          </div>
+          <h1 className="text-xl font-normal">{product.description}</h1>
+
           <div className="flex flex-col gap-y-2 mt-6">
             {/* <label htmlFor="quantity" className="font-semibold">
               Quantity
@@ -182,6 +167,34 @@ export default function ProductDetails({
             >
               Add to cart
             </Button>
+          </div>
+        </div>
+      </div>
+      <div className="mx-20 grid grid-cols-2 space-x-4">
+        <div>
+          <h1 className="font-bold">{"Product's Specifications:"}</h1>
+          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+            <table className="">
+              {productSpecs.map((item) => {
+                return (
+                  <>
+                    <tr className="border-b-2 border-b-gray-200" key={item._id}>
+                      <td className="font-semibold p-4">
+                        {item.attributeName}
+                      </td>
+                      <td className="">{item.attributeValue}</td>
+                    </tr>
+                  </>
+                );
+              })}
+            </table>
+          </div>
+        </div>
+        <div>
+          {/* TODO */}
+          <h1 className="font-bold">{"Products you may like: "}</h1>
+          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+            <p>{product.description}</p>
           </div>
         </div>
       </div>

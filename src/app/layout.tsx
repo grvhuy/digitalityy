@@ -31,7 +31,7 @@ export default function RootLayout({
               {children}
             </AuthProvider>
           </ReduxProvider>
-          <Footer />
+          {/* <Footer /> */}
         </main>
         <Toaster />
       </body>
