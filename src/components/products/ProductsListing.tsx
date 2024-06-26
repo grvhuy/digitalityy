@@ -22,7 +22,7 @@ import { SkeletonCard } from "../categories/SkeletonCard";
 type TSpecs = {
   attributeName: string;
   attributeValue: string;
-}
+};
 
 export default function ProductsListing({
   params,
@@ -37,10 +37,8 @@ export default function ProductsListing({
   const [filters, setFilters] = useState<TFilter[]>([]);
   const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]); // categoryName, categoryId, specName, specValue
   useEffect(() => {
-    console.log(filters)
-  }, [
-    filters
-  ]);
+    console.log(filters);
+  }, [filters]);
 
   useEffect(() => {
     axios.get("/api/collections/" + params.categoryId).then((result) => {
@@ -55,7 +53,7 @@ export default function ProductsListing({
   useEffect(() => {
     filtersConfig.category.forEach((item) => {
       // console.log("item name: ", item.name);
-      if ((item.name === categoryName)) {
+      if (item.name === categoryName) {
         setFilters(item.filters);
       }
     });
@@ -78,27 +76,31 @@ export default function ProductsListing({
       );
       return;
     }
-    setFilterSpecs((prev) => 
-      prev.filter((spec) => spec.attributeName !== name).concat({
-        attributeName: name,
-        attributeValue: value,
-      })
+    setFilterSpecs((prev) =>
+      prev
+        .filter((spec) => spec.attributeName !== name)
+        .concat({
+          attributeName: name,
+          attributeValue: value,
+        })
     );
-    console.log(filterSpecs)
+    console.log(filterSpecs);
   };
 
   const handleFilter = async () => {
-    await axios.post("/api/filter", {
-      categoryId: params.categoryId,
-      filterSpecs: filterSpecs,
-    }).then((result) => {
-      setProductsFiltered(result.data);
-      console.log(result.data);
-    });
-  }
+    await axios
+      .post("/api/filter", {
+        categoryId: params.categoryId,
+        filterSpecs: filterSpecs,
+      })
+      .then((result) => {
+        setProductsFiltered(result.data);
+        console.log(result.data);
+      });
+  };
 
   return (
-    <div className="flex flex-wrap flex-col gap-y-5 my-5">
+    <div className="flex flex-wrap flex-col gap-y-5 my-5 min-w-max">
       <div className="flex flex-col">
         <div className="flex items-center justify-center">
           {/* Filter api */}
@@ -107,7 +109,7 @@ export default function ProductsListing({
               const handleValueChange = (value: any) =>
                 handleFilterSpec(item.name, value);
               return (
-                <Select key={index} onValueChange={handleValueChange} >
+                <Select key={index} onValueChange={handleValueChange}>
                   <SelectTrigger className="w-[108px]">
                     <SelectValue id={item.name} placeholder={item.label} />
                   </SelectTrigger>
@@ -127,9 +129,11 @@ export default function ProductsListing({
                 </Select>
               );
             })}
-            {!isLoading && <Button onClick={handleFilter} type="button" variant="gold_black">
-              Filter
-            </Button>}
+            {!isLoading && (
+              <Button onClick={handleFilter} type="button" variant="gold_black">
+                Filter
+              </Button>
+            )}
           </div>
         </div>
       </div>
