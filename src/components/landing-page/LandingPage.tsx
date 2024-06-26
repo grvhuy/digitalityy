@@ -13,13 +13,7 @@ export default function LandingPage() {
     <div className="h-full w-full mb-28 ">
       <div className="flex flex-row">
         <section className="min-w-full h-4/6 min-h-[600px] bg-cover bg-center bg-[url('/images/banner.png')] ">
-          {/* <img
-            className="ml-36"
-            src="/images/banner_transparent.png"
-            alt="Banner Picture"
-            draggable="false"
-          /> */}
-          <div className="w-1/3 ml-[12rem] my-36">
+          <div className="min-w-full ml-[12rem] my-36">
             <h1 className="text-4xl text-white font-semibold">
               Enhance your surrounding
             </h1>
