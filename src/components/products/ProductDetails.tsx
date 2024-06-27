@@ -24,6 +24,19 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Input } from "@nextui-org/input";
+import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import Review from "./Review";
+import SimilarProducts from "./SimilarProducts";
+import { useRouter } from "next/navigation";
+import ProductCard from "./ProductCard";
+import { Select, SelectContent, SelectGroup } from "../ui/select";
+import { SelectItem } from "@radix-ui/react-select";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import Review from "./Review";
 import { Label } from "../ui/label";
@@ -33,6 +46,7 @@ export default function ProductDetails({
 }: {
   params: { productId: string };
 }) {
+  const router = useRouter();
   const now = new Date();
   const TestArray = [
     {
@@ -70,6 +84,8 @@ export default function ProductDetails({
   const [productSpecs, setProductspecs] = useState<any[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
+  const [similarProducts, setSimilarProducts] = useState<any[]>([]);
+  const [categoryId, setCategoryId] = useState<string>("");
   const [variant, setVariant] = useState<string[]>([]);
 
   const [rating, setRating] = useState(0);
@@ -106,10 +122,19 @@ export default function ProductDetails({
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
       setVariant(result.data.variant.map((item: any) => item.variant));
-      // console.log(result.data);
+      console.log(result.data);
+      setCategoryId(result.data.category._id);
+      console.log(result.data);
       // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
+
+  useEffect(() => {
+    axios.get("/api/collections/" + categoryId).then((result) => {
+      setSimilarProducts(result.data.products);
+      console.log(result.data.products);
+    });
+  }, [categoryId]);
 
   const handleAddtoCart = async () => {
     //Neu chua dang nhap thi ve page login
@@ -389,6 +414,37 @@ export default function ProductDetails({
             </>
           ))}
         </ul>
+        <Separator className="my-12" />
+        <div className="px-48 my-12">
+          <div className="text-left">
+            <span className="text-5xl font-semibold opacity-90 inline-block">
+              You might like:
+            </span>
+          </div>
+          <Carousel className="w-full h-full mt-12">
+            <CarouselContent>
+              {similarProducts.map((item, index) => {
+                return (
+                  <CarouselItem
+                    key={index}
+                    className="md:basis-1/2 lg:basis-1/4"
+                  >
+                    <ProductCard
+                      image={item.images[0]}
+                      key={item._id}
+                      name={item.name}
+                      price={item.price}
+                      description={item.description}
+                      onClick={() => router.push("/products/" + item._id)}
+                    />
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
       </div>
     </div>
   );

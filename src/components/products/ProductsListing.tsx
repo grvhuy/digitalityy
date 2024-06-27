@@ -46,6 +46,7 @@ export default function ProductsListing({
       setProductsFiltered(result.data.products);
       setCategoryName(result.data.category.name);
       setIsLoading(false);
+      console.log(result.data.products);
       // console.log("cate name: ", result.data.category.name);
     });
   }, [params.categoryId]);
@@ -78,7 +79,7 @@ export default function ProductsListing({
     }
     // console.log(sortedProducts);
     setProductsFiltered(sortedProducts);
-  }
+  };
 
   const handleFilterSpec = (name: any, value: any) => {
     if (value === "all") {

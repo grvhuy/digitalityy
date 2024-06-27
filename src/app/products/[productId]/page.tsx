@@ -6,7 +6,7 @@ export default function ProductTestPage({
   params: { productId: string };
 }) {
   return (
-    <div className="h-screen w-screen">
+    <div className="h-full w-screen">
       <ProductDetails params={params}></ProductDetails>
     </div>
   );

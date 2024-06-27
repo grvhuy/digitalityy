@@ -67,47 +67,7 @@ export default function LandingPage() {
         <div className="flex flex-col">
           <Separator className="mt-14 bg-black bg-opacity-50 w-1/2 place-self-center" />
         </div>
-        <div className="flex flex-row mx-64 mt-14 justify-around gap-x-16">
-          <div className="flex flex-col gap-y-6">
-            <div className=" place-self-center">
-              <div className="rounded-full bg-eerie_black p-3">
-                <FaRegSmile className="text-yellow-400" size={40} />
-              </div>
-            </div>
-            <span>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae
-              harum ratione cupiditate reprehenderit voluptatum eaque maxime
-              nihil inventore sapiente porro expedita culpa quae maiores, non
-              veritatis, ex quisquam voluptates vero.
-            </span>
-          </div>
-          <div className="flex flex-col gap-y-6">
-            <div className=" place-self-center">
-              <div className="rounded-full bg-eerie_black p-3">
-                <FiTruck className="text-yellow-400" size={40} />
-              </div>
-            </div>
-            <span>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Reprehenderit similique quae dolorum quod eveniet, aliquam eum
-              nobis ad, ab veritatis maiores magni? Animi neque aperiam dolores
-              iste alias fuga dicta.
-            </span>
-          </div>
-          <div className="flex flex-col gap-y-6">
-            <div className=" place-self-center">
-              <div className="rounded-full bg-eerie_black p-3">
-                <FaRegCreditCard className="text-yellow-400" size={40} />
-              </div>
-            </div>
-            <span>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Id,
-              mollitia error, provident iure quidem aspernatur illo in odit
-              maxime ducimus eius! Soluta illo fugit error architecto ex laborum
-              nulla dolores?
-            </span>
-          </div>
-        </div>
+      
       </div>
     </div>
   );
