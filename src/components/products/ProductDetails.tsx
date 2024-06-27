@@ -24,22 +24,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Input } from "@nextui-org/input";
-import { Button } from "../ui/button";
-import { useSession } from "next-auth/react";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
-import Review from "./Review";
-import SimilarProducts from "./SimilarProducts";
-import { useRouter } from "next/navigation";
-import ProductCard from "./ProductCard";
-import { Select, SelectContent, SelectGroup } from "../ui/select";
-import { SelectItem } from "@radix-ui/react-select";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import Review from "./Review";
 import { Label } from "../ui/label";
+import ProductCard from "./ProductCard";
+import { useRouter } from "next/navigation";
 
 export default function ProductDetails({
   params,
@@ -122,9 +111,7 @@ export default function ProductDetails({
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
       setVariant(result.data.variant.map((item: any) => item.variant));
-      console.log(result.data);
-      setCategoryId(result.data.category._id);
-      console.log(result.data);
+      // console.log(result.data);
       // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
