@@ -1,24 +1,32 @@
 "use client";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { Input, Textarea } from "@nextui-org/input";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselPrevious,
 } from "../ui/carousel";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Input } from "@nextui-org/input";
-import { Button } from "../ui/button";
-import { useSession } from "next-auth/react";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
-import Review from "./Review";
-import { Select, SelectContent, SelectGroup } from "../ui/select";
-import { SelectItem } from "@radix-ui/react-select";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import Review from "./Review";
+import { Label } from "../ui/label";
 
 export default function ProductDetails({
   params,
@@ -64,6 +72,24 @@ export default function ProductDetails({
   const [price, setPrice] = useState<number>(0);
   const [variant, setVariant] = useState<string[]>([]);
 
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const [isChanged, setIsChanged] = useState(false);
+
+  const [allReviews, setAllReviews] = useState<any[]>([]);
+
+  const handleClick = (index: any) => {
+    setRating(index);
+  };
+
+  // Lay tat ca review
+  useEffect(() => {
+    axios.get(`/api/reviews/${params.productId}`).then((response) => {
+      console.log("review data: ", response.data);
+      setAllReviews(response.data);
+    });
+  }, [isChanged]);
   // Lay thong tin user
   useEffect(() => {
     const userEmail = session?.user?.email;
@@ -80,7 +106,7 @@ export default function ProductDetails({
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
       setVariant(result.data.variant.map((item: any) => item.variant));
-      console.log(result.data);
+      // console.log(result.data);
       // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
@@ -143,7 +169,9 @@ export default function ProductDetails({
             }).format(product.price)}
           </span>
           <Separator className="my-4" />
-          <h1 className="text-xl font-normal text-gray-500">{product.quantity} products left.</h1>
+          <h1 className="text-xl font-normal text-gray-500">
+            {product.quantity} products left.
+          </h1>
           <div className="w-full max-w-xs">
             <label
               className="block my-2 font-normal text-xl"
@@ -153,10 +181,13 @@ export default function ProductDetails({
             </label>
             <ToggleGroup className="" type="single">
               {variant.map((item, index) => (
-                <ToggleGroupItem 
-                className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={item}
-                key={index}>{item}</ToggleGroupItem>
+                <ToggleGroupItem
+                  className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={item}
+                  key={index}
+                >
+                  {item}
+                </ToggleGroupItem>
               ))}
             </ToggleGroup>
             {/* <select
@@ -209,18 +240,17 @@ export default function ProductDetails({
         <div>
           <h1 className="font-bold">{"Product's Specifications:"}</h1>
           <div className="bg-gray-100 rounded-xl p-4 mt-6">
-            <table className="">
+            <table className="w-full">
               {productSpecs.map((item) => {
-                return (
-                  <>
+                if (item.attributeName && item.attributeValue)
+                  return (
                     <tr className="border-b-2 border-b-gray-200" key={item._id}>
                       <td className="font-semibold p-4">
                         {item.attributeName}
                       </td>
                       <td className="">{item.attributeValue}</td>
                     </tr>
-                  </>
-                );
+                  );
               })}
             </table>
           </div>
@@ -240,19 +270,124 @@ export default function ProductDetails({
             What our customers are saying:
           </span>
         </div>
+
         <ul className="px-48 py-10 space-y-8">
-          {TestArray.map((item, index) => {
-            return (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="gold_black" size="sm" className="px-3">
+                Send your review
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="min-w-[54rem]">
+              <DialogHeader>
+                <DialogTitle>Your review about {product.name}</DialogTitle>
+                <DialogDescription>
+                  Your opinions will help us improve our service.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-3 space-x-4">
+                <div className="flex-1 gap-2">
+                  <Image
+                    src={images[0]}
+                    alt="product image"
+                    width={500}
+                    height={500}
+                    loader={({ src }) => src}
+                    className="border"
+                  />
+                </div>
+                <div className="flex flex-col col-span-2 space-y-4">
+                  <div>
+                    <Label>Rating</Label>
+                    <div>
+                      <div className="flex items-center mx-2">
+                        {[...Array(5)].map((_, index) => (
+                          <svg
+                            key={index}
+                            onClick={() => handleClick(index + 1)}
+                            className={`w-4 h-4 ms-1 ${
+                              index < rating
+                                ? "text-yellow-300"
+                                : "text-gray-300 dark:text-gray-500"
+                            } hover:`}
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 22 20"
+                          >
+                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                          </svg>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="comment">Comment</Label>
+                    <Textarea
+                      id="comment"
+                      className=""
+                      placeholder="Your comment here..."
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="sm:justify-end">
+                <DialogClose asChild>
+                  <Button type="button" variant="destructive">
+                    Close
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button
+                    onClick={() => {
+                      if (!rating || !comment) {
+                        toast({
+                          duration: 3000,
+                          description: "Please rate the product",
+                        });
+                        return;
+                      }
+                      axios
+                        .post(`/api/reviews/${params.productId}`, {
+                          comment: comment,
+                          rating: rating,
+                          userId: userId,
+                        })
+                        .then((response) => {
+                          console.log(response.data);
+                          setIsChanged(!isChanged);
+                        });
+                    }}
+                    type="button"
+                    className="rounded-md"
+                    variant="gold_black"
+                  >
+                    Send Review
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* Review có mới nhất sẽ đứng được render đầu tiên */}
+          {allReviews.map((review, index) => (
+            <>
               <Review
+                reviewId={review._id}
+                userId={review.user._id}
+                currentUserId={userId}
                 key={index}
-                title={item.title}
-                name={item.name}
-                date={item.date}
-                comment={item.comment}
-                rating={item.rating}
+                name={review.user.name}
+                title={review.title}
+                comment={review.comment}
+                rating={review.rating}
+                date={review.createdAt}
               />
-            );
-          })}
+              <Separator />
+            </>
+          ))}
         </ul>
       </div>
     </div>
