@@ -69,14 +69,6 @@ export default function SettingsMenu() {
           </li>
           <Separator />
           <li>
-            My Wishlist{" "}
-            <MdOutlineKeyboardArrowRight
-              size={25}
-              className="absolute right-0 text-gray-400"
-            />
-          </li>
-          <Separator />
-          <li>
             Manage Addresses{" "}
             <MdOutlineKeyboardArrowRight
               size={25}
@@ -85,7 +77,7 @@ export default function SettingsMenu() {
           </li>
           <Separator />
           <li onClick={handleChangePassword}>
-            Change your password{" "}
+            Change password{" "}
             <MdOutlineKeyboardArrowRight
               size={25}
               className="absolute right-0 text-gray-400"

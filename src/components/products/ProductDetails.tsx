@@ -241,7 +241,7 @@ export default function ProductDetails({
                 });
               }}
               variant={"gold_black"}
-              className="mt-2 rounded-md p-4 w-fit"
+              className="w-fit"
             >
               Add to cart
             </Button>
@@ -286,7 +286,7 @@ export default function ProductDetails({
         <ul className="px-48 py-10 space-y-8">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="gold_black" size="sm" className="px-3 flex ml-auto mr-auto">
+              <Button variant="gold_black" className="px-3 flex ml-auto mr-auto">
                 Send your review
               </Button>
             </DialogTrigger>
