@@ -68,7 +68,6 @@ export default function ProductDetails({
   const { toast } = useToast();
   const [userId, setUserId] = useState<string>("");
   const [images, setImages] = useState<any[]>([]);
-  // const images = ["/images/6.png", "/images/abcd.png", "/images/test-img.png"];
   const [product, setProduct] = useState<any[]>([]);
   const [productSpecs, setProductspecs] = useState<any[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
@@ -111,15 +110,16 @@ export default function ProductDetails({
       setProductspecs(result.data.productSpecs);
       setPrice(result.data.price);
       setVariant(result.data.variant.map((item: any) => item.variant));
-      // console.log(result.data);
+      setCategoryId(result.data.category._id);
       // console.log(result.data.productSpecs);
     });
   }, [params.productId]);
 
   useEffect(() => {
-    axios.get("/api/collections/" + categoryId).then((result) => {
-      setSimilarProducts(result.data.products);
-      console.log(result.data.products);
+    if (categoryId === "") return;
+    axios.get(`/api/dashboard/products/category/${categoryId}`).then((result) => {
+      console.log(result.data);
+      setSimilarProducts(result.data);
     });
   }, [categoryId]);
 
@@ -150,7 +150,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-3">
+    <div className="grid grid-row-3 mr-8">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -189,7 +189,7 @@ export default function ProductDetails({
               className="block my-2 font-normal text-xl"
               htmlFor="variant-select"
             >
-              Select Variant
+                {variant.length > 0 ? "Select a variant" : ""}
             </label>
             <ToggleGroup className="" type="single">
               {variant.map((item, index) => (
@@ -384,7 +384,7 @@ export default function ProductDetails({
             </DialogContent>
           </Dialog>
           {/* Review có mới nhất sẽ đứng được render đầu tiên */}
-          {allReviews.map((review, index) => (
+          {allReviews && allReviews.map((review, index) => (
             <>
               <Review
                 reviewId={review._id}
@@ -402,15 +402,15 @@ export default function ProductDetails({
           ))}
         </ul>
         <Separator className="my-12" />
-        <div className="px-48 my-12">
+        <div className=" my-12">
           <div className="text-left">
-            <span className="text-5xl font-semibold opacity-90 inline-block">
+            <span className="ml-8 text-5xl font-semibold opacity-90 inline-block">
               You might like:
             </span>
           </div>
-          <Carousel className="w-full h-full mt-12">
+          <Carousel className="mx-20 mt-12">
             <CarouselContent>
-              {similarProducts.map((item, index) => {
+              {similarProducts && similarProducts.map((item, index) => {
                 return (
                   <CarouselItem
                     key={index}

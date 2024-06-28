@@ -65,9 +65,7 @@ export default function SignUp() {
       });
 
       if (res.ok) {
-        const form = e.target;
-        form.reset();
-        router.push("/");
+        router.push("/sign-in");
       } else {
         console.log("User registration failed.");
       }

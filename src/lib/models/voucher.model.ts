@@ -15,5 +15,5 @@ const voucherSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now() },  
 })
 
-const Voucher = mongoose.models.Category || mongoose.model("Category", voucherSchema)
+const Voucher = mongoose.models.Voucher || mongoose.model("Voucher", voucherSchema)
 export default Voucher

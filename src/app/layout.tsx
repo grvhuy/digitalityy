@@ -8,6 +8,7 @@ import "./globals.css";
 import { store } from "@/lib/store";
 import ReduxProvider from "./ReduxProvider";
 import Footer from "@/components/footer/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -22,19 +23,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden overflow-y-scroll">
-      <body className={`${font.className}`}>
-        <main>
-          <ReduxProvider> 
-            <AuthProvider>
-              <Header />
-              {children}
-              <Footer />
-            </AuthProvider>
-          </ReduxProvider>
-        </main>
-        <Toaster />
-      </body>
-    </html>
+   
+      <html lang="en" className="overflow-x-hidden overflow-y-scroll">
+        <body className={`${font.className}`}>
+          <main>
+            <ReduxProvider>
+              <AuthProvider>
+                <Header />
+                {children}
+                {/* <Footer /> */}
+              </AuthProvider>
+            </ReduxProvider>
+          </main>
+          <Toaster />
+        </body>
+      </html>
   );
 }

@@ -53,14 +53,14 @@ export default function SignIn() {
         setError(error);
         return;
       }
-      router.replace("/dashboard");
+      router.replace("/");
     } catch (error) {
       console.log("Error during registration: ", error);
     }
   };
 
   return (
-    <div className="w-1/4 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">
+    <div className="ml-20 w-1/4 flex flex-col gap-y-5 absolute inset-y-0 right-1/4 justify-center">
       <div>
         <div className="flex flex-row">
           <h1 className="text-4xl font-extrabold">Welcome</h1>
@@ -113,17 +113,17 @@ export default function SignIn() {
               variant={"log_in"}
               type="button"
               onClick={() => signIn("google")}
-              className="mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
+              className="w-full mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
             >
-              <IoLogoGoogle size={20} className="mx-2" />
+              <IoLogoGoogle size={20} className="mx-2" /> {" Continue with Google"}
             </Button>
-            <Button
+            {/* <Button
               variant={"log_in"}
               onClick={() => signIn("facebook")}
               className="mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
             >
               <IoLogoFacebook size={20} className="mx-2" />
-            </Button>
+            </Button> */}
           </div>
         </div>
 
