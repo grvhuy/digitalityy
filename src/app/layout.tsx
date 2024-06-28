@@ -23,20 +23,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   
-      <html lang="en" className="overflow-x-hidden overflow-y-scroll">
-        <body className={`${font.className}`}>
-          <main>
-            <ReduxProvider>
-              <AuthProvider>
-                <Header />
-                {children}
-                {/* <Footer /> */}
-              </AuthProvider>
-            </ReduxProvider>
-          </main>
-          <Toaster />
-        </body>
-      </html>
+    <html lang="en" className="overflow-x-hidden overflow-y-scroll">
+      <body className={`${font.className}`}>
+        <main>
+          <ReduxProvider>
+            <AuthProvider>
+              <Header />
+              {children}
+              <Footer />
+            </AuthProvider>
+          </ReduxProvider>
+        </main>
+        <Toaster />
+      </body>
+    </html>
   );
 }

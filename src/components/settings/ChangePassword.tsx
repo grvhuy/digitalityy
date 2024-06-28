@@ -25,7 +25,7 @@ export default function ChangePassword() {
   }, []);
 
   return (
-    <div className="mx-[480px] my-12 p-2 h-screen min-w-[700px]">
+    <div className="mx-[480px] mt-12 p-2 h-full min-w-[700px]">
       <button onClick={handleReturn} className="hover:scale-105 hover:[&>div]:">
         <IoIosArrowBack className="place-self-center text-5xl rounded-full bg-zinc-100 hover:bg-zinc-200 p-1" />
       </button>
@@ -108,7 +108,7 @@ export default function ChangePassword() {
               </button>
             </div>
           </div>
-          <div className="mt-12">
+          <div className="">
             <Button variant="link">Cancel</Button>
             <Button variant="gold_black">Set new password</Button>
           </div>

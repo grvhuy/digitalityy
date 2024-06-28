@@ -61,11 +61,7 @@ export default function ProductCard(props: ProductCardProps) {
               </del>
             </div>
             <div className="text-right">
-              <Button
-                variant="gold_black"
-                className="text-white bg-black hover:bg-gray-800"
-                onClick={props.onClick}
-              >
+              <Button variant="gold_black" onClick={props.onClick}>
                 View Details
               </Button>
             </div>
