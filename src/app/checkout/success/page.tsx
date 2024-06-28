@@ -1,6 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 const SuccessPage = () => {
@@ -15,9 +16,13 @@ const SuccessPage = () => {
           <Button variant="gold_black" className="mt-4" onClick={ () => router.push('/collections')}>
             Continue Shopping
           </Button>
-          <Button variant="ghost" className="mt-2">
-            View Order {orderId}
-          </Button>
+          <Link
+
+          href={`/user/orders/`}>
+            <Button variant="ghost" className="mt-2">
+              View your Orders {orderId}
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

@@ -12,10 +12,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (session) {
       setUser(session.user);
-      console.log("user", user);
+      // console.log("user", user);
       setLoading(false);
     }
-    console.log("session", session);
+    // console.log("session", session);
   }, [session]);
 
   if (loading) {

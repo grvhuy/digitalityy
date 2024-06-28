@@ -55,19 +55,17 @@ import {
 } from "@/components/ui/dialog";
 import { revalidatePath } from "next/cache";
 
-export type Voucher = {
+export type Refund = {
   id: string;
-  code: string;
-  startDate: any;
-  endDate: any;
-  usageLimit: number;
+  date: any;
+
 };
 
-let dataX: Voucher[] = [];
+let dataX: Refund[] = [];
 
-let updatedDataX: Voucher[] = [];
+let updatedDataX: Refund[] = [];
 
-export const columns: ColumnDef<Voucher>[] = [
+export const columns: ColumnDef<Refund>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -91,22 +89,22 @@ export const columns: ColumnDef<Voucher>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "code",
+    accessorKey: "id",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Voucher Code
+          Refund requests ID
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="">{row.getValue("code")}</div>,
+    cell: ({ row }) => <div className="">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "startDate",
+    accessorKey: "date",
     header: ({ column }) => {
       return (
         <Button
@@ -120,47 +118,7 @@ export const columns: ColumnDef<Voucher>[] = [
     },
     cell: ({ row }) => (
       <div className="lowercase">{
-        new Date(row.getValue("startDate")).toLocaleDateString()
-      }</div>
-    ),
-  },
-
-  {
-    accessorKey: "endDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date requested
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="lowercase">{
-        new Date(row.getValue("endDate")).toLocaleDateString()
-      }</div>
-    ),
-  },
-
-  {
-    accessorKey: "usageLimit",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date requested
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="">{
-        row.getValue("usageLimit")
+        new Date(row.getValue("date")).toLocaleDateString()
       }</div>
     ),
   },
@@ -169,7 +127,7 @@ export const columns: ColumnDef<Voucher>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const voucher = row.original;
+      const refund = row.original;
       const router = useRouter();
       // const handleDelete = async () => {
       //   try {
@@ -192,14 +150,14 @@ export const columns: ColumnDef<Voucher>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(voucher.id)}
+              onClick={() => navigator.clipboard.writeText(refund.id)}
             >
               Copy ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/dashboard/vouchers/${voucher.id}`}>
-                View voucher
+              <Link href={`/dashboard/refunds/${refund.id}`}>
+                View request
               </Link>
             </DropdownMenuItem>
 
@@ -210,10 +168,10 @@ export const columns: ColumnDef<Voucher>[] = [
   },
 ];
 
-const DashboardVouchersPage = () => {
+const DashboardRefundPage = () => {
   const router = useRouter();
 
-  const [vouchers, setVouchers] = React.useState<Voucher[]>([]);
+  const [refunds, setRefunds] = React.useState<Refund[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -225,18 +183,15 @@ const DashboardVouchersPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/dashboard/vouchers/tableData");
-        const newData = Object.values(response.data).map((voucher: any) => {
+        const response = await axios.get("/api/dashboard/refunds/tableData");
+        const newData = Object.values(response.data).map((refund: any) => {
           return {
-            id: voucher.id,
-            code: voucher.code,
-            startDate: voucher.startDate,
-            endDate: voucher.endDate,
-            usageLimit: voucher.usageLimit,
+            id: refund.id,
+            date: refund.date,
           };
         });
         updatedDataX = dataX.concat(newData);
-        setVouchers(updatedDataX);
+        setRefunds(updatedDataX);
         console.log(updatedDataX);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -247,7 +202,7 @@ const DashboardVouchersPage = () => {
   }, [dataX]);
 
   const table = useReactTable({
-    data: vouchers,
+    data: refunds,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -270,10 +225,10 @@ const DashboardVouchersPage = () => {
       <div className="flex items-center py-4">
         <div className="flex space-x-2">
           <Input
-            placeholder="Filter voucher code..."
-            value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter emails..."
+            value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("code")?.setFilterValue(event.target.value)
+              table.getColumn("id")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -384,4 +339,4 @@ const DashboardVouchersPage = () => {
   );
 };
 
-export default DashboardVouchersPage;
+export default DashboardRefundPage;

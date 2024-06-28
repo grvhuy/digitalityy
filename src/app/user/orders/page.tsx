@@ -15,14 +15,28 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import Footer from "@/components/footer/Footer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@nextui-org/input";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const OrdersHistory = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
   const [userId, setUserId] = useState<string>("");
   const [orders, setOrders] = useState<any[]>([]);
+  const [reason, setReason] = useState<string>("");
 
   useEffect(() => {
     setUser(session?.user);
@@ -52,7 +66,6 @@ const OrdersHistory = () => {
     <div className="bg-[#f5f5f5] h-full p-20 mb-[20rem]">
       <div className="bg-white p-4 shadow-sm">
         <div className="flex justify-between items-center">
-
           <h1 className="text-2xl font-semibold">Orders History</h1>
           {/* filter */}
           <Select>
@@ -140,9 +153,53 @@ const OrdersHistory = () => {
                     </span>
                   </h1>
                   <div className="flex">
-                    <Button className="text-black hover:text-white bg-red-400 px-4 py-2 rounded-md uppercase mt-4 mx-2">
-                      Request for Refund
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="text-black hover:text-white bg-red-400 px-4 py-2 rounded-md uppercase mt-4 mx-2">
+                          Request for Refund
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Refund Order</DialogTitle>
+                          <DialogDescription>
+                            Order #{order._id}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Textarea
+                              id="reason"
+                              placeholder="Let us know your reason for refund"
+                              className="col-span-4"
+                              value={reason}
+                              onChange={(e) => setReason(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button
+                              onClick={async () => {
+                                await axios.post("/api/dashboard/refunds", {
+                                  orderId: order._id,
+                                  reason: reason,
+                                });
+                              }}
+                              // toast
+                              className="text-black hover:text-white bg-[#facc15] px-4 py-2 rounded-md uppercase"
+                            >
+                              Submit
+                            </Button>
+                          </DialogClose>
+                          <DialogClose asChild>
+                            <Button className="text-black hover:text-white bg-red-400 px-4 py-2 rounded-md uppercase">
+                              Cancel
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                     <Button className="text-black hover:text-white bg-[#facc15] px-4 py-2 rounded-md uppercase mt-4">
                       View order
                     </Button>
@@ -153,7 +210,6 @@ const OrdersHistory = () => {
             </div>
           ))}
         </div>
-        
       </div>
     </div>
   );

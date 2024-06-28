@@ -267,10 +267,10 @@ export default function ProductDetails({
             </table>
           </div>
         </div>
-        <div>
+        <div className="mr-20">
           {/* TODO */}
           <h1 className="font-bold">{"Description: "}</h1>
-          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+          <div className="bg-gray-100 rounded-xl p-4 mt-6  mr-20">
             <p>{product.description}</p>
           </div>
         </div>
