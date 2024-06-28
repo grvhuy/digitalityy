@@ -108,8 +108,8 @@ export default function Header() {
               igitality
             </h1>
           </div>
-          <nav className="place-self-center">
-            <ul className="flex  list-none text-center font-semibold">
+          <nav className="">
+            <ul className="flex list-none ml-72 pr-12 text-center font-semibold">
               <ProductSheet categories={categories} />
               <Button
                 variant={"gold_black"}
@@ -129,17 +129,18 @@ export default function Header() {
               ></Input>
               <Button
                 variant="ghost"
-                className="rounded-full hover:bg-gray-100 mx-2"
+                className="rounded-full hover:bg-gray-100 ml-2"
               >
                 <IoSearch />
               </Button>
             </form>
-            <button
+            <Button
+              variant="ghost"
               onClick={() => router.push("/cart")}
-              className="rounded-full hover:bg-gray-100 p-2"
+              className="rounded-full hover:bg-gray-100"
             >
               <FiShoppingCart />
-            </button>
+            </Button>
             {user ? (
               <div className="flex items-center">
                 {/* <h1 className="font-bold ">Hello {user?.name} !</h1> */}

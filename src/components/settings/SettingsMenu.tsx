@@ -4,16 +4,36 @@ import { Separator } from "../ui/separator";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export default function SettingsMenu() {
+  const { data: session } = useSession();
+  const [user, setUser] = useState<any>({});
+  const [userId, setUserId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [userName, setUserName] = useState<string>("");
+
   const router = useRouter();
-  const handleAccesibility = () => {
-    router.push("/user/settings/accessibility");
-  };
+
   const handleChangePassword = () => {
     router.push("/user/settings/change-password");
   };
+
+  useEffect(() => {
+    setUser(session?.user);
+    const userEmail = session?.user?.email;
+    const name = session?.user?.name;
+    setUserName(name);
+    console.log(userEmail);
+    // Lay userId tu userEmail
+    if (userEmail) {
+      axios.get(`/api/dashboard/users/${userEmail}`).then((res) => {
+        setUserId(res.data._id);
+      });
+    }
+  }, [session, userId]);
+
   return (
     <div className="bg-zinc-100 rounded-3xl mx-[480px] my-12 p-12 min-w-[700px]">
       <div className="flex flex-row gap-x-3 mb-4">
@@ -22,7 +42,7 @@ export default function SettingsMenu() {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <h1 className="text-3xl font-semibold flex flex-row place-self-center">
-          Welcome User A
+          Welcome {`${userName}`}
           <br />
           <div className="text-3xl ml-2 animate-waving-hand origin-[70%_70%]">
             👋
@@ -72,13 +92,6 @@ export default function SettingsMenu() {
             />
           </li>
           <Separator />
-          <li onClick={handleAccesibility}>
-            Accessbility{" "}
-            <MdOutlineKeyboardArrowRight
-              size={25}
-              className="absolute right-0 text-gray-400"
-            />
-          </li>
           <Separator />
         </ul>
       </div>

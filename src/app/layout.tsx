@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className="overflow-x-hidden overflow-y-scroll">
       <body className={`${font.className}`}>
         <main>
-          <ReduxProvider> 
+          <ReduxProvider>
             <AuthProvider>
               <Header />
               {children}
