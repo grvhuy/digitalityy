@@ -1,5 +1,6 @@
 import Cart from "@/lib/models/cart.model";
 import Order from "@/lib/models/order.model";
+import Product from "@/lib/models/product.model";
 import Transaction from "@/lib/models/transaction.model";
 import connectToDB from "@/lib/mongoose";
 import * as crypto from "crypto";
@@ -139,6 +140,14 @@ export const POST = async (req: Request) => {
       { products: newCartItems }
     );
   })
+
+  // GIam so luong san pham khi mua
+  items.map(async (item: any) => {
+    const product = await  Product.findById(item.id);
+    const newQuantity = product.quantity - item.amount;
+    await Product.updateOne({ _id: item.id }, { quantity: newQuantity });
+  })
+    
 
 
   // bad request do items bi sai

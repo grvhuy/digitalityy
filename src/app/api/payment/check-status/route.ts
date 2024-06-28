@@ -92,7 +92,7 @@ export const PATCH = async (req: Request) => {
 
     await connectToDB();
     const transactionToUpdate = await Transaction.findOne({
-      orderId: orderIdFromMomo,
+      _id: id,
     });
     const order = await Order.findOne({ transactionId: id });
 

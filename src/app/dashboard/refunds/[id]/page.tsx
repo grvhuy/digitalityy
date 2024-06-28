@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@nextui-org/input";
 import axios from "axios";
-import { set } from "mongoose";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -31,6 +30,7 @@ const RefundDetailPage = () => {
   const [refund, setRefund] = useState<any>(null);
   const [orderId, setOrderId] = useState<any>(null);
 
+  const [transId, setTransId] = useState<any>(null);
   const [refundStatus, setRefundStatus] = useState("");
   const [refundAmount, setRefundAmount] = useState<any>(0);
 
@@ -38,7 +38,7 @@ const RefundDetailPage = () => {
     axios.get(`/api/dashboard/refunds/${id}`).then((res) => {
       console.log(res.data);
       setRefund(res.data);
-      setOrderId(res.data.order._id)
+      setOrderId(res.data.order._id);
     });
   }, []);
 
@@ -66,8 +66,10 @@ const RefundDetailPage = () => {
   // else
 
   const handleCheckStatus = () => {
-    axios.get(`/api/dashboard/orders/${id}`).then((res) => {
+    console.log(orderId)
+    axios.get(`/api/dashboard/orders/${orderId}`).then((res) => {
       setTransactionId(res.data.order?.transactionId);
+      // console.log(res.data);
     });
     axios
       .patch(`/api/payment/check-status`, {
@@ -76,6 +78,7 @@ const RefundDetailPage = () => {
       .then((res) => {
         console.log(res.data);
         setPaymentStatus(res.data.message);
+        setTransId(res.data.transId);
       })
       .catch((err) => {
         console.log(err);
@@ -88,7 +91,9 @@ const RefundDetailPage = () => {
         {/* Shipping info stepper */}
         <div className="col-span-2">
           <div>
-            <h1 className="font-bold text-xl text-yellow-600">Refund request</h1>
+            <h1 className="font-bold text-xl text-yellow-600">
+              Refund request
+            </h1>
             <div className="space-y-2">
               <p className="font-medium">Customer's Reason: </p>
               <Textarea
@@ -96,7 +101,9 @@ const RefundDetailPage = () => {
                 className="w-full"
                 disabled={true}
               />
-              <p className="font-bold text-xl text-yellow-600 pt-8">Response: </p>
+              <p className="font-bold text-xl text-yellow-600 pt-8">
+                Response:{" "}
+              </p>
               <Label>Refund status: </Label>
               <Textarea
                 value={refundStatus}
@@ -110,23 +117,35 @@ const RefundDetailPage = () => {
                 onChange={(e) => setRefundAmount(e.target.value)}
               />
             </div>
-            <Button
-              onClick={() => {
-                // axios
-                //   .patch(`/api/dashboard/refunds/${id}`, {
-                //     status: refundStatus,
-                //     refundAmount: refundAmount,
-                //   })
-                //   .then((res) => {
-                //     console.log(res.data);
-                //     setRefundStatus("");
-                //     setRefundAmount(0);
-                //   });
-              }}
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Send response
-            </Button>
+            {transId ? (
+              <Button
+                onClick={() => {
+                  axios
+                    .patch(`/api/dashboard/refunds`, {
+                      description: refundStatus,
+                      amount: refundAmount,
+                      transId: transId,
+                    })
+                    .then((res) => {
+                      console.log(res.data);
+                      setRefundStatus("");
+                      setRefundAmount(0);
+                    });
+                }}
+                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Send response
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  alert("Please check status first");
+                }}
+                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Send response
+              </Button>
+            )}
           </div>
           {/* <div className="my-4">
             <Button

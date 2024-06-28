@@ -79,7 +79,9 @@ export const POST = async (req: Request) => {
             // Write data to request body and send the request
             checkStatusReq.write(requestBody);
             checkStatusReq.end();
+            return NextResponse.json({ message: "Refund success." });
         } catch (error) {
             console.error("Error refund:", error);
+            return NextResponse.json({ message: "Refund failed."});
         }
 }
