@@ -169,9 +169,13 @@ const ProductForm = ({
       console.log("put values: ", values);
       await axios.put(`/api/dashboard/products/${_id}`, values);
     } else {
+      if (name && description && price && category && images.length > 0) {
       axios.post("/api/dashboard/products", values).then((res) => {
         console.log("res:", res.data);
-      });
+        if (res.data) {
+          router.push(`/dashboard/products/${res.data._id}`);
+        }
+      });}
     }
   };
 
@@ -623,12 +627,8 @@ const ProductForm = ({
             ) : (
               <Button
                 onClick={(e) => {
-                  toast({
-                    duration: 3000,
-                    description: `Product ${name} has been added`,
-                  });
-                  onSubmit(form.getValues());
-                  router.push("/dashboard/products");
+                  if (form.formState.isSubmitting) return;
+                  onSubmit(form.getValues())
                 }}
                 type="submit"
               >

@@ -8,6 +8,7 @@ import "./globals.css";
 import { store } from "@/lib/store";
 import ReduxProvider from "./ReduxProvider";
 import Footer from "@/components/footer/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const font = Montserrat({ subsets: ["latin"] });
 

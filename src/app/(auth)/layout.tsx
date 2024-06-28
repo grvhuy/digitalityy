@@ -6,7 +6,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div>
         <AuthImagesSlider></AuthImagesSlider>
       </div>
-      {children}
+      <div className="space-x-12">
+        {children}
+      </div>
     </div>
   );
 }

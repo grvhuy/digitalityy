@@ -44,7 +44,10 @@ const Navbar = () => {
                       <Button
                       type="button"
                       className={cn("bg-white-500 text-gray-700", buttonVariants({ variant: "ghost" }))}
-                      onClick={() => signOut()}
+                      onClick={() => {
+                        signOut();
+                        window.location.href = "/";
+                      }}
                       >
                       Sign Out
                     </Button>

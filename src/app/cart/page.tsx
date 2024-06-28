@@ -19,6 +19,7 @@ import axios from "axios";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
@@ -170,7 +171,7 @@ const CartPage = () => {
           <h1 className="font-bold text-3xl">My Cart</h1>
         </section>
 
-        <section className="mx-20 mb-10 mt-4">
+        <section className="mx-20 mb-10 mt-4 min-w-[42rem]">
           <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
             <h1 className="col-span-3 mx-2">Product</h1>
             <h1 className="self-center">Unit Price</h1>
@@ -180,8 +181,22 @@ const CartPage = () => {
         </section>
 
         {products.length === 0 ? (
-          <div className="grid grid-cols-7 p-4 items-center bg-white shadow-sm">
+          <div className="flex items-center justify-center w-full">
             {/* Them UI loading */}
+            <div className="flex items-center justify-center">
+              <Image
+                alt=""
+                // src lay trong public/images
+                src={"/images/shopping.png"}
+                width={200}
+                height={200}
+              />
+              
+              <h1 className="text-2xl font-semibold">Your cart is empty</h1>
+              <Link href="/categories">
+                <Button className="ml-4">Go Shopping</Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <section>
@@ -317,33 +332,37 @@ const CartPage = () => {
       </div>
 
       {/* // Cart Summary */}
-      <div className="sticky mr-10 w-1/3  mt-14 ">
-        <div className="flex flex-col justify-center">
-          <div className="flex flex-col bg-white shadow-sm border p-4 space-y-4">
-            <h1 className="font-bold text-2xl">Cart Summary</h1>
-            <div className="flex space-x-4 ">
-              <h1 className="font-semibold">Subtotal</h1>
-              {products.length > 0 && (
-                <h1>
-                  {Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(subtotal || 0)}
-                </h1>
-              )}
+      {
+        products.length > 0 && (
+          <div className="sticky mr-10 w-1/3  mt-14 ">
+            <div className="flex flex-col justify-center">
+              <div className="flex flex-col bg-white shadow-sm border p-4 space-y-4">
+                <h1 className="font-bold text-2xl">Cart Summary</h1>
+                <div className="flex space-x-4 ">
+                  <h1 className="font-semibold">Subtotal</h1>
+                  {products.length > 0 && (
+                    <h1>
+                      {Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(subtotal || 0)}
+                    </h1>
+                  )}
+                </div>
+                {/* <div className="flex space-x-4 ">
+                  <h1 className="font-semibold">Shipping</h1>
+                  <h1>${shipping}</h1>
+                </div> */}
+                {/* <div className="flex space-x-4 ">
+                  <h1 className="font-semibold">Total</h1>
+                  <h1>$ {subTotal + shipping}</h1>
+                </div> */}
+                <Button onClick={handleCheckout}>Checkout</Button>
+              </div>
             </div>
-            {/* <div className="flex space-x-4 ">
-              <h1 className="font-semibold">Shipping</h1>
-              <h1>${shipping}</h1>
-            </div> */}
-            {/* <div className="flex space-x-4 ">
-              <h1 className="font-semibold">Total</h1>
-              <h1>$ {subTotal + shipping}</h1>
-            </div> */}
-            <Button onClick={handleCheckout}>Checkout</Button>
           </div>
-        </div>
-      </div>
+        )
+      }
     </div>
   );
 };

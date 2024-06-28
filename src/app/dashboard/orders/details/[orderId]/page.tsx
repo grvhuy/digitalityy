@@ -1,37 +1,37 @@
 "use client";
+import { StepperActive } from "@/components/Stepper";
+import { StepperDeactive } from "@/components/StepperDeactive";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@nextui-org/input";
-import { Label } from "@radix-ui/react-label";
-import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StepperActive } from "@/components/Stepper";
-import { StepperDeactive } from "@/components/StepperDeactive";
+import axios from "axios";
+import { set } from "mongoose";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const OrderDetailPage = () => {
   const id = usePathname().split("/").pop();
   const [order, setOrder] = useState<any>(null);
   const [userId, setUserId] = useState<any>(null);
+  const [transactionId, setTransactionId] = useState<any>(null);
   const [customer, setCustomer] = useState<any>(null);
   const [isEnableUpdate, setIsEnableUpdate] = useState(false);
   const [location, setLocation] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
   useEffect(() => {
     axios.get(`/api/dashboard/orders/${id}`).then((res) => {
       setOrder(res.data);
       setUserId(res.data.userId);
+      setTransactionId(res.data.order?.transactionId);
+      setPaymentStatus(res.data.order?.status);
       console.log(res.data);
     });
   }, []);
@@ -46,6 +46,24 @@ const OrderDetailPage = () => {
   //   return <div>Loading...</div>
   // }
   // else
+
+  const handleCheckStatus = () => {
+    axios.get(`/api/dashboard/orders/${id}`).then((res) => {
+      setTransactionId(res.data.order?.transactionId);
+    });
+    axios
+      .patch(`/api/payment/check-status`, {
+        id: transactionId,
+      })
+      .then((res) => {
+        console.log(res.data);
+        setPaymentStatus(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="ml-80 mt-2">
       <div className="grid grid-cols-3 space-x-6">
@@ -111,12 +129,20 @@ const OrderDetailPage = () => {
             {order?.order?.shippingInfo.map((item: any, index: number) => {
               if (index === order?.order?.shippingInfo.length - 1) {
                 return (
-                  <StepperActive location={item.location} updatedAt={item.updatedAt} status={item.status} />
+                  <StepperActive
+                    location={item.location}
+                    updatedAt={item.updatedAt}
+                    status={item.status}
+                  />
                 );
               } else {
                 return (
                   <ol className="relative text-gray-500 border-s border-gray-200 dark:border-gray-700 dark:text-gray-400">
-                    <StepperDeactive location={item.location} updatedAt={item.updatedAt} status={item.status} />
+                    <StepperDeactive
+                      location={item.location}
+                      updatedAt={item.updatedAt}
+                      status={item.status}
+                    />
                   </ol>
                 );
               }
@@ -173,14 +199,16 @@ const OrderDetailPage = () => {
                   <p className="">
                     Payment Method: {order?.order.paymentMethod}
                   </p>
-                  <p className="">Payment Status: {order?.order.status}</p>
-                  <p className="">Payment ID: {order?.order.paymentId}</p>
+                  <p className="text-lg font-semibold mt-2">Payment Status: {paymentStatus}</p>
                 </div>
               </div>
             </div>
           </div>
           <div className="mt-4">
-            <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <Button
+              onClick={handleCheckStatus}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
               Check Status
             </Button>
           </div>
@@ -196,7 +224,7 @@ const OrderDetailPage = () => {
                 alt=""
                 loader={({ src }) => src}
               ></Image> */}
-              
+
               <div className="flex flex-col justify-between p-2 leading-normal">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {item.name}
