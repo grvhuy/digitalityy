@@ -150,7 +150,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-3 mr-8">
+    <div className="grid grid-row-3 mx-36">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -286,7 +286,7 @@ export default function ProductDetails({
         <ul className="px-48 py-10 space-y-8">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="gold_black" size="sm" className="px-3">
+              <Button variant="gold_black" size="sm" className="px-3 flex ml-auto mr-auto">
                 Send your review
               </Button>
             </DialogTrigger>
