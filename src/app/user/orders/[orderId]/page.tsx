@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 const CustomerOrderPage = () => {
   const { data: session } = useSession();
   const [data, setData] = useState<any>(null);
+  const [refunds, setRefunds] = useState<any[]>([]);
 
   const orderId = usePathname().split("/").pop();
 
@@ -21,6 +22,14 @@ const CustomerOrderPage = () => {
       console.log(res.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (orderId) {
+      axios.get(`/api/dashboard/refunds/${orderId}`).then((res) => {
+        setRefunds(res.data);
+      });
+    }
+  }, [orderId]);
 
   return (
     <div className="bg-[#f5f5f5] h-full min-h-screen p-20">
@@ -124,6 +133,9 @@ const CustomerOrderPage = () => {
             </ol>
           </div>
         </div>
+
+        {/* Refund info if has */}
+        {}
 
         {/* Products */}
         <Separator className="w-full my-8" />

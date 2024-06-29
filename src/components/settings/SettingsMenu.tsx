@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function SettingsMenu() {
   const { data: session } = useSession();
@@ -65,15 +66,15 @@ export default function SettingsMenu() {
       <div>
         <ul className="font-medium hover:[&>li]:scale-[.99] [&>li]:p-4 hover:[&>li]:bg-eerie_black hover:[&>li]:text-yellow-400 [&>li]:transition-all [&>li]:duration-200 [&>li]:rounded-lg [&>li]:cursor-pointer [&>li]:flex [&>li]:flex-row [&>li]:relative">
           <li className="flex flex-row relative group " onClick={handleEdit}>
-            Edit Profile
+            Profile
             <MdOutlineKeyboardArrowRight
               size={25}
               className="absolute right-0 text-gray-400"
             />
           </li>
           <Separator />
-          <li onClick={handleOrders}>
-            Order History
+          <li>
+            <Link href={`/user/orders`}>Order History</Link>
             <MdOutlineKeyboardArrowRight
               size={25}
               className="absolute right-0 text-gray-400"
@@ -81,13 +82,13 @@ export default function SettingsMenu() {
           </li>
           <Separator />
           <li onClick={handleAddresses}>
-            Manage Addresses{" "}
+            <Link href={`/user/settings/addresses`}>Addresses</Link>
             <MdOutlineKeyboardArrowRight
               size={25}
               className="absolute right-0 text-gray-400"
             />
           </li>
-          <Separator />
+          {/* <Separator />
           <li onClick={handleChangePassword}>
             Change password{" "}
             <MdOutlineKeyboardArrowRight
@@ -95,7 +96,7 @@ export default function SettingsMenu() {
               className="absolute right-0 text-gray-400"
             />
           </li>
-          <Separator />
+          <Separator /> */}
           <Separator />
         </ul>
       </div>
