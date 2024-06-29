@@ -86,25 +86,22 @@ export default function LandingPage() {
         <h1 className="text-4xl my-12 mx-64 min-w-full font-semibold">
           On sale now:
         </h1>
-        <Carousel className="mx-20 mt-12">
+        <Carousel className="mx-56 mt-12">
           <CarouselContent>
             {sales.map((item, index) => {
-                return (
-                  <CarouselItem
-                    key={index}
-                    className="md:basis-1/2 lg:basis-1/4"
-                  >
-                    <ProductCard
-                      image={item.images[0]}
-                      key={item._id}
-                      name={item.name}
-                      price={item.price}
-                      description={item.description}
-                      onClick={() => router.push("/products/" + item._id)}
-                    />
-                  </CarouselItem>
-                );
-              })}
+              return (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
+                  <ProductCard
+                    image={item.images[0]}
+                    key={item._id}
+                    name={item.name}
+                    price={item.price}
+                    description={item.description}
+                    onClick={() => router.push("/products/" + item._id)}
+                  />
+                </CarouselItem>
+              );
+            })}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
