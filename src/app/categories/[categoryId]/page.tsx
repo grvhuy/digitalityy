@@ -6,9 +6,8 @@ export default function CategoriesProductsListing({
   params: { categoryId: string };
 }) {
   return (
-    <div className="mt-8 h-screen">
+    <div className="mt-8 h-full">
       <ProductsListing params={params} />;
-      <Footer />
     </div>
   );
 }

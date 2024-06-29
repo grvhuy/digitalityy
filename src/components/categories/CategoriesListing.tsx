@@ -19,18 +19,23 @@ export default function CategoriesListing() {
   }, []);
 
   return (
-    <div className="min-w-max grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
-      {isLoading && <SkeletonCard length={8} />}
-      {categories.map((item) => {
-        return (
-          <CategoriesCard
-            key={item._id}
-            name={item.name}
-            images={item.images}
-            onClick={() => router.push("/categories/" + item._id)}
-          />
-        );
-      })}
+    <div>
+      <h1 className="font-semibold text-5xl mx-36 my-16">
+        All listed categories
+      </h1>
+      <div className="min-w-max grid grid-cols-4 gap-x-5 gap-y-10 mx-36 ">
+        {isLoading && <SkeletonCard length={8} />}
+        {categories.map((item) => {
+          return (
+            <CategoriesCard
+              key={item._id}
+              name={item.name}
+              images={item.images}
+              onClick={() => router.push("/categories/" + item._id)}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@ interface ProductCardProps {
 
 export default function ProductCard(props: ProductCardProps) {
   return (
-    <div className="p-1 mb-2 group flex flex-col gap-y-1 w-64">
+    <div className="p-1 mb-2 group flex flex-col gap-y-1 w-64" onClick={props.onClick}>
       <div className="bg-white border hover:scale-105 hover:shadow-xl duration-500 rounded-xl select-none">
         <a href="#">
           <img

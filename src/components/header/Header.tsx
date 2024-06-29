@@ -74,6 +74,10 @@ export default function Header() {
     router.push("/");
   };
 
+  const catalogClick = () => {
+    router.push("/categories");
+  }
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
 
@@ -109,8 +113,14 @@ export default function Header() {
             </h1>
           </div>
           <nav className="">
-            <ul className="flex list-none ml-72 pr-12 text-center font-semibold">
-              <ProductSheet categories={categories} />
+            <ul className="flex list-none ml-72 pr-12 text-center font-semibold gap-x-6">
+              <Button
+                variant={"gold_black"}
+                className=" font-semibold text-base"
+                onClick={catalogClick}
+              >
+                Catalog
+              </Button>
               <Button
                 variant={"gold_black"}
                 className=" font-semibold text-base"
