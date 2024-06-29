@@ -47,7 +47,7 @@ const UserAddresses = () => {
   // };
 
   return (
-    <div className="w-full  px-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
+    <div className="w-full px-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
       <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
         Your Addresses
       </h2>
