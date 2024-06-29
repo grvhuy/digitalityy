@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       await connectToDB();
       const user = await User.create({ name, email, password: hashedPassword })
       await Cart.create({ user: user._id });
-  
+      
       return NextResponse.json({ message: "User registered." }, { status: 201 });
     } catch (error) {
       return NextResponse.json(

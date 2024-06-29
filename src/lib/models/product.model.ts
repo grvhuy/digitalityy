@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import Category from "./category.model";
-import connectToDB from "../mongoose";
 
 const propertySchema = new mongoose.Schema({
   attributeName: { type: String }, 
@@ -11,12 +9,15 @@ const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
+  salePrice: { type: Number, required: false },
   productSpecs: { type: [propertySchema], required: false},
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   categoryName: { type: String },
-  brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand'},
-  quantity: { type: Number, required: false },
+  brand: { type: String},
+  quantity: { type: Number, required: false }, //stock
   images: { type: [String], required: true },
+  variant: { type: Array, required: false },
+  discount: { type: Number, required: false },
 })
 
 

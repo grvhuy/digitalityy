@@ -22,13 +22,11 @@ const formSchema = z.object({
 });
 
 export default function SignUp() {
-
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const router = useRouter();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -67,9 +65,7 @@ export default function SignUp() {
       });
 
       if (res.ok) {
-        const form = e.target;
-        form.reset();
-        router.push("/");
+        router.push("/sign-in");
       } else {
         console.log("User registration failed.");
       }
@@ -103,7 +99,7 @@ export default function SignUp() {
           />
           <Button
             className="mt-4 rounded-m font-bold cursor-pointer"
-            variant={"dark"}
+            variant={"gold_black"}
           >
             Register
           </Button>
@@ -114,28 +110,8 @@ export default function SignUp() {
             </div>
           )}
 
-          <div className="mt-6 items-center justify-center">
-            <h3 className="text-center font-semibold">Continue with</h3>
-            <div className="flex items-center justify-center space-x-4">
-              <Button
-                type="button"
-                onClick={() => signIn("google")}
-                className="mt-4 rounded-md bg-eerie_black text-white font-bold cursor-pointer px-6 py-2"
-              >
-                <IoLogoGoogle size={20} className="mx-2" />
-              </Button>
-              <Button
-                type="button"
-                onClick={() => signIn("facebook")}
-                className="mt-4 rounded-md bg-eerie_black text-white font-bold cursor-pointer px-6 py-2"
-              >
-                <IoLogoFacebook size={20} className="mx-2" />
-              </Button>
-            </div>
-          </div>
-
           <div className="text-sm flex flex-row place-self-center ">
-            <span> {"Don't have an account?"} </span>
+            <span> {"Already have an account?"} </span>
             <Link className="text-sm place-self-center" href={"/sign-in"}>
               <span className="underline ml-1">Sign In</span>
             </Link>

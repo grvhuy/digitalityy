@@ -1,9 +1,14 @@
-import type { Metadata } from "next";
-import { Figtree, Inter, Montserrat } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { AuthProvider } from "./Provider";
 import Header from "@/components/header/Header";
+import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
+import { AuthProvider } from "./Provider";
+import { Provider } from "react-redux";
+import "./globals.css";
+import { store } from "@/lib/store";
+import ReduxProvider from "./ReduxProvider";
+import Footer from "@/components/footer/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const font = Montserrat({ subsets: ["latin"] });
 
@@ -18,14 +23,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={font.className}>
+    <html lang="en" className="overflow-x-hidden overflow-y-scroll">
+      <body className={`${font.className}`}>
         <main>
-          <AuthProvider>
-            <Header />
-            {children}
-          </AuthProvider> 
+          <ReduxProvider>
+            <AuthProvider>
+              <Header />
+              {children}
+              {/* <Footer /> */}
+            </AuthProvider>
+          </ReduxProvider>
         </main>
+        <Toaster />
       </body>
     </html>
   );

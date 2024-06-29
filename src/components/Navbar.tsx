@@ -44,7 +44,10 @@ const Navbar = () => {
                       <Button
                       type="button"
                       className={cn("bg-white-500 text-gray-700", buttonVariants({ variant: "ghost" }))}
-                      onClick={() => signOut()}
+                      onClick={() => {
+                        signOut();
+                        window.location.href = "/";
+                      }}
                       >
                       Sign Out
                     </Button>
@@ -79,6 +82,17 @@ const Navbar = () => {
                       aria-hidden="true"
                       className="h-6 w-px bg-gray-200"
                     ></span>
+                  )}
+                  {user?.name === "admin" && (
+                    <Link
+                      className={buttonVariants({ variant: "ghost" })}
+                      href="/dashboard"
+                    >
+                      <Button>
+                        Dashboard
+                      </Button>
+                    </Link>
+                  
                   )}
                   <div className="ml-4 flow-root lg:ml-6">{/* <Cart /> */}</div>
                 </div>

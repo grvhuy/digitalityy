@@ -18,9 +18,15 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        dark: "bg-eerie_black text-white transition-all duration-300 hover:bg-primary/90",
+        dark: "hover:bg-eerie_black hover:text-white transition-all duration-300 border-2 border-eerie_black",
+        gold_black:
+          "hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500",
         dark_hover_change:
           "mx-6 py-2 px-5 hover:bg-eerie_black hover:text-white rounded-2xl transition-all duration-500 font-bold text-base",
+        log_in:
+          "hover:bg-eerie_black hover:text-yellow-400 transition-all duration-300 bg-eerie_black",
+        link_gold_black:
+          "text-primary hover:text-yellow-400 underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",

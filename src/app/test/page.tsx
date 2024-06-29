@@ -1,8 +1,14 @@
 "use client"
+import { UserInformationForm } from "@/components/UserInformationForm";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+
+// import { useToast } from "@/components/ui/use-toast"
+// import { ToastAction } from "@/components/ui/toast";
+import { Toast, ToastProvider } from "@radix-ui/react-toast";
+
 
 const TestPage = () => {
 
@@ -33,10 +39,21 @@ const TestPage = () => {
       }
     })
   }
+  // const { toast } = useToast()
 
   return (
+
     <div>
-      <Button type="button" onClick={addToCart}>Add to cart</Button>
+      {/* <Button type="button" onClick={addToCart}>Add to cart</Button>
+      <UserInformationForm /> */}
+      <ToastProvider>
+        <Button type="button" onClick={addToCart}>Add to cart</Button>
+        <Toast>
+          {/* <Toast.Content> */}
+            Added to cart
+          {/* </Toast.Content> */}
+        </Toast>
+      </ToastProvider>
     </div>
   );
 }

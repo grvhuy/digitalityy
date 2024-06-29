@@ -13,15 +13,20 @@ export const GET = async (req: Request) => {
   return NextResponse.json(product);
 }
 
-export const PUT = async (req: Request) => {
+export const PATCH = async (req: Request) => {
   const id = req.url.split("/").pop();
   const values = await req.json();
-  const { name, description, productSpecs, category } = values;
+  const { name, description, productSpecs, category, brand, price, quantity, images } = values;
   await Product.findByIdAndUpdate(id, {
     name,
     description,
     productSpecs,
     category,
+    price,
+    brand,
+    quantity,
+    images,
+    
   })
   return NextResponse.json("update product success!");
 }

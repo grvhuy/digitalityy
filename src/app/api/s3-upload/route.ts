@@ -18,6 +18,7 @@ async function uploadFileToS3(file: Buffer, fileName: string): Promise<string> {
 	const fileBuffer = file;
 	console.log(fileName);
   const keyFileName = `${Date.now()}-${fileName}`;
+	
 	const params = {
 		Bucket: process.env.NEXT_PUBLIC_AMAZON_BUCKET_NAME,
 		Key: keyFileName,
