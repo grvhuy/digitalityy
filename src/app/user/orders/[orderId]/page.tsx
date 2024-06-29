@@ -32,8 +32,8 @@ const CustomerOrderPage = () => {
   }, [orderId]);
 
   return (
-    <div className="bg-[#f5f5f5] h-full min-h-screen p-20">
-      <div className="bg-white p-4 shadow-sm">
+    <div className="h-full min-h-screen p-20">
+      <div className="bg-zinc-100 p-4 shadow-sm">
         <div className="flex justify-between items-center">
           <h1 className="font-bold text-xl">DETAILS ORDER #{orderId}</h1>
           {/* Order status stepper */}

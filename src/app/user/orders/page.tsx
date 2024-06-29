@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
@@ -16,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Footer from "@/components/footer/Footer";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +24,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@nextui-org/input";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { useRouter } from "next/navigation";
+import { IoIosArrowBack } from "react-icons/io";
 
 const OrdersHistory = () => {
   const { data: session } = useSession();
@@ -62,11 +60,19 @@ const OrdersHistory = () => {
     // Lay dia chi tu userId
   }, [session, userId]);
 
+  const router = useRouter();
+  const handleReturn = () => {
+    router.push("/user/settings/");
+  };
+
   return (
-    <div className="bg-[#f5f5f5] h-full p-20 mb-[20rem]">
-      <div className="bg-white p-4 shadow-sm">
+    <div className="h-full mx-24 mt-12">
+      <button onClick={handleReturn} className="hover:scale-105 hover:[&>div]:">
+        <IoIosArrowBack className="mx-[384px] place-self-center text-5xl rounded-full bg-zinc-100 hover:bg-zinc-200 p-1" />
+      </button>
+      <div className="bg-zinc-100 p-4 shadow-sm mt-12 px-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold">Orders History</h1>
+          <h1 className="text-5xl font-semibold">Orders History</h1>
           {/* filter */}
           <Select>
             <SelectTrigger className="w-[180px]">

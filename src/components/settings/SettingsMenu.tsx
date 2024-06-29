@@ -73,8 +73,8 @@ export default function SettingsMenu() {
             />
           </li>
           <Separator />
-          <li>
-            <Link href={`/user/orders`}>Order History</Link>
+          <li onClick={handleOrders}>
+            Order History
             <MdOutlineKeyboardArrowRight
               size={25}
               className="absolute right-0 text-gray-400"

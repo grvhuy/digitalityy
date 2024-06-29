@@ -78,7 +78,7 @@ export default function LandingPage() {
         <h1 className="text-4xl my-12 mx-64 min-w-full font-semibold">
           Shop by Categories
         </h1>
-        <div className="mx-64 min-w-[800px]">
+        <div className="mx-64 min-w-[1000px]">
           <HorizontalCategories />
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function LandingPage() {
         <h1 className="text-4xl my-12 mx-64 min-w-full font-semibold">
           On sale now:
         </h1>
-        <Carousel className="mx-56 mt-12">
+        <Carousel className="mx-56 mt-12 min-w-[1000px]">
           <CarouselContent>
             {sales.map((item, index) => {
               return (
@@ -106,31 +106,6 @@ export default function LandingPage() {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-        {/* <div className="mx-64 grid grid-cols-4 space-x-12 min-w-[800px] gap-y-2">
-          <button className="w-min-72 bg-zinc-50 p-5 group">
-            <img
-              className="w-auto h-auto scale-90 group-hover:scale-95 transition-all duration-300"
-              src="/images/razer.svg"
-            />
-          </button>
-          <button className="w-min-72 bg-zinc-50 py-5 px-10 group">
-            <img
-              className="w-auto h-auto group-hover:scale-105 transition-all duration-300"
-              src="/images/logitech.svg"
-            />
-          </button>
-          <button className="w-min-72 bg-zinc-50 py-5 px-10 group">
-            <img
-              className="w-auto h-auto group-hover:scale-105 transition-all duration-300"
-              src="/images/corsair.svg"
-            />
-          </button>
-          <button className="w-min-72 bg-zinc-50 py-5 px-10 group">
-            <img
-              className="w-auto h-auto group-hover:scale-105 transition-all duration-300"
-              src="/images/asus.svg"
-            />
-          </button> */}
         <div className="flex flex-col">
           <Separator className="mt-14 bg-black bg-opacity-50 w-1/2 place-self-center" />
         </div>
