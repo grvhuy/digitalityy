@@ -122,6 +122,9 @@ export default function Header() {
                 Catalog
               </Button>
               <Button
+                onClick={() => {
+                  router.push("/contacts");
+                }}
                 variant={"gold_black"}
                 className="bg-eerie_black text-white hover:bg-white hover:text-eerie_black font-semibold text-base"
               >

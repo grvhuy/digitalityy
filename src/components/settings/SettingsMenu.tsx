@@ -28,6 +28,10 @@ export default function SettingsMenu() {
     router.push("/user/settings/addresses");
   };
 
+  const handleOrders = () => {
+    router.push("/user/orders");
+  };
+
   useEffect(() => {
     setUser(session?.user);
     const userEmail = session?.user?.email;
@@ -68,7 +72,7 @@ export default function SettingsMenu() {
             />
           </li>
           <Separator />
-          <li>
+          <li onClick={handleOrders}>
             Order History
             <MdOutlineKeyboardArrowRight
               size={25}
