@@ -165,7 +165,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="flex h-screen my-12">
+    <div className="flex h-screen my-12 mx-36">
       <div className="flex flex-col">
         <section className="mt-8 ml-12">
           <h1 className="font-bold text-3xl">My Cart</h1>
