@@ -351,7 +351,7 @@ const CheckoutPage = () => {
                 </svg>
               </div>
               <Separator />
-              <div className="px-4 py-2 flex items-center space-x-2">
+              {/* <div className="px-4 py-2 flex items-center space-x-2">
                 <RadioGroupItem
                   onClick={() => {
                     setPaymentMethod("payWithAtm");
@@ -364,7 +364,7 @@ const CheckoutPage = () => {
                 </Label>
               </div>
 
-              <Separator />
+              <Separator /> */}
               <div className="px-4 py-2 flex items-center space-x-2">
                 <RadioGroupItem
                   onClick={() => {

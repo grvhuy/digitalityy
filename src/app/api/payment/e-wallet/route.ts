@@ -121,7 +121,7 @@ export const POST = async (req: Request) => {
     items: items,
     status: "pending",
     subtotal: amount,
-    paymentMethod: "momo",
+    paymentMethod: requestType,
     location: deliveryInfo.location,
     transactionId: transaction._id,
     shippingInfo: shippingInfo,

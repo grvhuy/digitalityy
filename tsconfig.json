@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/s3-upload/route.js", "public/images/momo_icon_square.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/s3-upload/route.js", "public/images/momo_icon_square.jsx", "src/app/api/dashboard/refunds/byOrder/[orderId]"],
   "exclude": ["node_modules"]
 }
