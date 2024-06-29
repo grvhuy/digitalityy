@@ -626,9 +626,21 @@ const ProductForm = ({
               </Button>
             ) : (
               <Button
-                onClick={(e) => {
-                  if (form.formState.isSubmitting) return;
-                  onSubmit(form.getValues())
+                // toast
+
+
+                onClick={() => {
+                  axios.post("/api/dashboard/products", {
+                    ...form.getValues(),
+                  }).then((res) => {
+                    if (res.data) {
+                      // router.push(`/dashboard/products/${res.data._id}`);
+                      toast({
+                        duration: 3000,
+                        description: "Product added",
+                      });
+                    }
+                  });
                 }}
                 type="submit"
               >
