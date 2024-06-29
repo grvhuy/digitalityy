@@ -19,6 +19,9 @@ This project is a web application for selling technology devices built with Next
 - **Reviews**
 - **Refund**
 
+## Screenshots
+![alt text]([http://url/to/img.png](https://i.postimg.cc/jShf1wYC/image.png))
+
 ## Technologies Used
 - [Next.js](https://nextjs.org/)
 - [NextAuth](https://next-auth.js.org/)
