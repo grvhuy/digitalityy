@@ -90,7 +90,7 @@ export const AddAddressForm = ({
       } 
     }
 
-    router.push('/user/settings/addresses');
+    // router.push('/user/settings/addresses');
   };
 
   return (
@@ -197,7 +197,7 @@ export const AddAddressForm = ({
               className="flex float-right"
               type="submit"
             >
-              Save changes
+              Save
             </Button>
           </DialogClose>
         </form>

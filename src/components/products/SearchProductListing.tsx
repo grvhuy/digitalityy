@@ -7,79 +7,50 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { DynamicFilters } from "../DynamicFilters";
+import { useRouter } from "next/navigation";
 import { TFilter, filtersConfig } from "@/lib/features/filter";
 import { Button } from "../ui/button";
 import { SkeletonCard } from "../categories/SkeletonCard";
-import * as Realm from "realm-web";
+import { Pagination } from "../Pagination";
 
 type TSpecs = {
   attributeName: string;
   attributeValue: string;
 };
 
-export default function SearchProducts({
-  params,
-}: {
-  params: string
-}) {
+export default function SearchProducts({ params }: { params: string }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [productsFiltered, setProductsFiltered] = useState<any[]>([]);
-  // const [categoryName, setCategoryName] = useState<string>("");
   const [filters, setFilters] = useState<TFilter[]>([]);
-  const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]); // categoryName, categoryId, specName, specValue
+  const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [categoryProducts, setCategoryProducts] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PRODUCTS_PER_PAGE = 4;
 
   const handleSearch = async (value: string) => {
     const response = await axios.get(`/api/search?keyword=${value}`);
     setProductsFiltered(response.data);
     console.log(response.data);
     setIsLoading(false);
-  }
+  };
 
   useEffect(() => {
     console.log(params);
     handleSearch(params);
-    
   }, [params]);
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     const APP_ID = process.env.NEXT_PUBLIC_APP_ID as string;
-  //     const app = new Realm.App({ id: APP_ID });
-  //     const credentials = Realm.Credentials.anonymous();
-  //     try {
-  //       const user = await app.logIn(credentials);
-  //       const searchProducts = await user.functions.searchProducts(
-  //         searchParams
-  //       );
-  //       // setProducts(searchProducts);
-  //       console.log("searchProducts: ", searchProducts);
-  //     } catch (err) {
-  //       console.error("Failed to log in", err);
-  //     }
-  //   };
-
-  //   fetchProducts();
-  // }, [searchParams]);
-
-  // useEffect(() => {
-  //   filtersConfig.category.forEach((item) => {
-  //     // console.log("item name: ", item.name);
-  //     if ((item.name === categoryName)) {
-  //       setFilters(item.filters);
-  //     }
-  //   });
-  // }, [categoryName]);
+  useEffect(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    const end = start + PRODUCTS_PER_PAGE;
+    setSearchResults(productsFiltered.slice(start, end));
+  }, [productsFiltered, currentPage]);
 
   const handlePriceFilter = (value: any) => {
     let sortedProducts = [...productsFiltered];
@@ -88,7 +59,6 @@ export default function SearchProducts({
     } else if (value === "high-low") {
       sortedProducts.sort((a, b) => b.price - a.price);
     }
-    // console.log(sortedProducts);
     setProductsFiltered(sortedProducts);
   };
 
@@ -99,9 +69,8 @@ export default function SearchProducts({
     } else if (value === "z-a") {
       sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
     }
-    // console.log(sortedProducts);
     setProductsFiltered(sortedProducts);
-  }
+  };
 
   const handleFilterSpec = (name: any, value: any) => {
     if (value === "all") {
@@ -121,23 +90,14 @@ export default function SearchProducts({
     console.log(filterSpecs);
   };
 
-  // const handleFilter = async () => {
-  //   await axios
-  //     .post("/api/filter", {
-  //       categoryId: params.term,
-  //       filterSpecs: filterSpecs,
-  //     })
-  //     .then((result) => {
-  //       setProductsFiltered(result.data);
-  //       console.log(result.data);
-  //     });
-  // };
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="flex flex-wrap flex-col gap-y-5 my-5">
       <div className="flex flex-col">
         <div className="flex items-center justify-center">
-          {/* Filter api */}
           <div className="flex space-x-2">
             {filters.map((item, index) => {
               const handleValueChange = (value: any) =>
@@ -149,7 +109,6 @@ export default function SearchProducts({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      {/* <SelectLabel>{item.label}</SelectLabel> */}
                       <SelectItem value="all">All</SelectItem>
                       {item.options.map((option) => {
                         return (
@@ -163,11 +122,6 @@ export default function SearchProducts({
                 </Select>
               );
             })}
-            {/* {!isLoading && (
-              <Button onClick={handleFilter} type="button" variant="gold_black">
-                Filter
-              </Button>
-            )} */}
           </div>
         </div>
       </div>
@@ -185,21 +139,17 @@ export default function SearchProducts({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* <SelectLabel>Sort by Name</SelectLabel> */}
               <SelectItem value="a-z">A to Z</SelectItem>
               <SelectItem value="z-a">Z to A</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Select
-        onValueChange={handlePriceFilter}
-        >
+        <Select onValueChange={handlePriceFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue id="price-select" placeholder="Sort by price" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* <SelectLabel>Price</SelectLabel> */}
               <SelectItem value="low-high">Low to High</SelectItem>
               <SelectItem value="high-low">High to Low</SelectItem>
             </SelectGroup>
@@ -208,7 +158,7 @@ export default function SearchProducts({
       </div>
       <div className="grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
         {isLoading && <SkeletonCard length={10} />}
-        {productsFiltered.map((item) => {
+        {searchResults.map((item) => {
           return (
             <ProductCard
               image={item?.images ? item.images[0] : ""}
@@ -221,6 +171,13 @@ export default function SearchProducts({
           );
         })}
       </div>
+      {!isLoading && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(productsFiltered.length / PRODUCTS_PER_PAGE)}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 }

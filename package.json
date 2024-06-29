@@ -51,6 +51,7 @@
     "formidable": "^3.5.1",
     "framer-motion": "^11.0.25",
     "fs": "^0.0.1-security",
+    "intersection-observer": "^0.12.2",
     "lucide-react": "^0.344.0",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.0",

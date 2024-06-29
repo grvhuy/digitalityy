@@ -17,6 +17,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { AddAddressForm } from "@/components/AddAddressForm";
+
 const CheckoutPage = () => {
   const router = useRouter();
 
@@ -30,6 +41,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("captureWallet");
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [minusVoucher, setMinusVoucher] = useState<number>(0);
+  const [addresses, setAddresses] = useState<any[]>([]);
 
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
@@ -73,6 +85,7 @@ const CheckoutPage = () => {
     // Lay dia chi tu userId
     if (userId) {
       axios.get(`/api/address/${userId}`).then((res) => {
+        setAddresses(res.data);
         res.data.forEach((address: any) => {
           if (address._id === defaultAddress) {
             setUserAddress(address);
@@ -177,11 +190,69 @@ const CheckoutPage = () => {
                       {userAddress?.district}, {userAddress?.city}
                     </p>
                   </div>
-
                   <div className="flex flex-col space-y-2 items-end">
-                    <Button className="" variant="outline">
-                      Change
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">Change</Button>
+                      </DialogTrigger>
+                      <DialogContent className="">
+                        <DialogHeader>
+                          <DialogTitle>Your addresses</DialogTitle>
+                        </DialogHeader>
+                        {/* <div className="grid gap-4 py-4"> */}
+                          {/* <div className="grid items-center gap-4"> */}
+                            <RadioGroup className="flex flex-col">
+                              {addresses.map((address, index) => {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="flex flex-col justify-center w-full p-4 bg-white dark:bg-gray-900 rounded-md shadow-md"
+                                  >
+                                    <div className="flex items-center justify-between w-full">
+                                      <div className="space-y-2">
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                          {address.receiverName}
+                                          <span className="ml-2 text-gray-500 font-normal text-sm">
+                                            {address.phoneNumber}
+                                          </span>
+                                        </h3>
+                                        <p className="text-gray-500 dark:text-gray-400">
+                                          {address.addressLine}, {address.ward},{" "}
+                                          {address.district}, {address.city}
+                                        </p>
+                                      </div>
+                                      <div className="flex flex-col space-y-2 items-end">
+                                        <Button
+                                          onClick={() => {
+                                            setUserAddress(address);
+                                            console.log("user address:", address);
+                                          }}
+                                          variant="outline"
+                                        >
+                                          Choose
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </RadioGroup>
+                          {/* </div> */}
+                          {/* <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="username" className="text-right">
+                              Username
+                            </Label>
+                            <Input
+                              id="username"
+                              defaultValue="@peduarte"
+                              className="col-span-3"
+                            />
+                          </div> */}
+                        {/* </div> */}
+                          {/* Mot dialog chua form nhap dia chi */}
+                          <AddAddressForm />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               </div>
