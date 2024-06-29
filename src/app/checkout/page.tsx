@@ -27,11 +27,25 @@ const CheckoutPage = () => {
   const [defaultAddress, setDefaultAddress] = useState<any>();
   const [userAddress, setUserAddress] = useState<any>();
   const [paymentMethod, setPaymentMethod] = useState<string>("captureWallet");
+  const [voucherCode, setVoucherCode] = useState<string>("");
 
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
   const [userId, setUserId] = useState<string>("");
 
+  const handleApplyVoucher = async () => {
+    axios.get(`/api/dashboard/voucher/${voucherCode}`).then((res) => {
+      if (res.data) {
+        const voucher = res.data;
+        if (voucher.type === "percent") {
+          setTotal(total - total * (voucher.value / 100));
+        } else if (voucher.type === "fixed") {
+          setTotal(total - voucher.value);
+        }
+      }
+    });
+  }
+  
   useEffect(() => {
     setUser(session?.user);
     const userEmail = session?.user?.email;
@@ -104,7 +118,7 @@ const CheckoutPage = () => {
             location: "Shop's location",
             updatedAt: new Date(),
           },
-        ]
+        ],
       })
       .then((res) => {
         console.log(res.data);
@@ -136,18 +150,18 @@ const CheckoutPage = () => {
                 <div className="flex items-center justify-between w-full">
                   <div className="space-y-2">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {/* {address.receiverName} */} 
+                      {/* {address.receiverName} */}
                       {userAddress?.receiverName}
                       <span className="ml-2 text-gray-500 font-normal text-sm">
-                        {/* {address.phoneNumber} */} 
+                        {/* {address.phoneNumber} */}
                         {userAddress?.phoneNumber}
                       </span>
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400">
                       {/* {address.addressLine}, {address.ward}, {address.district},{" "}
                     {address.city} */}
-                      {userAddress?.addressLine}, {userAddress?.ward}, {userAddress?.district},{" "}
-                      {userAddress?.city}
+                      {userAddress?.addressLine}, {userAddress?.ward},{" "}
+                      {userAddress?.district}, {userAddress?.city}
                     </p>
                   </div>
 
@@ -165,25 +179,24 @@ const CheckoutPage = () => {
           <div className="my-8 mx-12 text-medium font-semibold">
             <h2>Delivery Method</h2>
             <RadioGroup
-              defaultValue="comfortable"
               className="border-1 rounded-md bg-white"
             >
               <div className="px-4 pb-2 pt-4 flex items-center space-x-2">
-                <RadioGroupItem value="default" id="r1" />
+                <RadioGroupItem value="normal" id="r1" />
                 <Label className="text-gray-500" htmlFor="r1">
                   Normal shipping
                 </Label>
               </div>
               <Separator />
               <div className="px-4 py-2 flex items-center space-x-2">
-                <RadioGroupItem value="comfortable" id="r2" />
+                <RadioGroupItem value="fast" id="r2" />
                 <Label className="text-gray-500" htmlFor="r2">
                   Fast shipping
                 </Label>
               </div>
               <Separator />
               <div className="px-4 pt-2 pb-4 flex items-center space-x-2">
-                <RadioGroupItem value="compact" id="r3" />
+                <RadioGroupItem value="gigafast" id="r3" />
                 <Label className="text-gray-500" htmlFor="r3">
                   Same-day shipping
                 </Label>
@@ -194,7 +207,9 @@ const CheckoutPage = () => {
           {/* Payment */}
           <div className="mx-12 mb-10 text-medium font-semibold">
             <h2>Payment method</h2>
-            <RadioGroup defaultValue="e-wallet" className="bg-white border-1 rounded-md">
+            <RadioGroup
+              className="bg-white border-1 rounded-md"
+            >
               <div className="px-4 pb-2 pt-4 flex items-center space-x-4">
                 <RadioGroupItem
                   onClick={() => {
@@ -350,10 +365,15 @@ const CheckoutPage = () => {
               className="mt-4 mb-2 ml-12"
               placeholder="Discount code"
               type="text"
+              value={voucherCode}
+              onChange={(e) => setVoucherCode(e.target.value)}
             />
             <Button
               className="ml-12 w-full transition-all duration-500 opacity-50 hover:opacity-100 font-mono"
               variant="default"
+              onClick={() => {
+                handleApplyVoucher();
+              }}
             >
               Apply
             </Button>

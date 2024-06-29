@@ -95,7 +95,6 @@ const ProductForm = ({
   const [variants, setVariants] = useState<any[]>([]);
   const [variant, setVariant] = useState<string>("");
 
-
   useEffect(() => {
     axios.get("/api/dashboard/categories").then((result) => {
       setCategories(result.data);
@@ -117,6 +116,10 @@ const ProductForm = ({
   //     console.log("category:", category);
   //   }
   // }, [category]);
+
+  // useEffect(() => {
+  //   console.log(images)
+  // }, [images]);
 
   // Cập nhật variant
   useEffect(
@@ -153,10 +156,10 @@ const ProductForm = ({
       categoryName: category || "",
       category: category ? category._id : "",
       productSpecs: specs,
-      images: images,
       brand: brand || "",
       // salePrice: salePrice || NaN,
       discount: existingDiscount || 0,
+      images: images,
       // variant: variants,
     },
   });
@@ -170,12 +173,13 @@ const ProductForm = ({
       await axios.put(`/api/dashboard/products/${_id}`, values);
     } else {
       if (name && description && price && category && images.length > 0) {
-      axios.post("/api/dashboard/products", values).then((res) => {
-        console.log("res:", res.data);
-        if (res.data) {
-          router.push(`/dashboard/products/${res.data._id}`);
-        }
-      });}
+        axios.post("/api/dashboard/products", values).then((res) => {
+          console.log("res:", res.data);
+          if (res.data) {
+            router.push(`/dashboard/products/${res.data._id}`);
+          }
+        });
+      }
     }
   };
 
@@ -292,6 +296,7 @@ const ProductForm = ({
                       <input
                         multiple
                         name="image"
+                        // value={field.value}
                         type="file"
                         className="hidden"
                         onChange={handleFileChange}
@@ -300,11 +305,15 @@ const ProductForm = ({
                     <Button
                       className="mt-2"
                       type="button"
-                      onClick={(e) => {
-                        uploadImages(e).then((result) => {
-                          field.onChange(result);
-                        });
-                      }}
+                      onClick={uploadImages}
+                      // onClick={(e) => {
+                      //   uploadImages(e).then((result) => {
+                      //     field.onChange(result);
+                      //   });
+                      //   uploadImages(e).then((result) => {
+                      //     field.onChange(result);
+                      //   });
+                      // }}
                     >
                       Attach to Form
                     </Button>
@@ -628,13 +637,14 @@ const ProductForm = ({
               <Button
                 // toast
 
-
                 onClick={() => {
+                  form.setValue("images", images);
+                  console.log("form.getValues():", form.getValues());
                   axios.post("/api/dashboard/products", {
                     ...form.getValues(),
                   }).then((res) => {
                     if (res.data) {
-                      // router.push(`/dashboard/products/${res.data._id}`);
+                      router.push(`/dashboard/products`);
                       toast({
                         duration: 3000,
                         description: "Product added",
