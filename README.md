@@ -20,7 +20,9 @@ This project is a web application for selling technology devices built with Next
 - **Refund**
 
 ## Screenshots
-![image](https://github.com/grvhuy/digitalityy/assets/111180011/16b11118-c416-4a56-9dd1-8f7b758eae01)
+![2](https://github.com/grvhuy/digitalityy/assets/111180011/54045f28-d6e5-4469-a859-d0510178b3ee)
+
+
 ![image](https://github.com/grvhuy/digitalityy/assets/111180011/9f7eadda-5402-4e9c-9095-78f6649d8e42)
 
 
