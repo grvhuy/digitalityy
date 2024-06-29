@@ -83,6 +83,17 @@ const Navbar = () => {
                       className="h-6 w-px bg-gray-200"
                     ></span>
                   )}
+                  {user?.name === "admin" && (
+                    <Link
+                      className={buttonVariants({ variant: "ghost" })}
+                      href="/dashboard"
+                    >
+                      <Button>
+                        Dashboard
+                      </Button>
+                    </Link>
+                  
+                  )}
                   <div className="ml-4 flow-root lg:ml-6">{/* <Cart /> */}</div>
                 </div>
               </div>

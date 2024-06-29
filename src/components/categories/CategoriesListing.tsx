@@ -19,7 +19,7 @@ export default function CategoriesListing() {
   }, []);
 
   return (
-    <div>
+    <div className="mb-20">
       <h1 className="font-semibold text-5xl mx-36 my-16">
         All listed categories
       </h1>

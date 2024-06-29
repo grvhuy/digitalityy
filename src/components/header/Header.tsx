@@ -127,6 +127,15 @@ export default function Header() {
               >
                 Contact Us
               </Button>
+              {user?.name === "Admin" && (
+                <Button
+                  variant={"gold_black"}
+                  className=" font-semibold text-base"
+                  onClick={() => router.push("/dashboard/products")}
+                >
+                  Dashboard
+                </Button>
+              )}
             </ul>
           </nav>
 

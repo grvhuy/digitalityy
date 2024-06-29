@@ -11,6 +11,7 @@ import { selectCartItems } from "@/lib/features/cartSlice";
 import Order from "@/lib/models/order.model";
 import connectToDB from "@/lib/mongoose";
 import axios from "axios";
+import { set } from "mongoose";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,24 +29,36 @@ const CheckoutPage = () => {
   const [userAddress, setUserAddress] = useState<any>();
   const [paymentMethod, setPaymentMethod] = useState<string>("captureWallet");
   const [voucherCode, setVoucherCode] = useState<string>("");
+  const [minusVoucher, setMinusVoucher] = useState<number>(0);
 
   const { data: session } = useSession();
   const [user, setUser] = useState<any>({});
   const [userId, setUserId] = useState<string>("");
 
   const handleApplyVoucher = async () => {
-    axios.get(`/api/dashboard/voucher/${voucherCode}`).then((res) => {
-      if (res.data) {
-        const voucher = res.data;
-        if (voucher.type === "percent") {
-          setTotal(total - total * (voucher.value / 100));
-        } else if (voucher.type === "fixed") {
-          setTotal(total - voucher.value);
+    axios.get(`/api/dashboard/vouchers/${voucherCode}`).then((res) => {
+      const voucher = res.data;
+      // console.log(voucher);
+
+      if (voucher) {
+        // check if voucher applied to all
+        if (voucher.minimumOrderValue <= total) {
+          const Date1 = new Date(voucher.endDate);
+          // console.log(Date1 > new Date());
+          if (Date1 > new Date()) {
+            console.log(voucher.discount);
+            setTotal(total - voucher.discount);
+            setMinusVoucher(voucher.discount);
+          } else {
+            alert("Voucher is expired");
+          }
         }
+      } else {
+        alert("Voucher code is invalid");
       }
     });
-  }
-  
+  };
+
   useEffect(() => {
     setUser(session?.user);
     const userEmail = session?.user?.email;
@@ -178,9 +191,7 @@ const CheckoutPage = () => {
           {/* Delivery method */}
           <div className="my-8 mx-12 text-medium font-semibold">
             <h2>Delivery Method</h2>
-            <RadioGroup
-              className="border-1 rounded-md bg-white"
-            >
+            <RadioGroup className="border-1 rounded-md bg-white">
               <div className="px-4 pb-2 pt-4 flex items-center space-x-2">
                 <RadioGroupItem value="normal" id="r1" />
                 <Label className="text-gray-500" htmlFor="r1">
@@ -207,9 +218,7 @@ const CheckoutPage = () => {
           {/* Payment */}
           <div className="mx-12 mb-10 text-medium font-semibold">
             <h2>Payment method</h2>
-            <RadioGroup
-              className="bg-white border-1 rounded-md"
-            >
+            <RadioGroup className="bg-white border-1 rounded-md">
               <div className="px-4 pb-2 pt-4 flex items-center space-x-4">
                 <RadioGroupItem
                   onClick={() => {
@@ -372,6 +381,7 @@ const CheckoutPage = () => {
               className="ml-12 w-full transition-all duration-500 opacity-50 hover:opacity-100 font-mono"
               variant="default"
               onClick={() => {
+                if (voucherCode === "") return;
                 handleApplyVoucher();
               }}
             >
@@ -404,8 +414,23 @@ const CheckoutPage = () => {
                   <h1>Ship fee</h1>
                 </div>
                 <div className="flex space-x-4 ">
+                  <h1 className="font-semibold">Discount</h1>
+                  <h1>
+                    -{" "}
+                    {Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(minusVoucher)}
+                  </h1>
+                </div>
+                <div className="flex space-x-4 ">
                   <h1 className="font-semibold">Total</h1>
-                  <h1>$ total</h1>
+                  <h1>
+                    {Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(total)}
+                  </h1>
                 </div>
               </div>
               <Button
