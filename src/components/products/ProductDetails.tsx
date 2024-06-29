@@ -90,7 +90,7 @@ export default function ProductDetails({
   // Lay tat ca review
   useEffect(() => {
     axios.get(`/api/reviews/${params.productId}`).then((response) => {
-      console.log("review data: ", response.data);
+      // console.log("review data: ", response.data);
       setAllReviews(response.data);
     });
   }, [isChanged]);
@@ -118,7 +118,7 @@ export default function ProductDetails({
   useEffect(() => {
     if (categoryId === "") return;
     axios.get(`/api/dashboard/products/category/${categoryId}`).then((result) => {
-      console.log(result.data);
+      // console.log(result.data);
       setSimilarProducts(result.data);
     });
   }, [categoryId]);
@@ -150,7 +150,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-3 mx-36">
+    <div className="grid grid-row-3">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -267,10 +267,10 @@ export default function ProductDetails({
             </table>
           </div>
         </div>
-        <div>
+        <div className="mr-20">
           {/* TODO */}
           <h1 className="font-bold">{"Description: "}</h1>
-          <div className="bg-gray-100 rounded-xl p-4 mt-6">
+          <div className="bg-gray-100 rounded-xl p-4 mt-6  mr-10">
             <p>{product.description}</p>
           </div>
         </div>
@@ -369,7 +369,7 @@ export default function ProductDetails({
                           userId: userId,
                         })
                         .then((response) => {
-                          console.log(response.data);
+                          // console.log(response.data);
                           setIsChanged(!isChanged);
                         });
                     }}
