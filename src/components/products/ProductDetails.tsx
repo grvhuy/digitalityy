@@ -150,7 +150,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-3">
+    <div className="grid grid-row-3 mx-36 mt-12">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>

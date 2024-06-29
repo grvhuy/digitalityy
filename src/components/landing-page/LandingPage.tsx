@@ -3,20 +3,16 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import HorizontalCategories from "./HorizontalCategories";
 import { useState, useEffect, useRef } from "react";
-import { FaRegSmile } from "react-icons/fa";
-import { FiTruck } from "react-icons/fi";
-import { FaRegCreditCard } from "react-icons/fa";
 import { Separator } from "../ui/separator";
 import AuthImagesSlider from "../signin/auth_images_slider";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const options = {
-    root: null,
-    rootMargin: "0px",
-    threshold: 0.2,
-  };
+
+  const router = useRouter();
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -30,14 +26,10 @@ export default function LandingPage() {
       if (containerRef.current) observer.unobserve(containerRef?.current);
     };
   }, []);
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(callbackFunction, options);
-  //   observer.observe(containerRef.current);
-  //   console.log(isIntersecting);
-  //   return () => {
-  //     observer.disconnect();
-  //   };
-  // }, []);
+
+  const handleExplore = () => {
+    router.push("/products/66802640cedccf81a2d405ce");
+  };
 
   return (
     <div className="h-full w-full mb-28 ">
@@ -60,7 +52,10 @@ export default function LandingPage() {
             <p className="text-2xl mt-6 text-white">
               The new <b>G Pro X</b>.<br /> Out now.
             </p>
-            <Button className="px-8 py-8 mt-6 text-2xl rounded-none bg-white text-black hover:bg-transparent hover:outline hover:outline-2 hover:outline-white hover:text-white">
+            <Button
+              onClick={handleExplore}
+              className="px-8 py-8 mt-6 text-2xl rounded-none bg-white text-black hover:bg-transparent hover:outline hover:outline-2 hover:outline-white hover:text-white"
+            >
               Explore
             </Button>
           </div>

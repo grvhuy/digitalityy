@@ -158,7 +158,7 @@ const CheckoutPage = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 bg-[#f5f5f5]">
+      <div className="grid grid-cols-2 mx-36">
         {/* Payment information */}
         <section className="flex flex-col">
           <div className="bg-yellow-400 rounded-md mt-8 ml-10 p-2 shadow-md w-fit">

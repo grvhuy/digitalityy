@@ -24,6 +24,10 @@ export default function SettingsMenu() {
     router.push("/user/settings/information");
   };
 
+  const handleAddresses = () => {
+    router.push("/user/settings/addresses");
+  };
+
   useEffect(() => {
     setUser(session?.user);
     const userEmail = session?.user?.email;
@@ -72,7 +76,7 @@ export default function SettingsMenu() {
             />
           </li>
           <Separator />
-          <li>
+          <li onClick={handleAddresses}>
             Manage Addresses{" "}
             <MdOutlineKeyboardArrowRight
               size={25}
