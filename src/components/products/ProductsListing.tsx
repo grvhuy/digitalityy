@@ -7,17 +7,16 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { DynamicFilters } from "../DynamicFilters";
 import { TFilter, filtersConfig } from "@/lib/features/filter";
 import { Button } from "../ui/button";
 import { SkeletonCard } from "../categories/SkeletonCard";
+import { Pagination } from "../Pagination";
 
 type TSpecs = {
   attributeName: string;
@@ -33,12 +32,12 @@ export default function ProductsListing({
   const [isLoading, setIsLoading] = useState(true);
   const [categoryProducts, setProducts] = useState<any[]>([]);
   const [productsFiltered, setProductsFiltered] = useState<any[]>([]);
+  const [displayedProducts, setDisplayedProducts] = useState<any[]>([]);
   const [categoryName, setCategoryName] = useState<string>("");
   const [filters, setFilters] = useState<TFilter[]>([]);
-  const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]); // categoryName, categoryId, specName, specValue
-  useEffect(() => {
-    console.log(filters);
-  }, [filters]);
+  const [filterSpecs, setFilterSpecs] = useState<TSpecs[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PRODUCTS_PER_PAGE = 8;
 
   useEffect(() => {
     axios.get("/api/collections/" + params.categoryId).then((result) => {
@@ -47,18 +46,22 @@ export default function ProductsListing({
       setCategoryName(result.data.category.name);
       setIsLoading(false);
       console.log(result.data.products);
-      // console.log("cate name: ", result.data.category.name);
     });
   }, [params.categoryId]);
 
   useEffect(() => {
     filtersConfig.category.forEach((item) => {
-      // console.log("item name: ", item.name);
       if (item.name === categoryName) {
         setFilters(item.filters);
       }
     });
   }, [categoryName]);
+
+  useEffect(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    const end = start + PRODUCTS_PER_PAGE;
+    setDisplayedProducts(productsFiltered.slice(start, end));
+  }, [productsFiltered, currentPage]);
 
   const handlePriceFilter = (value: any) => {
     let sortedProducts = [...categoryProducts];
@@ -77,7 +80,6 @@ export default function ProductsListing({
     } else if (value === "z-a") {
       sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
     }
-    // console.log(sortedProducts);
     setProductsFiltered(sortedProducts);
   };
 
@@ -96,7 +98,6 @@ export default function ProductsListing({
           attributeValue: value,
         })
     );
-    console.log(filterSpecs);
   };
 
   const handleFilter = async () => {
@@ -111,11 +112,14 @@ export default function ProductsListing({
       });
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="flex flex-wrap flex-col gap-y-5 mt-5 mb-32 min-w-max">
       <div className="flex flex-col">
         <div className="flex items-center justify-center">
-          {/* Filter api */}
           <div className="flex space-x-2">
             {filters.map((item, index) => {
               const handleValueChange = (value: any) =>
@@ -127,7 +131,6 @@ export default function ProductsListing({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      {/* <SelectLabel>{item.label}</SelectLabel> */}
                       <SelectItem value="all">All</SelectItem>
                       {item.options.map((option) => {
                         return (
@@ -156,52 +159,13 @@ export default function ProductsListing({
             In Stock
           </Label>
         </div>
-        {/* <Select
-          onValueChange={() => {
-            if (
-              document.getElementById("brand-select")?.textContent ===
-              "All Brands"
-            ) {
-              setProductsFiltered(categoryProducts);
-              return;
-            }
-            setProductsFiltered(
-              categoryProducts.filter(
-                (item) =>
-                  item.brand ===
-                  document.getElementById("brand-select")?.textContent
-              )
-            );
-            // console.log(document.getElementById("brand-select")?.textContent)
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue id="brand-select" placeholder="Select a brand" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Brand</SelectLabel>
-              <SelectItem value="all">All Brands</SelectItem>
-              {categoryProducts.map((item) => {
-                if (item.brand === "" || item.brand === undefined) {
-                  return;
-                }
-                return (
-                  <SelectItem key={item._id} value={item.brand}>
-                    {item.brand}
-                  </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select> */}
+
         <Select onValueChange={handleABCFilter}>
           <SelectTrigger id="name-select" className="w-[180px]">
             <SelectValue placeholder="Sort by Name" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* <SelectLabel>Sort by Name</SelectLabel> */}
               <SelectItem value="a-z">A to Z</SelectItem>
               <SelectItem value="z-a">Z to A</SelectItem>
             </SelectGroup>
@@ -213,7 +177,6 @@ export default function ProductsListing({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* <SelectLabel>Price</SelectLabel> */}
               <SelectItem value="low-high">Low to High</SelectItem>
               <SelectItem value="high-low">High to Low</SelectItem>
             </SelectGroup>
@@ -222,7 +185,7 @@ export default function ProductsListing({
       </div>
       <div className="grid grid-cols-4 gap-x-5 gap-y-10 mx-36">
         {isLoading && <SkeletonCard length={10} />}
-        {productsFiltered.map((item) => {
+        {displayedProducts.map((item) => {
           return (
             <ProductCard
               image={item.images[0]}
@@ -235,6 +198,13 @@ export default function ProductsListing({
           );
         })}
       </div>
+      {!isLoading && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(productsFiltered.length / PRODUCTS_PER_PAGE)}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 }
