@@ -105,27 +105,6 @@ export default function SignIn() {
         >
           Sign In
         </Button>
-        <h1 className="text-center font-semibold">Or</h1>
-        <div className="items-center justify-center">
-          <h3 className="text-center font-semibold">Continue with</h3>
-          <div className="flex items-center justify-center space-x-4">
-            <Button
-              variant={"log_in"}
-              type="button"
-              onClick={() => signIn("google")}
-              className="w-full mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
-            >
-              <IoLogoGoogle size={20} className="mx-2" /> {" Continue with Google"}
-            </Button>
-            {/* <Button
-              variant={"log_in"}
-              onClick={() => signIn("facebook")}
-              className="mt-4 rounded-md bg-yellow-400 text-black hover:text-yellow-400 font-bold cursor-pointer px-6 py-2"
-            >
-              <IoLogoFacebook size={20} className="mx-2" />
-            </Button> */}
-          </div>
-        </div>
 
         {error && (
           <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">

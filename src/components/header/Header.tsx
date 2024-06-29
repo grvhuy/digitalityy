@@ -76,7 +76,7 @@ export default function Header() {
 
   const catalogClick = () => {
     router.push("/categories");
-  }
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -88,7 +88,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`p-6 text-eerie_black font-quicksand bg-white sticky top-0 z-50 ${
+        className={`p-6 text-eerie_black font-quicksand bg-gradient-to-b from-yellow-200 via-yellow-200 to-yellow-500  sticky top-0 z-50 ${
           visible
             ? "transition-all duration-300 top-0 "
             : "top-0 -translate-y-full transition-all duration-300"
@@ -116,21 +116,21 @@ export default function Header() {
             <ul className="flex list-none ml-72 pr-12 text-center font-semibold gap-x-6">
               <Button
                 variant={"gold_black"}
-                className=" font-semibold text-base"
+                className="bg-eerie_black text-white hover:bg-white hover:text-eerie_black font-semibold text-base"
                 onClick={catalogClick}
               >
                 Catalog
               </Button>
               <Button
                 variant={"gold_black"}
-                className=" font-semibold text-base"
+                className="bg-eerie_black text-white hover:bg-white hover:text-eerie_black font-semibold text-base"
               >
                 Contact Us
               </Button>
               {user?.name === "Admin" && (
                 <Button
                   variant={"gold_black"}
-                  className=" font-semibold text-base"
+                  className="bg-eerie_black text-white hover:bg-white hover:text-eerie_black  font-semibold text-base"
                   onClick={() => router.push("/dashboard/products")}
                 >
                   Dashboard
@@ -161,17 +161,21 @@ export default function Header() {
               <FiShoppingCart />
             </Button>
             {user ? (
-              <div className="flex items-center">
+              <div className="flex items-center font-semibold">
                 {/* <h1 className="font-bold ">Hello {user?.name} !</h1> */}
-                <button
+                <Button
+                  variant={"gold_black"}
                   onClick={async () => {
                     await signOut();
                   }}
-                  className="mx-6 py-2 px-5 hover:underline hover:bg-eerie_black hover:text-yellow-400 bg-yellow-400 rounded-2xl transition-all duration-500"
+                  className="font_semibold mx-6 py-2 px-5 hover:underline bg-eerie_black text-white hover:bg-white hover:text-eerie_black  font-semibold text-base"
                 >
                   Logout
-                </button>
-                <Link href="/user/settings">
+                </Button>
+                <Link
+                  className="rounded-full p-3 hover:bg-white "
+                  href="/user/settings"
+                >
                   <LuUser2 />
                 </Link>
               </div>
@@ -180,16 +184,10 @@ export default function Header() {
                 <Button
                   variant={"gold_black"}
                   onClick={() => router.push("/sign-in")}
-                  className="hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500 "
+                  className="hover:underline bg-eerie_black text-white hover:bg-white hover:text-eerie_black font-semibold rounded-2xl transition-all duration-500 "
                 >
                   Sign In
                 </Button>
-                {/* <button
-                  onClick={() => router.push("/sign-up")}
-                  className=" py-2 px-5 hover:bg-eerie_black font-semibold hover:text-yellow-400 bg-yellow-400  rounded-2xl transition-all duration-500"
-                >
-                  Sign Up
-                </button> */}
               </div>
             )}
           </div>

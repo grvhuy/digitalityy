@@ -20,6 +20,10 @@ export default function SettingsMenu() {
     router.push("/user/settings/change-password");
   };
 
+  const handleEdit = () => {
+    router.push("/user/settings/information");
+  };
+
   useEffect(() => {
     setUser(session?.user);
     const userEmail = session?.user?.email;
@@ -52,7 +56,7 @@ export default function SettingsMenu() {
       <Separator />
       <div>
         <ul className="font-medium hover:[&>li]:scale-[.99] [&>li]:p-4 hover:[&>li]:bg-eerie_black hover:[&>li]:text-yellow-400 [&>li]:transition-all [&>li]:duration-200 [&>li]:rounded-lg [&>li]:cursor-pointer [&>li]:flex [&>li]:flex-row [&>li]:relative">
-          <li className="flex flex-row relative group ">
+          <li className="flex flex-row relative group " onClick={handleEdit}>
             Edit Profile
             <MdOutlineKeyboardArrowRight
               size={25}
