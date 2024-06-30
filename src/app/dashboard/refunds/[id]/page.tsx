@@ -23,7 +23,7 @@ const RefundDetailPage = () => {
   const [userId, setUserId] = useState<any>(null);
   const [transactionId, setTransactionId] = useState<any>(null);
   const [customer, setCustomer] = useState<any>(null);
-  const [isEnableUpdate, setIsEnableUpdate] = useState(false);
+  const [isEnableUpdate, setIsEnableUpdate] = useState(true);
   const [location, setLocation] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
   const [status, setStatus] = useState("");
@@ -66,7 +66,7 @@ const RefundDetailPage = () => {
   // else
 
   const handleCheckStatus = () => {
-    console.log(orderId)
+    console.log(orderId);
     axios.get(`/api/dashboard/orders/${orderId}`).then((res) => {
       setTransactionId(res.data.order?.transactionId);
       // console.log(res.data);
@@ -121,7 +121,7 @@ const RefundDetailPage = () => {
               <Button
                 onClick={() => {
                   axios
-                    .patch(`/api/dashboard/refunds`, {
+                    .post(`/api/payment/refund`, {
                       description: refundStatus,
                       amount: refundAmount,
                       transId: transId,
@@ -201,6 +201,60 @@ const RefundDetailPage = () => {
               </Select>
             </div>
           </div> */}
+          <div className="my-4">
+            <div className="space-y-2">
+              <Input
+                className=""
+                placeholder="Location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                disabled={!isEnableUpdate}
+              />
+              <Select
+                disabled={!isEnableUpdate}
+                value={status}
+                onValueChange={(value) => setStatus(value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="apple">placed</SelectItem>
+                    <SelectItem value="banana">shipping</SelectItem>
+                    <SelectItem value="blueberry">received</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                setIsEnableUpdate(!isEnableUpdate);
+                if (isEnableUpdate) {
+                  if (location === "" || status === "") {
+                    alert(
+                      "Please try again and fill in the location and status"
+                    );
+                    return;
+                  }
+                  axios
+                    .patch(`/api/dashboard/orders/${id}`, {
+                      location: location,
+                      status: status,
+                    })
+                    .then((res) => {
+                      console.log(res.data);
+                      setLocation("");
+                      setStatus("");
+                      window.location.reload();
+                    });
+                }
+              }}
+            >
+              {isEnableUpdate ? "Save changes" : "Update location"}
+            </Button>
+          </div>
           {/*location stepper */}
         </div>
 

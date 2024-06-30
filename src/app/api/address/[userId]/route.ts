@@ -24,3 +24,12 @@ export const PATCH = async (req: Request) => {
     })
   return NextResponse.json({ message: "Set default address successfully" });
 }
+
+export const DELETE = async (req: Request) => {
+  const addressId = req.url.split("/").pop()
+  connectToDB()
+  await Address.deleteOne({
+    _id: addressId
+  })
+  return NextResponse.json({ message: "Delete address successfully" });
+}

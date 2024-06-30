@@ -56,23 +56,23 @@ export const filtersConfig = {
     },
     {
       label: "Keyboard",
-      name: "keyboard",
+      name: "Keyboard",
       filters: [
         {
           label: "Brand",
-          name: "brand",
+          name: "Brand",
           type: "select",
-          options: ["Logitech", "Razer", "SteelSeries", "Corsair"],
+          options: ["E-Dra", "AKKO", "DareU", "SteelSeries", "Corsair"],
         },
         {
           label: "Type",
-          name: "type",
+          name: "Type",
           type: "select",
           options: ["Wireless", "Wired"],
         },
         {
           label: "Switch",
-          name: "switch",
+          name: "Switch",
           type: "select",
           options: ["Blue", "Red", "Brown", "Black"],
         },
@@ -85,24 +85,67 @@ export const filtersConfig = {
       filters: [
         {
           label: "Brand",
-          name: "brand",
+          name: "Brand",
           type: "select",
           options: ["Logitech", "Razer", "SteelSeries", "Corsair"],
         },
         {
-          label: "Type",
-          name: "type",
+          label: "Connection",
+          name: "Connection",
           type: "select",
           options: ["Wireless", "Wired"],
         },
+      ],
+    },
+    {
+      label: "Ram",
+      name: "Ram",
+      filters: [
         {
-          label: "Battery",
-          name: "connection", 
+          label: "Brand",
+          name: "Brand",
           type: "select",
-          options: ["None", "Charged", "Removable"],
+          options: ["Kingston", "Corsair", "G.Skill", "Crucial"],
+        },
+        {
+          label: "Storage",
+          name: "Storage",
+          type: "select",
+          options: ["4GB", "8GB", "16GB", "32GB"],
+        },
+        {
+          label: "Type",
+          name: "Type",
+          type: "select",
+          options: ["DDR3", "DDR4", "DDR5"],
+        },
+      ],
+    },
+    {
+      label: "SSD",
+      name: "SSD",
+      filters: [
+        {
+          label: "Brand",
+          name: "Brand",
+          type: "select",
+          options: ["Kingston", "Samsung", "Crucial", "WD"],
+        },
+        {
+          label: "Storage",
+          name: "Storage",
+          type: "select",
+          options: ["128 GB", "256 GB", "512 GB", "1TB"],
+        },
+        {
+          label: "Type",
+          name: "Type",
+          type: "select",
+          options: ["SATA", "NVMe"],
         },
       ],
     }
+
   ],
 }
 

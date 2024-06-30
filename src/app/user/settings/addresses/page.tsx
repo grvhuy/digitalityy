@@ -83,7 +83,15 @@ const UserAddresses = () => {
                     {...address}
                     // userId={userId}
                   />
-                  <button className="text-red-500 dark:text-red-300">
+                  <button
+                    onClick={() => {
+                      axios
+                        .delete(`/api/address/${address._id}`)
+                        .then((response) => {
+                          console.log(response.data);
+                        });
+                    }}
+                  className="text-red-500 dark:text-red-300">
                     Delete
                   </button>
                 </div>

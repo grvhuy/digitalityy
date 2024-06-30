@@ -91,6 +91,7 @@ const OrderDetailPage = () => {
                       console.log(res.data);
                       setLocation("");
                       setStatus("");
+                      window.location.reload();
                     });
                 }
               }}

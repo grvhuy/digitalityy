@@ -277,7 +277,14 @@ const DashboardVouchersPage = () => {
             }
             className="max-w-sm"
           />
-
+          <Button
+            variant="outline"
+            onClick={() => {
+              router.push("/dashboard/vouchers/new");
+            }}
+          >
+            Add voucher <PlusIcon className="ml-2 h-4 w-4" />
+          </Button>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

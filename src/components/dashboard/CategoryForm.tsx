@@ -100,7 +100,7 @@ const CategoryForm = () => {
       .then((result) => {
         console.log("result", result);
       });
-    // router.push("/dashboard");
+    router.push("/dashboard/categories");
   };
 
   return (

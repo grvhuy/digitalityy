@@ -78,7 +78,7 @@ const VoucherForm = ({
         console.log(res.data);
       });
     }
-    // router.push("/dashboard/vouchers");
+    router.push("/dashboard/vouchers");
   };
 
   return (

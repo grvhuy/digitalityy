@@ -102,7 +102,7 @@ const Sidebar = () => {
           </li>
           <li>
             <a
-              href="/dashboard/voucher"
+              href="/dashboard/vouchers"
               className="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
             >
               <svg
@@ -119,7 +119,7 @@ const Sidebar = () => {
           </li>
           <li>
             <a
-              href="/dashboard/voucher"
+              href="/dashboard/refunds"
               className="flex items-center p-2 text-white rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
             >
               <svg
