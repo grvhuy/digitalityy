@@ -250,7 +250,7 @@ const DashboardCategoriesPage = () => {
       <div className="flex items-center py-4">
         <div className="flex space-x-2">
           <Input
-            placeholder="Filter emails..."
+            placeholder="Enter category name..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)

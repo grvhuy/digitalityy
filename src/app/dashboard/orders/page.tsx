@@ -274,7 +274,7 @@ const OrdersDashboardPage = () => {
       <div className="flex items-center py-4">
         <div className="flex space-x-2">
           <Input
-            placeholder="Filter categories..."
+            placeholder="Filter Order ID..."
             value={
               (table.getColumn("id")?.getFilterValue() as string) ?? ""
             }

@@ -16,6 +16,10 @@ const CartModel = new mongoose.Schema({
             quantity: {
                 type: Number,
                 required: false
+            },
+            variant: {
+                type: String,
+                required: false
             }
         }
     ]

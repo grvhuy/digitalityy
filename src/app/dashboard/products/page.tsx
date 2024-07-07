@@ -62,6 +62,7 @@ export type Product = {
   price: number;
   name: string;
   category: string;
+  stock: number;
 };
 
 let dataX: Product[] = [];
@@ -93,7 +94,17 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "name",
-    header: "Product Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Product Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
@@ -113,9 +124,40 @@ export const columns: ColumnDef<Product>[] = [
       <div className="lowercase">{row.getValue("category")}</div>
     ),
   },
+
+  {
+    accessorKey: "stock",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Stock
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const stock = parseFloat(row.getValue("stock"));
+
+      return <div className="text-right font-medium">{stock}</div>;
+    },
+  },
+
   {
     accessorKey: "price",
-    header: () => <div className="text-right">Price</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Price
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
 
@@ -211,6 +253,7 @@ const ProductsDashboardPage = () => {
             category: product.category,
             price: product.price,
             id: product.id,
+            stock: product.stock,
           };
         });
         updatedDataX = dataX.concat(newData);
@@ -247,12 +290,12 @@ const ProductsDashboardPage = () => {
       <div className="flex items-center py-4">
         <div className="flex space-x-2">
           <Input
-            placeholder="Filter categories..."
+            placeholder="Enter product name..."
             value={
-              (table.getColumn("category")?.getFilterValue() as string) ?? ""
+              (table.getColumn("name")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("category")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />

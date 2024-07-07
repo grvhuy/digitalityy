@@ -48,7 +48,7 @@ const CheckoutPage = () => {
   const [userId, setUserId] = useState<string>("");
 
   const handleApplyVoucher = async () => {
-    axios.get(`/api/dashboard/vouchers/${voucherCode}`).then((res) => {
+    axios.get(`/api/dashboard/vouchers/codeApplied/${voucherCode}`).then((res) => {
       const voucher = res.data;
       // console.log(voucher);
 
@@ -67,6 +67,7 @@ const CheckoutPage = () => {
         }
       } else {
         alert("Voucher code is invalid");
+        return;
       }
     });
   };
@@ -237,19 +238,6 @@ const CheckoutPage = () => {
                                 );
                               })}
                             </RadioGroup>
-                          {/* </div> */}
-                          {/* <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
-                              Username
-                            </Label>
-                            <Input
-                              id="username"
-                              defaultValue="@peduarte"
-                              className="col-span-3"
-                            />
-                          </div> */}
-                        {/* </div> */}
-                          {/* Mot dialog chua form nhap dia chi */}
                           <AddAddressForm />
                       </DialogContent>
                     </Dialog>
@@ -351,20 +339,7 @@ const CheckoutPage = () => {
                 </svg>
               </div>
               <Separator />
-              {/* <div className="px-4 py-2 flex items-center space-x-2">
-                <RadioGroupItem
-                  onClick={() => {
-                    setPaymentMethod("payWithAtm");
-                  }}
-                  value="atm"
-                  id="r5"
-                />
-                <Label className="text-gray-500" htmlFor="r5">
-                  ATM Card
-                </Label>
-              </div>
 
-              <Separator /> */}
               <div className="px-4 py-2 flex items-center space-x-2">
                 <RadioGroupItem
                   onClick={() => {
@@ -505,7 +480,14 @@ const CheckoutPage = () => {
                 </div>
               </div>
               <Button
-                onClick={() => handlePlaceOrder()}
+                onClick={() => {
+                  if (!userAddress || !paymentMethod || !cartItems) {
+                    alert("Please checking your information again!");
+                    return;                    
+                  } else {
+                    handlePlaceOrder();
+                  }
+                }}
                 className="mt-4"
                 variant="default"
               >

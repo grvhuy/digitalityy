@@ -194,6 +194,7 @@ export default function ProductsListing({
               price={item.price}
               description={item.description}
               onClick={() => router.push("/products/" + item._id)}
+              discount={item.discount}
             />
           );
         })}

@@ -51,7 +51,8 @@ const OrdersHistory = () => {
 
     if (userId && orders.length === 0) {
       axios.get(`/api/orders/${userId}`).then((res) => {
-        setOrders(res.data.orders);
+        const reverseOrders = res.data.orders.reverse();
+        setOrders(reverseOrders);
         console.log(res.data.orders);
       });
     }
@@ -68,20 +69,22 @@ const OrdersHistory = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">Orders History</h1>
           {/* filter */}
-          <Select>
+          {/* <Select>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
             <SelectContent className="">
               <SelectGroup className="">
-                <SelectLabel>Status</SelectLabel>
-                <SelectItem value="receive">To receive</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-                <SelectItem value="refund">Refund</SelectItem>
+                <SelectItem
+                  onClick={() => {
+                    // sort orders by date
+                    
+
+                  }}
+                  value="">Sort by date</SelectItem>
               </SelectGroup>
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
         <div className="mt-4">
           {orders.map((order) => (
@@ -200,8 +203,9 @@ const OrdersHistory = () => {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                    <Button className="text-black hover:text-white bg-[#facc15] px-4 py-2 rounded-md uppercase mt-4">
-                      View order
+                    <Button 
+                      className="text-black hover:text-white bg-[#facc15] px-4 py-2 rounded-md uppercase mt-4">
+                      <Link href={`/user/orders/${order._id}`}>View Detail</Link>
                     </Button>
                     {/* refund */}
                   </div>

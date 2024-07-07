@@ -225,7 +225,7 @@ const DashboardRefundPage = () => {
       <div className="flex items-center py-4">
         <div className="flex space-x-2">
           <Input
-            placeholder="Filter emails..."
+            placeholder="Filter Request ID..."
             value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("id")?.setFilterValue(event.target.value)

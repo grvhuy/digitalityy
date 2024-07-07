@@ -229,59 +229,6 @@ const CategoryDetailsForm = (
             )}
           />
 
-          {/* <Button
-            type="button"
-            onClick={() => {
-              form.setValue("properties", [...form.getValues().properties, ""]);
-              setPropertiesValue([...form.getValues().properties, ""]);
-            }}
-          >
-            Add properties
-          </Button> */}
-          {/* {form
-            .getValues()
-            .properties.map((property: string, index: number) => {
-              return (
-                <FormField
-                  control={form.control}
-                  name={`properties.${index}`}
-                  key={index}
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel>Property {index + 1}</FormLabel>
-                      <FormControl>
-                        <div className="flex space-x-2">
-                          <Input
-                            className="w-full"
-                            placeholder="property"
-                            {...field}
-                          />
-                          <Button
-                            type="button"
-                            className="bg-red-500 font-semibold"
-                            onClick={() => {
-                              form.setValue(
-                                "properties",
-                                form
-                                  .getValues()
-                                  .properties.filter((_, i) => i !== index)
-                              );
-                              setPropertiesValue(
-                                form
-                                  .getValues()
-                                  .properties.filter((_, i) => i !== index)
-                              );
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              );
-            })} */}
 
           <FormField
             control={form.control}

@@ -18,7 +18,8 @@ import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 import { VoucherValidation } from "@/lib/validations/voucher";
 import { DatePicker } from "../DatePicker";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
+import e from "express";
 
 const VoucherForm = ({
   _id,
@@ -47,30 +48,84 @@ const VoucherForm = ({
 }) => {
   const router = useRouter();
 
+  useEffect(() => {
+    if (!_id) return;
+    axios.get(`/api/dashboard/vouchers/${_id}`).then((res) => {
+      setMinimum(res.data.minimumOrderValue);
+      setDiscount(res.data.discount);
+      setCode(res.data.code);
+      setDescription(res.data.description);
+      setStartDate(res.data.startDate);
+      setEndDate(res.data.endDate);
+      setUsageLimit(res.data.usageLimit);
+      setUsageCount(res.data.usageCount);
+      setProducts(res.data.products);
+      setAppliedAll(res.data.appliedAll);
+    });
+  }, [_id]);
+
   const [usageCount, setUsageCount] = useState<number>(existingUsageCount || 0);
   const [usageLimit, setUsageLimit] = useState<number>(existingUsageLimit || 0);
   const [discount, setDiscount] = useState<number>(existingDiscount || 0);
-  const [minimum, setMinimum] = useState<number>(existingMinimumOrderValue || 0);
+  const [minimum, setMinimum] = useState<number>(
+    existingMinimumOrderValue || 0
+  );
+  const [code, setCode] = useState<string>(existingCode || "");
+  const [description, setDescription] = useState<string>(
+    existingDescription || ""
+  );
+  const [startDate, setStartDate] = useState<Date>(
+    existingStartDate || new Date()
+  );
+  const [endDate, setEndDate] = useState<Date>(existingEndDate || new Date());
+  const [products, setProducts] = useState<string[]>(existingProducts || []);
+  const [appliedAll, setAppliedAll] = useState<boolean>(
+    existingAppliedAll || false
+  );
 
   const form = useForm<z.infer<typeof VoucherValidation>>({
     resolver: zodResolver(VoucherValidation),
     defaultValues: {
       minimumOrderValue: minimum || 0,
       discount: discount || 0,
-      code: existingCode || "",
+      code: code || "",
       description: existingDescription || "",
       startDate: existingStartDate || new Date(),
       endDate: existingEndDate || new Date(),
-      usageLimit: usageCount || 0,
-      usageCount: usageLimit || 0,
+      usageLimit: usageLimit || 0,
+      usageCount: usageCount || 0,
       products: existingProducts || [],
       appliedAll: existingAppliedAll || false,
     },
   });
 
+  useEffect(() => {
+    form.setValue("minimumOrderValue", minimum);
+    form.setValue("discount", discount);
+    form.setValue("code", code);
+    form.setValue("description", description);
+    form.setValue("startDate", startDate);
+    form.setValue("endDate", endDate);
+    form.setValue("usageLimit", usageLimit);
+    form.setValue("usageCount", usageCount);
+    form.setValue("products", products);
+    form.setValue("appliedAll", appliedAll);
+  }, [
+    minimum,
+    discount,
+    code,
+    description,
+    startDate,
+    endDate,
+    usageLimit,
+    usageCount,
+    products,
+    appliedAll,
+  ]);
+
   const onSubmit = async (values: z.infer<typeof VoucherValidation>) => {
     if (_id) {
-      await axios.put(`/api/dashboard/vouchers/${_id}`, values).then((res) => {
+      await axios.patch(`/api/dashboard/vouchers/${_id}`, values).then((res) => {
         console.log(res.data);
       });
     } else {
@@ -83,10 +138,10 @@ const VoucherForm = ({
 
   return (
     <div className="mt-4 w-full m-4">
-      <h1 className="py-4 text-3xl font-bold  ">ADD VOUCHER</h1>
+      <h1 className="py-4 text-3xl font-bold  ">VOUCHER</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
+          <FormField
             control={form.control}
             name="minimumOrderValue"
             render={({ field }) => (
@@ -136,7 +191,12 @@ const VoucherForm = ({
               <FormItem className="space-y-2">
                 <FormLabel>Code</FormLabel>
                 <FormControl>
-                  <Input type="text" className="w-full" {...field} />
+                  <Input
+                    type="text"
+                    className="w-full"
+                    {...field}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -196,11 +256,11 @@ const VoucherForm = ({
                 <FormControl>
                   <Input
                     type="number"
-                    value={field.value} // Sử dụng field.value thay vì price
+                    value={field.value}
                     onChange={(e) => {
                       const newValue = parseFloat(e.target.value);
-                      field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
-                      setUsageLimit(newValue); // Cập nhật giá trị mới cho price
+                      field.onChange(newValue);
+                      setUsageLimit(newValue);
                     }}
                   />
                 </FormControl>
@@ -217,11 +277,11 @@ const VoucherForm = ({
                 <FormControl>
                   <Input
                     type="number"
-                    value={field.value} // Sử dụng field.value thay vì price
+                    value={field.value}
                     onChange={(e) => {
                       const newValue = parseFloat(e.target.value);
-                      field.onChange(newValue); // Kích hoạt hàm onChange của field và truyền giá trị mới
-                      setUsageCount(newValue); // Cập nhật giá trị mới cho price
+                      field.onChange(newValue);
+                      setUsageCount(newValue);
                     }}
                   />
                 </FormControl>
@@ -245,12 +305,15 @@ const VoucherForm = ({
             )}
           />
 
-          <Button onSubmit={
-            () => {
+          <Button
+            onSubmit={() => {
               if (form.formState.isSubmitting) return;
-              onSubmit(form.getValues())
-            }
-          } type="submit">Submit</Button>
+              onSubmit(form.getValues());
+            }}
+            type="submit"
+          >
+            Submit
+          </Button>
         </form>
       </Form>
     </div>

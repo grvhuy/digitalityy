@@ -37,32 +37,6 @@ export default function ProductDetails({
 }) {
   const router = useRouter();
   const now = new Date();
-  const TestArray = [
-    {
-      title: "Test title 1",
-      name: "Test Name 1",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aliquet risus feugiat in ante metus dictum at tempor. Id volutpat lacus laoreet non. Malesuada fames ac turpis egestas sed tempus urna et. Feugiat vivamus at augue eget arcu dictum varius duis. Porttitor massa id neque aliquam vestibulum morbi blandit. Gravida quis blandit turpis cursus in hac habitasse. Sed risus pretium quam vulputate. Volutpat est velit egestas dui id ornare arcu. Sit amet venenatis urna cursus eget nunc scelerisque viverra. Pharetra convallis posuere morbi leo. Pellentesque habitant morbi tristique senectus et netus. Vitae auctor eu augue ut lectus arcu bibendum. Ultrices in iaculis nunc sed augue. Quam vulputate dignissim suspendisse in est ante. Odio eu feugiat pretium nibh ipsum consequat nisl vel. Egestas diam in arcu cursus euismod quis viverra nibh cras.",
-      rating: 3,
-      date: now,
-    },
-    {
-      title: "Test title 2",
-      name: "Test Name 2",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus at ultrices mi tempus. Nullam vehicula ipsum a arcu cursus vitae congue mauris rhoncus. Tellus in hac habitasse platea. Ipsum nunc aliquet bibendum enim facilisis gravida. Adipiscing enim eu turpis egestas pretium aenean pharetra magna. Tortor aliquam nulla facilisi cras fermentum odio eu feugiat. Ac feugiat sed lectus vestibulum mattis ullamcorper. Tincidunt praesent semper feugiat nibh. Pharetra massa massa ultricies mi quis hendrerit dolor magna. Eu mi bibendum neque egestas congue. Dolor purus non enim praesent elementum facilisis leo. Nibh mauris cursus mattis molestie. Viverra suspendisse potenti nullam ac tortor vitae purus. Nulla facilisi nullam vehicula ipsum a arcu cursus.",
-      rating: 4,
-      date: now,
-    },
-    {
-      title: "Test title 3",
-      name: "Test Name 3",
-      comment:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aliquet risus feugiat in ante metus dictum at tempor. Id volutpat lacus laoreet non. Malesuada fames ac turpis egestas sed tempus urna et. Feugiat vivamus at augue eget arcu dictum varius duis. Porttitor massa id neque aliquam vestibulum morbi blandit. Gravida quis blandit turpis cursus in hac habitasse. Sed risus pretium quam vulputate. Volutpat est velit egestas dui id ornare arcu. Sit amet venenatis urna cursus eget nunc scelerisque viverra. Pharetra convallis posuere morbi leo. Pellentesque habitant morbi tristique senectus et netus. Vitae auctor eu augue ut lectus arcu bibendum. Ultrices in iaculis nunc sed augue. Quam vulputate dignissim suspendisse in est ante. Odio eu feugiat pretium nibh ipsum consequat nisl vel. Egestas diam in arcu cursus euismod quis viverra nibh cras.",
-      rating: 5,
-      date: now,
-    },
-  ];
 
   const { data: session } = useSession();
   const { toast } = useToast();
@@ -75,6 +49,7 @@ export default function ProductDetails({
   const [similarProducts, setSimilarProducts] = useState<any[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
   const [variant, setVariant] = useState<string[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<string>("");
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -138,6 +113,7 @@ export default function ProductDetails({
               quantity: 1,
               price,
               image: images[0],
+              variant: selectedVariant,
             },
           })
           .then((response) => {
@@ -150,7 +126,7 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="grid grid-row-3 mx-36 mt-12">
+    <div className="grid grid-row-3 mt-12">
       <div className="h-full w-full grid grid-cols-2 gap-x-24 px-48 py-10">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -197,6 +173,7 @@ export default function ProductDetails({
                   className="w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   value={item}
                   key={index}
+                  onClick={() => setSelectedVariant(item)}
                 >
                   {item}
                 </ToggleGroupItem>

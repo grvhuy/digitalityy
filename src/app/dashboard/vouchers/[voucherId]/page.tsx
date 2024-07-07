@@ -1,29 +1,41 @@
-"use client"
+"use client";
 
-import ProductForm from "@/components/dashboard/ProductForm"
-import VoucherForm from "@/components/dashboard/VoucherForm"
-import axios from "axios"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import ProductForm from "@/components/dashboard/ProductForm";
+import VoucherForm from "@/components/dashboard/VoucherForm";
+import axios from "axios";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const DashboardVoucherDetails = () => {
+  const [voucher, setVoucher] = useState<any>({});
+  const { voucherId } = useParams();
 
-  // const { id } = useParams()
-  // const [product, setProduct] = useState<any>(null);
-  
-  // useEffect(() => {
-  //   axios.get(`/api/dashboard/products/${id}`).then((res) => {
-  //     setProduct(res.data);
-  //     console.log(res.data);
-  //   });
-  // }, [])
-  
+  useEffect(() => {
+    axios.get(`/api/dashboard/vouchers/${voucherId}`).then((res) => {
+      setVoucher(res.data);
+      console.log(res.data);
+    });
+  }, [voucherId]);
 
-  return (
-    <div className="flex ml-72">
-      <VoucherForm />
-    </div>
-  )
-}
+  if (voucher) {
+    return (
+      <div className="flex ml-72">
+        <VoucherForm
+          _id={voucher._id}
+          minimumOrderValue={voucher.minimumOrderValue}
+          discount={voucher.discount}
+          code={voucher.code}
+          description={voucher.description}
+          startDate={voucher.startDate}
+          endDate={voucher.endDate}
+          usageLimit={voucher.usageLimit}
+          usageCount={voucher.usageCount}
+          products={voucher.products}
+          appliedAll={voucher.appliedAll}
+        />
+      </div>
+    );
+  }
+};
 
-export default DashboardVoucherDetails
+export default DashboardVoucherDetails;

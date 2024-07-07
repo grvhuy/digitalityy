@@ -29,9 +29,6 @@ const CartPage = () => {
   const cartItems = useSelector(selectCartItems);
   // const checkoutItems = useSelector(selectCheckoutItems);
   const dispatch: AppDispatch = useDispatch();
-
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -111,6 +108,7 @@ const CartPage = () => {
       quantity: newQuantity[index],
       price: products[index].product.price,
       image: products[index].product.images[0],
+      variant: products[index].product.variant,
     });
   };
 
@@ -180,7 +178,7 @@ const CartPage = () => {
           </div>
         </section>
 
-        {products.length === 0 ? (
+        {(products.length === 0) ? (
           <div className="flex items-center justify-center w-full">
             {/* Them UI loading */}
             <div className="flex items-center justify-center">
@@ -207,21 +205,6 @@ const CartPage = () => {
                     <div className="flex items-center">
                       <Checkbox
                         onCheckedChange={() => {
-                          // Neu da check thi xoa khoi cartItems nguoc lai thi them vao
-
-                          // if (checkoutItems.find((item) => item._id === product.product._id)) {
-                          //   dispatch(removeFromCheckout({ id: product.product._id }));
-                          // } else {
-
-                          //   dispatch(addToCheckout({
-                          //     _id: product.product._id,
-                          //     name: product.product.name,
-                          //     category: product.product.category,
-                          //     amount: quantity[index],
-                          //     price: product.product.price,
-                          //     image: product.product.images[0]
-                          //   }))
-                          // }
                           if (
                             cartItems.find(
                               (item) => item._id === product.product._id
@@ -240,6 +223,7 @@ const CartPage = () => {
                                 amount: quantity[index],
                                 price: product.product.price,
                                 image: product.product.images[0],
+                                variant: product.product.variant,
                               })
                             );
                             setSubtotal(subtotal + totalProduct[index]);
@@ -262,7 +246,7 @@ const CartPage = () => {
                       {Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      }).format(product.product.price)}
+                      }).format(product.product.price)} 
                     </h1>
                     <div className="">
                       <div className="flex w-24 justify-between items-center border border-gray-500 ">

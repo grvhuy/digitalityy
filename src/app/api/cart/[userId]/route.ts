@@ -29,6 +29,7 @@ export const PUT = async (req: Request) => {
       price: product.price,
       image: product.image,
       quantity: product.quantity,
+      variant: values.variant
     });
   } else {
     cart.products[index].quantity += product.quantity;

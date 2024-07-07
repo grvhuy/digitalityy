@@ -113,7 +113,7 @@ export const columns: ColumnDef<Voucher>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date requested
+          Date start
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -133,7 +133,7 @@ export const columns: ColumnDef<Voucher>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date requested
+          Date end
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -153,7 +153,7 @@ export const columns: ColumnDef<Voucher>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date requested
+          Limit
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
