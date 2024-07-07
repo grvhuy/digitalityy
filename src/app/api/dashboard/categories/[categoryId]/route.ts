@@ -35,3 +35,10 @@ export const PATCH = async (req: Request) => {
   });
 return NextResponse.json(values);
 };
+
+export const DELETE = async (req: Request) => {
+  connectToDB();
+  const id = req.url.split("/").pop();
+  await Category.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Category deleted" });
+}

@@ -159,7 +159,20 @@ export const columns: ColumnDef<Category>[] = [
               </Link>
             </DropdownMenuItem>
 
-            <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
+            <DropdownMenuItem>
+            <button
+                onClick={() => {
+                  axios.delete(`/api/dashboard/categories/${category.id}`);
+                  window.location.reload();
+                }}
+                // variant="destructive"
+                type="button"
+              >
+                Delete
+              </button>
+            </DropdownMenuItem>
+
+            {/* <div className="text-sm mt-1 mx-2 py-1 text-red-600 transition duration-1000 hover:font-bold">
               <Dialog>
                 <DialogTrigger>Delete category</DialogTrigger>
                 <DialogContent>
@@ -172,8 +185,8 @@ export const columns: ColumnDef<Category>[] = [
                   </DialogHeader>
                   <DialogFooter>
                     <Button
-                      onClick={async () => {
-                        await handleDelete();
+                      onClick={() => {
+                        handleDelete();
                         window.location.reload();
                       }}
                       variant="destructive"
@@ -184,7 +197,7 @@ export const columns: ColumnDef<Category>[] = [
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            </div>
+            </div> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );
